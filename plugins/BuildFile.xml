@@ -48,3 +48,4 @@
 <use   name="root"/>
 <use   name="L1Trigger/L1TCaloLayer1"/>
 <use   name="hls"/>
+<flags EDM_PLUGIN="1"/>

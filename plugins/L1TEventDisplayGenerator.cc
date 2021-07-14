@@ -115,6 +115,9 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
       //	 caloCluster++ ) {
       //fill vector
       TLorentzVector temp ;
+      std::cout << "Cluster found: pT " << caloCluster.pt()  << ", "
+		<< "eta "               << caloCluster.eta() << ", "
+		<< "phi "               << caloCluster.phi() << std::endl;
       temp.SetPtEtaPhiE(caloCluster.pt(),caloCluster.eta(),caloCluster.phi(),caloCluster.pt());
       ecalClusters->push_back(temp);
     }

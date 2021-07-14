@@ -7,5 +7,6 @@ l1NtupleProducer = cms.EDAnalyzer("L1TEventDisplayGenerator",
                                   #pfCands                 = cms.InputTag("particleFlow"),
                                   ecalDigis = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
                                   hcalDigis = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-                                  clusters                = cms.InputTag('Phase2L1CaloEGammaEmulatorProducer')
+                                  #clusters                = cms.InputTag('Phase2L1CaloEGammaEmulatorProducer')
+                                  clusters  = cms.InputTag('L1EGammaClusterEmuProducer')
 )
