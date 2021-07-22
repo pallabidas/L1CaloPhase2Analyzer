@@ -50,11 +50,11 @@ process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 
 # --------------------------------------------------------------------------------------------
 #
-# ----    Produce the L1EGCrystal clusters using Emulator
+# ----    Produce the L1EGCrystal clusters using Emulator (taking care to load the original CMSSW emulator, and the analyzer
+#         config which gets the right cluster collection)
 
-#process.load('L1Trigger.L1CaloTrigger.Phase2L1CaloEGammaEmulator_cfi')
 process.load('L1Trigger.L1CaloTrigger.L1EGammaCrystalsEmulatorProducer_cfi')
-process.load('L1Trigger.L1CaloPhase2Analyzer.l1TEventDisplayGenerator_cfi')
+process.load('L1Trigger.L1CaloPhase2Analyzer.l1TEventDisplayGenerator_cmssw_cfi')
 
 #process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.l1NtupleProducer )
 process.pL1EG = cms.Path( process.L1EGammaClusterEmuProducer*process.l1NtupleProducer ) 
