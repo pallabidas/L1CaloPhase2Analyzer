@@ -130,7 +130,8 @@ int getPhiMin_card(int card) {
 L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
-  ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters")))
+  ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
+  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("clusters")))
   {
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
@@ -141,8 +142,10 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
 
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
     efficiencyTree->Branch("ecalClusters", "vector<TLorentzVector>", &ecalClusters, 32000, 0); 
+    efficiencyTree->Branch("caloTowers",   "vector<TLorentzVector>", &caloTowers, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
+    
     //efficiencyTree->Branch("signalPFCands", "vector<TLorentzVector>", &signalPFCands, 32000, 0); 
     //efficiencyTree->Branch("l1Jets", "vector<TLorentzVector>", &l1Jets, 32000, 0); 
     //efficiencyTree->Branch("recoJets", "vector<TLorentzVector>", &recoJets, 32000, 0); 
@@ -165,11 +168,14 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
   event = evt.id().event();
 
   edm::Handle<l1tp2::CaloCrystalClusterCollection> caloCrystalClusters;
+  edm::Handle<l1tp2::CaloTowerCollection> caloL1Towers;
+  
   edm::Handle<EcalEBTrigPrimDigiCollection> ecalTPGs;
   edm::Handle<HcalTrigPrimDigiCollection> hcalTPGs;  
   edm::Handle<edm::SortedCollection<HcalTriggerPrimitiveDigi> > hbhecoll;
  
   ecalClusters->clear(); 
+  caloTowers->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
 
@@ -195,6 +201,24 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
 		<< "phi "               << caloCluster.phi() << std::endl;
       temp.SetPtEtaPhiE(caloCluster.pt(),caloCluster.eta(),caloCluster.phi(),caloCluster.pt());
       ecalClusters->push_back(temp);
+    }
+  }
+
+  if(evt.getByToken(caloTowersSrc_, caloL1Towers)) {
+    for (const auto & caloTower : *caloL1Towers){
+      TLorentzVector temp;
+      float totalEt = caloTower.ecalTowerEt() + caloTower.hcalTowerEt();
+      if (totalEt > 0) {
+	std::cout << "Tower found: ECAL ET " << caloTower.ecalTowerEt()  << ", "
+		  << "HCAL ET " << caloTower.hcalTowerEt()  << ", "
+		  << "iEta, iPhi " << caloTower.towerIEta() << " " << caloTower.towerIPhi() << ", "
+		  << "eta "             << caloTower.towerEta() << ", "
+		  << "phi "             << caloTower.towerPhi() << std::endl;
+	temp.SetPtEtaPhiE(totalEt,
+			  caloTower.towerEta(), caloTower.towerPhi(),
+			  totalEt);
+	caloTowers->push_back(temp);
+      }
     }
   }
 
