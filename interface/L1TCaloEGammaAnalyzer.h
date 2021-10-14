@@ -1,5 +1,5 @@
-#ifndef L1TEventDisplayGenerator_H
-#define L1TEventDisplayGenerator_H
+#ifndef L1TCaloEGammaAnalyzer_H
+#define L1TCaloEGammaAnalyzer_H
 
 
 // system include files
@@ -76,88 +76,15 @@
 //
 using std::vector;
 
-static constexpr int n_crystals_towerEta = 5;
-static constexpr int n_crystals_towerPhi = 5;
-static constexpr int n_towers_Eta = 34;
-static constexpr int n_towers_Phi = 72;
-static constexpr float ECAL_eta_range = 1.4841;
-static constexpr float half_crystal_size = 0.00873;
-static constexpr int n_towers_cardEta = 17;   // new: equivalent to n_towers_per_link
-static constexpr int n_towers_cardPhi = 4;    
-static constexpr int n_towers_per_link = 17;
-
-static constexpr int CRYSTALS_IN_TOWER_ETA = 5;
-static constexpr int CRYSTALS_IN_TOWER_PHI = 5;
-
-static constexpr int TOWER_IN_ETA = 3;      // number of towers in eta, in one 3x4 region (barrel)
-static constexpr int TOWER_IN_PHI = 4;      // number of towers in phi, in one 3x4 region (barrel)
-
-//static constexpr int TOWER_IN_ETA_OVERLAP = 2; // number of towers in eta, in one 2x4 region (overlap)
-//static constexpr int TOWER_IN_PHI_OVERLAP = 4; // number of towers in phi, in one 2x4 region (overlap)
-
-static constexpr int CRYSTAL_IN_ETA = 15;   // number of crystals in eta, in one 3x4 region (barrel)
-static constexpr int CRYSTAL_IN_PHI = 20;   // number of crystals in phi, in one 3x4 region (barrel)
-
-
-static constexpr int N_CLUSTERS_PER_REGION = 4;       // number of clusters per ECAL region
-static constexpr int N_REGIONS_PER_CARD = 6;          // number of ECAL regions per card
-
-// Assert that the card index is within bounds. (Valid cc: 0 to 35, since there are 36 RCT cards)
-bool isValidCard(int cc) {
-  return ((cc > -1) && (cc < 36));
-}
-
-
-int getCrystal_etaID(float eta) {
-  float size_cell = 2 * ECAL_eta_range / (n_crystals_towerEta * n_towers_Eta);
-  int etaID = int((eta + ECAL_eta_range) / size_cell);
-  return etaID;
-}
-
-int getCrystal_phiID(float phi) {
-  float size_cell = 2 * M_PI / (n_crystals_towerPhi * n_towers_Phi);
-  int phiID = int((phi + M_PI) / size_cell);
-  return phiID;
-}
-
-
-int getEtaMax_card(int card) {
-  int etamax = 0;
-  if (card % 2 == 0)
-    etamax = n_towers_per_link * n_crystals_towerEta - 1;  // First eta half. 5 crystals in eta in 1 tower.
-  else
-    etamax = n_towers_Eta * n_crystals_towerEta - 1;
-  return etamax;
-}
-
-int getEtaMin_card(int card) {
-  int etamin = 0;
-  if (card % 2 == 0)
-    etamin = 0 * n_crystals_towerEta;  // First eta half. 5 crystals in eta in 1 tower.
-  else
-    etamin = n_towers_per_link * n_crystals_towerEta;
-  return etamin;
-}
-
-int getPhiMax_card(int card) {
-  int phimax = ((card / 2) + 1) * 4 * n_crystals_towerPhi - 1;
-  return phimax;
-}
-
-int getPhiMin_card(int card) {
-  int phimin = (card / 2) * 4 * n_crystals_towerPhi;
-  return phimin;
-}
-
-class L1TEventDisplayGenerator : public edm::EDAnalyzer {
+class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
 
  public:
   
   // Constructor
-  L1TEventDisplayGenerator(const edm::ParameterSet& ps);
+  L1TCaloEGammaAnalyzer(const edm::ParameterSet& ps);
   
   // Destructor
-  virtual ~L1TEventDisplayGenerator();
+  virtual ~L1TCaloEGammaAnalyzer();
 
   edm::Service<TFileService> tfs_;
 
@@ -489,7 +416,5 @@ int get5x5TPGs(const int maxTPGPt_eta,
   }
 
 };
-
-
 
 #endif

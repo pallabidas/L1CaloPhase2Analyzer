@@ -1,5 +1,5 @@
 /*
- *  \file L1TEventDisplayGenerator.cc
+ *  \file L1TCaloEGammaAnalyzer.cc
  *  Authors S. Kwan, P. Das, I. Ojalvo
  */
 
@@ -44,7 +44,7 @@
 
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 
-#include "L1Trigger/L1CaloPhase2Analyzer/interface/L1TEventDisplayGenerator.h"
+#include "L1Trigger/L1CaloPhase2Analyzer/interface/L1TCaloEGammaAnalyzer.h"
 #include "DataFormats/Math/interface/deltaR.h"
 
 //#include "L1Trigger/L1CaloTrigger/plugins/Phase2L1CaloEGammaEmulator.h"
@@ -54,7 +54,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 
-L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
+L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
@@ -63,20 +63,12 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
 
-    //efficiencyTree->Branch("sumTpgs_Pt",  &sumTpgs_Pt); 
-    //efficiencyTree->Branch("sumTpgs_Eta", &sumTpgs_Eta); 
-    //efficiencyTree->Branch("sumTpgs_Phi", &sumTpgs_Phi); 
-
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
     efficiencyTree->Branch("ecalClusters", "vector<TLorentzVector>", &ecalClusters, 32000, 0); 
     efficiencyTree->Branch("caloTowers",   "vector<TLorentzVector>", &caloTowers, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
     
-    //efficiencyTree->Branch("signalPFCands", "vector<TLorentzVector>", &signalPFCands, 32000, 0); 
-    //efficiencyTree->Branch("l1Jets", "vector<TLorentzVector>", &l1Jets, 32000, 0); 
-    //efficiencyTree->Branch("recoJets", "vector<TLorentzVector>", &recoJets, 32000, 0); 
-
     efficiencyTree->Branch("run",    &run,     "run/I");
     efficiencyTree->Branch("lumi",   &lumi,    "lumi/I");
     efficiencyTree->Branch("event",  &event,   "event/I");
@@ -84,10 +76,10 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
 
   }
 
-void L1TEventDisplayGenerator::beginJob( const EventSetup & es) {
+void L1TCaloEGammaAnalyzer::beginJob( const EventSetup & es) {
 }
 
-void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
+void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
  {
 
   run = evt.id().run();
@@ -200,39 +192,7 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
 	  allEcalTPGs->push_back(temp);
 	}
     }
-  /*
-    for (size_t i = 0; i < ecalTPGs->size(); ++i) {
-      int cal_ieta = (*ecalTPGs)[i].id().ieta();
-      int cal_iphi = (*ecalTPGs)[i].id().iphi();
-      if(cal_iphi==0)
-	std::cout<<"cal_phi is 0"<<std::endl;
-      if(cal_ieta<-28)
-	continue;
-      if(cal_ieta>28)
-	continue;
-      int ieta = TPGEtaRange(cal_ieta);
-      short zside = (*ecalTPGs)[i].id().zside();
-      // TPG iPhi starts at 1 and goes to 72.  Let's index starting at zero.
-      // TPG ieta ideal goes from 0-55.
-      double LSB = 0.5;
-      //      double et= (*ecalTPGs)[i].compressedEt()*LSB;
-      double et= (*ecalTPGs)[i].encodedEt()*LSB;
-      if(ieta<0){
-	std::cout<<"sorry, ieta less than 1 :("<<std::endl;
-	std::cout<<"cal_ieta "<<cal_ieta<<" ieta "<<ieta<<std::endl;
-      }
-      float eta = getRecoEta(ieta, zside);
-      float phi = getRecoPhi(cal_iphi);
-      if(et==0)
-	continue;
-      //std::cout<<"et "<<et<<std::endl;
-      TLorentzVector temp ;
-      temp.SetPtEtaPhiE(et,eta,phi,et);
-      //if(et>5)
-      //std::cout<<"Event Display tpg ecal pt() "<<temp.Pt()<< " eta " <<eta << " phi "<< phi <<std::endl;
-      allEcalTPGs->push_back(temp);
-      }*/
-
+  
   //ESHandle<L1CaloHcalScale> hcalScale;
   //es.get<L1CaloHcalScaleRcd>().get(hcalScale);
 
@@ -279,166 +239,23 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
       
       break;
     }
-    /*
-    for (size_t i = 0; i < hcalTPGs->size(); ++i) {
-      HcalTriggerPrimitiveDigi tpg = (*hcalTPGs)[i];
-      int cal_ieta = tpg.id().ieta();
-      int cal_iphi = tpg.id().iphi();
-      if(cal_ieta>28)continue; 
-      if(cal_ieta<-28)continue; 
-      int ieta = TPGEtaRange(cal_ieta);
-      short absieta = std::abs(tpg.id().ieta());
-      short zside = tpg.id().zside();
-      double et = hcalScale->et(tpg.SOI_compressedEt(), absieta, zside); 
-      //if(et>0)
-      //std::cout<<"HCAL ET "<<et<<std::endl;
-      if(ieta<0){
-	std::cout<<"sorry, ieta less than 1 :("<<std::endl;
-	std::cout<<"cal_ieta "<<cal_ieta<<" ieta "<<ieta<<std::endl;
-      }
-      float eta = getRecoEta(ieta, zside);
-      float phi = getRecoPhi(cal_iphi);    
-      TLorentzVector temp ;
-      temp.SetPtEtaPhiE(et,eta,phi,et);
-      allHcalTPGs->push_back(temp);
-      }
-    */
+  
     float eta = hcal_tp_position.eta();
     float phi = hcal_tp_position.phi();
     TLorentzVector temp ;
     temp.SetPtEtaPhiE(et,eta,phi,et);
     allHcalTPGs->push_back(temp);
   }
+
+  
+  
   efficiencyTree->Fill();
  }
 
-int L1TEventDisplayGenerator::get5x5TPGs(const int maxTPGPt_eta, 
-				     const int maxTPGPt_phi, 
-				     const double eTowerETMap[73][57], 
-				     const double hTowerETMap[73][57], 
-				     std::vector<double>* hcalTpgs_pt, 
-				     std::vector<double>* hcalTpgs_eta, 
-				     std::vector<double>* hcalTpgs_phi, 
-				     std::vector<double>* ecalTpgs_pt, 
-				     std::vector<double>* ecalTpgs_eta, 
-				     std::vector<double>* ecalTpgs_phi,
-				     std::vector<double>* sumTpgs_pt, 
-				     std::vector<double>* sumTpgs_eta, 
-				     std::vector<double>* sumTpgs_phi){
-  for (int j = -5; j < 6; ++j) {//phi
-    for (int k = -5; k < 6; ++k) { //eta
-      int tpgsquarephi= maxTPGPt_phi+j;
-      int tpgsquareeta= maxTPGPt_eta+k;
-      if (tpgsquarephi==-1) {tpgsquarephi=71;}
-      if (tpgsquarephi==-2) {tpgsquarephi=70;}
-      if (tpgsquarephi==-3) {tpgsquarephi=69;}
-      if (tpgsquarephi==-4) {tpgsquarephi=68;}
-      if (tpgsquarephi==-5) {tpgsquarephi=67;}
-      if (tpgsquarephi==72) {tpgsquarephi=0;}
-      if (tpgsquarephi==73) {tpgsquarephi=1;}
-      if (tpgsquarephi==74) {tpgsquarephi=2;}
-      if (tpgsquarephi==75) {tpgsquarephi=3;}
-      if (tpgsquarephi==76) {tpgsquarephi=4;}
-      if (tpgsquareeta>55 || tpgsquareeta<0) {continue;}//No Eta values beyond
-      hcalTpgs_pt->push_back(hTowerETMap[tpgsquarephi][tpgsquareeta]);
-      hcalTpgs_eta->push_back(towerEtaMap[k]);
-      hcalTpgs_phi->push_back(towerPhiMap[j]);
-
-      ecalTpgs_pt->push_back(eTowerETMap[tpgsquarephi][tpgsquareeta]);
-      ecalTpgs_eta->push_back(towerEtaMap[tpgsquareeta]);
-      ecalTpgs_phi->push_back(towerPhiMap[tpgsquarephi]);
-
-      sumTpgs_pt->push_back(eTowerETMap[tpgsquarephi][tpgsquareeta]+eTowerETMap[tpgsquarephi][tpgsquareeta]);
-      sumTpgs_eta->push_back(towerEtaMap[tpgsquareeta]);
-      sumTpgs_phi->push_back(towerPhiMap[tpgsquarephi]);
-    }
-  }
-  //std::cout<<"TPGe5x5_ "<<TPGe5x5_<<" TPGh5x5_ "<<TPGh5x5_<<std::endl;
-  //return (TPGe5x5_ + TPGh5x5_);
-  return 1;
+void L1TCaloEGammaAnalyzer::endJob() {
 }
 
-/*
- * Get the ECAL TPGS create a TPG map for the event
- *
- */
-
-void L1TEventDisplayGenerator::initializeECALTPGMap(Handle<EcalTrigPrimDigiCollection> ecal, double eTowerETMap[73][57], bool testMode){
-  //std::cout << "ECAL TPGS" << std::endl;
-  for (size_t i = 0; i < ecal->size(); ++i) {
-    int cal_ieta = (*ecal)[i].id().ieta();
-    int cal_iphi = (*ecal)[i].id().iphi();
-    int iphi = cal_iphi-1;
-    int ieta = TPGEtaRange(cal_ieta);
-    // TPG iPhi starts at 1 and goes to 72.  Let's index starting at zero.
-    // TPG ieta ideal goes from 0-55.
-    double LSB = 0.5;
-    double et= (*ecal)[i].compressedEt()*LSB;
-
-    if(testMode && iphi == 34 && ieta == 11){
-      et = 40;
-    }
-
-    if (iphi >= 0 && iphi <= 72 &&
-	ieta >= 0 && ieta <= 55) {
-      eTowerETMap[iphi][ieta] = et; 
-    }
-
-  }
-
+L1TCaloEGammaAnalyzer::~L1TCaloEGammaAnalyzer(){
 }
 
-void L1TEventDisplayGenerator::initializeHCALTPGMap(const Handle<HcalTrigPrimDigiCollection> hcal, 
-					 const ESHandle<L1CaloHcalScale>  hcalScale, 
-					 double hTowerETMap[73][57], bool testMode){
-  for (size_t i = 0; i < hcal->size(); ++i) {
-    HcalTriggerPrimitiveDigi tpg = (*hcal)[i];
-    int cal_ieta = tpg.id().ieta();
-    int cal_iphi = tpg.id().iphi();
-    int iphi = cal_iphi-1;
-    int ieta = TPGEtaRange(cal_ieta);
-    short absieta = std::abs(tpg.id().ieta());
-    short zside = tpg.id().zside();
-    double energy = hcalScale->et(tpg.SOI_compressedEt(), absieta, zside); 
-
-    if(testMode && iphi == 34 && ieta == 12){
-      energy = 40;
-    }
-
-    if (iphi >= 0 && iphi <= 71 &&
-	ieta >= 0 && ieta <= 55) {
-      //(*hcal)[i].SOI_compressedEt(), absieta, zside)*LSB; //*LSB
-      //if(energy>0)
-      //std::cout<<"hcal iphi "<<iphi<<" ieta "<<ieta<<" energy "<<energy<<std::endl;
-      hTowerETMap[iphi][ieta] = energy;
-      //TPGSum_ +=energy;
-      //TPGH_ += energy;
-      //double alpha_h = TPGSFp_[cal_ieta]; //v3
-      //hCorrTowerETMap[cal_iphi][cal_ieta] = alpha_h*energy;
-      //cTPGH_ += alpha_h*energy;
-      //if (energy > 0) {
-      //std::cout << "hcal eta/phi=" << ieta << "/" << iphi
-      //<< " = (" << getEtaTPG(ieta) << "/" << getPhiTPG(iphi) << ") "
-      //<< " et=" << (*hcal)[i].SOI_compressedEt()
-      //<< " energy=" << energy
-      //<< " rctEta="<< twrEta2RegionEta(cal_ieta) << " rctPhi=" << twrPhi2RegionPhi(cal_iphi)
-      //<< " fg=" << (*hcal)[i].SOI_fineGrain() << std::endl;
-      //}
-      //if (energy>maxTPGHPt){
-      //maxTPGHPt=energy;
-      //maxTPGHPt_phi = cal_iphi; //this one starts at 0-72
-      //maxTPGHPt_eta = cal_ieta; //this one is 0-54
-      //}
-    }
-    //else
-      //std::cout<<"HCAL failed checks iphi "<<iphi<<" ieta "<<ieta<<std::endl;
-  }//end HCAL TPG
-}
-
-void L1TEventDisplayGenerator::endJob() {
-}
-
-L1TEventDisplayGenerator::~L1TEventDisplayGenerator(){
-}
-
-DEFINE_FWK_MODULE(L1TEventDisplayGenerator);
+DEFINE_FWK_MODULE(L1TCaloEGammaAnalyzer);
