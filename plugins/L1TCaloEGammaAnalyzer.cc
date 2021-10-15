@@ -77,6 +77,11 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("event",  &event,   "event/I");
     efficiencyTree->Branch("nvtx",   &nvtx,         "nvtx/I");
 
+    efficiencyTree->Branch("cPt",  &cPt,  "cPt/D");
+    efficiencyTree->Branch("cEta", &cEta, "cEta/D");
+    efficiencyTree->Branch("cPhi", &cPhi, "cPhi/D");
+    
+    
   }
 
 void L1TCaloEGammaAnalyzer::beginJob( const EventSetup & es) {
@@ -257,8 +262,61 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   else
     std::cout<<"Gen Particles size "<<genParticleHandle->size()<<std::endl;
   
+  std::vector<reco::GenParticle> genElectrons;
+  std::vector<reco::GenParticle> genParticles;
   
-  efficiencyTree->Fill();
+  for (unsigned int i = 0; i< genParticleHandle->size(); i++){
+    edm::Ptr<reco::GenParticle> ptr(genParticleHandle, i);
+    genParticles.push_back(*ptr);
+    
+    // Get gen electrons in barrel + overlap
+    if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
+      genElectrons.push_back(*ptr);
+      std::cout << "Added genElectron " << ptr->pt() << std::endl;
+    }
+  }
+
+  // Loop through the cluster 4-vectors and do deltaR matching
+  for (size_t i = 0; i < ecalClusters->size(); ++i) {
+
+    cPt  = 0;
+    cEta = -999;
+    cPhi = -999;
+
+    genPt  = 0;
+    genEta = -999;
+    genPhi = -999;
+
+    deltaR = -999;
+    
+    std::cout << "ecalClusters pT " << ecalClusters->at(i).Pt() 
+	      << " eta " << ecalClusters->at(i).Eta()
+	      << " phi " << ecalClusters->at(i).Phi() << std::endl;
+
+    cPt  = ecalClusters->at(i).Pt();
+    cEta = ecalClusters->at(i).Eta();
+    cPhi = ecalClusters->at(i).Phi();
+
+    // (*ecalClusters)[i].Phi()
+    for (auto genElectron : genElectrons) {
+      
+      if(( reco::deltaR(ecalClusters->at(i).Eta(), ecalClusters->at(i).Phi(), 
+			genElectron.eta(), genElectron.phi()) < 0.5 )) {
+	genPt = genElectron.pt();
+	genEta = genElectron.eta();
+	genPhi = genElectron.phi();
+	deltaR = reco::deltaR(ecalClusters->at(i).Eta(), ecalClusters->at(i).Phi(),  
+			      genElectron.eta(), genElectron.phi());
+	
+	std::cout << " matched  genElectron " << genElectron.pt()
+		  << " eta: " << genElectron.eta()
+		  << " phi: " << genElectron.phi() << std::endl;
+      }
+    }	 
+	 
+    efficiencyTree->Fill();
+  } // end of loop over clusters
+
  }
 
 void L1TCaloEGammaAnalyzer::endJob() {
