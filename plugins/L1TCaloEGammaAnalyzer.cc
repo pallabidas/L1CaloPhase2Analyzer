@@ -58,11 +58,14 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
-  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("clusters")))
-  {
+  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
+  genSrc_ (( cfg.getParameter<edm::InputTag>( "genParticles")))
+{
+  genToken_ =     consumes<std::vector<reco::GenParticle> >(genSrc_);
+
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
-
+    
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
     efficiencyTree->Branch("ecalClusters", "vector<TLorentzVector>", &ecalClusters, 32000, 0); 
     efficiencyTree->Branch("caloTowers",   "vector<TLorentzVector>", &caloTowers, 32000, 0);
@@ -247,6 +250,12 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     allHcalTPGs->push_back(temp);
   }
 
+  // Get genParticles
+  edm::Handle<GenParticleCollectionType> genParticleHandle;
+  if(!evt.getByToken(genToken_,genParticleHandle))
+    std::cout<<"No gen Particles Found "<<std::endl;
+  else
+    std::cout<<"Gen Particles size "<<genParticleHandle->size()<<std::endl;
   
   
   efficiencyTree->Fill();

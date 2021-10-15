@@ -178,6 +178,8 @@ int get5x5TPGs(const int maxTPGPt_eta,
 
   int nev_; // Number of events processed
   bool verbose_;
+  typedef std::vector<reco::GenParticle> GenParticleCollectionType;
+
   std::ofstream logFile_;
   edm::InputTag rctSource_; 
 
@@ -189,6 +191,8 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::ESHandle<HcalTopology> hbTopology;
   const HcalTopology* hcTopology_;
 
+
+  edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
   edm::EDGetTokenT<vector<pat::PackedCandidate> > packedPfCandsToken_;  
   edm::EDGetTokenT<vector<reco::PFCandidate> > pfCandsToken_;  
   edm::EDGetTokenT<L1CaloRegionCollection> L1RegionCollection;
@@ -213,7 +217,7 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<vector <L1CaloRegion> > regionSource_;
   edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> ecalClustersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> caloTowersSrc_;
-
+  edm::InputTag genSrc_;
   std::string folderName_;
   double recoPt_;
 
