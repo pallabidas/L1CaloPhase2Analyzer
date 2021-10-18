@@ -34,7 +34,7 @@ void applyPadStyle(TPad* pad1){
   pad1->Draw();  pad1->cd();  pad1->SetLeftMargin(0.2);  pad1->SetBottomMargin(0.13); pad1->SetRightMargin(0.1);
   pad1->SetTopMargin(0.1);
   //pad1->SetGrid(); 
-  pad1->SetGrid(10,10); 
+  //pad1->SetGrid(10,10); 
 }
 
 /* Apply legend style to a TLegend *leg. */
@@ -53,7 +53,7 @@ void applyLegStyle(TLegend *leg){
    The ROOT file is located at inputDirectory. The resulting plots are written to outputDirectory, with filename including "variable". The histogram has (bins)
    number of bins and ranges from integers low to high.
    "legend" is the legend label, "xLabel" is the x-axis label. */
-int singleDistributionPlots(TString variable, TString cut, TString legend, TString treePath, TString inputDirectory, TString outputDirectory,
+int singleDistributionPlots(TString name, TString variable, TString cut, TString legend, TString treePath, TString inputDirectory, TString outputDirectory,
 			    TString xLabel, int bins, float low, float high){ 
  
   gROOT->LoadMacro("/Users/stephaniekwan/Documents/Phase2L1Calo/phase2-l1Calo-analyzer/figures/baseCodeForPlots/CMS_lumi.C");
@@ -89,11 +89,11 @@ int singleDistributionPlots(TString variable, TString cut, TString legend, TStri
     return 0;
   }
  
-  TH1F *hist = new TH1F("hist","hist", bins,low,high);
+  TH1F *hist = new TH1F("hist","hist", bins,low, high);
   tree->Draw(variable+">>+hist", cut);
 
   hist->SetMarkerColor(0);
-  hist->SetLineWidth(4);
+  hist->SetLineWidth(2);
   hist->SetLineColor(kBlack);
 
   hist->Scale(1/hist->Integral());
@@ -104,25 +104,36 @@ int singleDistributionPlots(TString variable, TString cut, TString legend, TStri
   
   hist->GetXaxis()->SetTitle(xLabel);
   hist->GetXaxis()->SetLabelSize(0.04);
+  hist->GetXaxis()->SetNdivisions(-505);
 
 
   hist->GetYaxis()->SetTitle("Events_{bin}/Events_{tot}");
   hist->GetYaxis()->SetLabelSize(0.04);
+  hist->GetYaxis()->SetNdivisions(505, kTRUE);
 
   // Features specific to this analyzer: if the plot is deltaR, draw a line at the y = crystalSize
   float crystalSize = 0.01746;
   if (variable == "deltaR") {
 
-    TLine *line = new TLine(crystalSize, 0, crystalSize, hist->GetMaximum());
+    TLine *line = new TLine(crystalSize, 0, crystalSize, 1.05 * hist->GetMaximum());
     line->SetLineColor(kRed);
     line->SetLineStyle(kDashed);
     line->SetLineWidth(5);
     line->Draw();
 
-
+    TLatex *l = new TLatex(); 
+    l->SetNDC();
+    l->SetTextFont(42);
+    l->SetTextColor(kRed);
+    l->DrawLatex(0.25, 0.720, "#scale[0.8]{Crystal size}");
+    Tcan->Update();
   }
 
-  // //  leg->AddEntry(hist,"#tau_{h} Gen-Vis p_{T}>20 GeV","l");
+  // For eta distribution, give more room at the top
+  if ((variable == "cEta") || (variable == "genEta") || (variable == "cPhi") || (variable == "genPhi") || (variable=="pT_fractional_diff")) {
+    float max = hist->GetMaximum();
+    hist->SetMaximum(max * 1.5);
+  }
 
 
   // // leg->AddEntry(hist, legend,"l");
@@ -131,15 +142,24 @@ int singleDistributionPlots(TString variable, TString cut, TString legend, TStri
   Tcan->cd();
  
 
+
   TLatex *latex = new TLatex(); 
   latex->SetNDC();
   latex->SetTextFont(42);
   latex->SetTextColor(kBlack);
-  latex->DrawLatex(0.19, 0.920, "#scale[1.2]{#bf{CMS}} #it{Preliminary}");
+  latex->DrawLatex(0.19, 0.920, "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}");
+
+  float commentaryXpos = 0.47;
+  latex->DrawLatex(0.80, 0.920, "#scale[0.8]{0 PU}");
+  latex->DrawLatex(commentaryXpos, 0.820, "#scale[0.6]{EG Barrel}");
+  latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
+  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{No ECAL propagation,}");
+  latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
+
   Tcan->Update();
 
-  Tcan->SaveAs(outputDirectory+variable+".png");
-  Tcan->SaveAs(outputDirectory+variable+".pdf");
+  Tcan->SaveAs(outputDirectory+name+".png");
+  Tcan->SaveAs(outputDirectory+name+".pdf");
  
   delete Tcan;
 

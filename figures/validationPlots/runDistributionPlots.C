@@ -16,14 +16,18 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
 
   TString cut = "";
 
-  int nBins = 50;
-  singleDistributionPlots("deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "#DeltaR (L1, Gen)", nBins, 0, 0.5);
+  int nBins = 35;
+  singleDistributionPlots("deltaR", "deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "#DeltaR (L1, Gen)", nBins, 0, 0.5);
+  singleDistributionPlots("pT_fractional_diff", "(cPt - genPt)/(genPt)", cut, legend, treePath, inputDirectory, outputDirectory,
+                          "(p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", nBins, -1.5, 1.5);
 
+  singleDistributionPlots("cPt",  "cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "Cluster p_{T}", nBins, 0, 100);
+  singleDistributionPlots("cPhi", "cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "Cluster #phi", nBins, -3.2, 3.2);
+  singleDistributionPlots("cEta", "cEta", cut, legend, treePath, inputDirectory, outputDirectory, "Cluster #eta", nBins, -1.5, 1.5);
 
-  // singleDistributionPlots("pt_2", cut, legend, treePath, inputDirectory, outputDirectory, "#tau_{h} p_{T}", nBins, 15, 150);
-  // singleDistributionPlots("eta_2", cut, legend, treePath, inputDirectory, outputDirectory, "#tau_{h} #eta", nBins, -3, 3);
-  // singleDistributionPlots("phi_2", cut, legend, treePath, inputDirectory, outputDirectory, "#tau_{h} #phi", nBins, -4, 4);
-
+  singleDistributionPlots("genPt",  "genPt",  cut, legend, treePath, inputDirectory, outputDirectory, "Gen EG p_{T}", nBins, 0, 100);
+  singleDistributionPlots("genPhi", "genPhi", cut, legend, treePath, inputDirectory, outputDirectory, "Gen EG #phi", nBins, -3.2, 3.2);
+  singleDistributionPlots("genEta", "genEta", cut, legend, treePath, inputDirectory, outputDirectory, "Gen EG #eta", nBins, -1.5, 1.5);
   
 
   
