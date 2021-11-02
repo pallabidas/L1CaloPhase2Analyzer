@@ -57,8 +57,10 @@ using std::vector;
 L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
-  ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
-  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
+  rctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
+  gctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("gctClusters"))),
+  rctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
+ gctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("gctClusters"))),
   genSrc_ (( cfg.getParameter<edm::InputTag>( "genParticles")))
 {
   genToken_ =     consumes<std::vector<reco::GenParticle> >(genSrc_);
@@ -67,10 +69,13 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
     
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
-    efficiencyTree->Branch("ecalClusters", "vector<TLorentzVector>", &ecalClusters, 32000, 0); 
-    efficiencyTree->Branch("caloTowers",   "vector<TLorentzVector>", &caloTowers, 32000, 0);
+    efficiencyTree->Branch("rctClusters", "vector<TLorentzVector>", &rctClusters, 32000, 0); 
+    efficiencyTree->Branch("rctTowers",   "vector<TLorentzVector>", &rctTowers, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
+
+    efficiencyTree->Branch("gctClusters", "vector<TLorentzVector>", &gctClusters, 32000, 0);
+    efficiencyTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
     
     efficiencyTree->Branch("run",    &run,     "run/I");
     efficiencyTree->Branch("lumi",   &lumi,    "lumi/I");
@@ -81,6 +86,11 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("cEta", &cEta, "cEta/D");
     efficiencyTree->Branch("cPhi", &cPhi, "cPhi/D");
     
+    efficiencyTree->Branch("genPt",  &genPt,  "genPt/D");
+    efficiencyTree->Branch("genEta", &genEta, "genEta/D");
+    efficiencyTree->Branch("genPhi", &genPhi, "genPhi/D");
+
+    efficiencyTree->Branch("deltaR", &deltaR, "deltaR/D");
     
   }
 
@@ -94,15 +104,15 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   lumi = evt.id().luminosityBlock();
   event = evt.id().event();
 
-  edm::Handle<l1tp2::CaloCrystalClusterCollection> caloCrystalClusters;
-  edm::Handle<l1tp2::CaloTowerCollection> caloL1Towers;
+  edm::Handle<l1tp2::CaloCrystalClusterCollection> rctCaloCrystalClusters;
+  edm::Handle<l1tp2::CaloTowerCollection> rctCaloL1Towers;
   
   edm::Handle<EcalEBTrigPrimDigiCollection> ecalTPGs;
   edm::Handle<HcalTrigPrimDigiCollection> hcalTPGs;  
   edm::Handle<edm::SortedCollection<HcalTriggerPrimitiveDigi> > hbhecoll;
  
-  ecalClusters->clear(); 
-  caloTowers->clear();
+  rctClusters->clear(); 
+  rctTowers->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
 
@@ -115,41 +125,55 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   es.get<CaloTPGRecord>().get(decoder_);
 
-  // Get the ECAL clusters
-  if(evt.getByToken(ecalClustersSrc_, caloCrystalClusters)){
-    for(const auto & caloCluster : *caloCrystalClusters){
-      //    for( vector<l1tp2::CaloCrystalClusterCollection>::const_iterator caloCluster = caloCrystalClusters->begin(); 
-      //	 caloCluster != caloCrystalClusters->end(); 
-      //	 caloCluster++ ) {
+  // Get the RCT clusters from the emulator
+  if(evt.getByToken(rctClustersSrc_, rctCaloCrystalClusters)){
+    for(const auto & rctCluster : *rctCaloCrystalClusters){
+      //    for( vector<l1tp2::CaloCrystalClusterCollection>::const_iterator rctCluster = caloCrystalClusters->begin(); 
+      //	 rctCluster != caloCrystalClusters->end(); 
+      //	 rctCluster++ ) {
       //fill vector
       TLorentzVector temp ;
-      std::cout << "Cluster found: pT " << caloCluster.pt()  << ", "
-		<< "eta "               << caloCluster.eta() << ", "
-		<< "phi "               << caloCluster.phi() << std::endl;
-      temp.SetPtEtaPhiE(caloCluster.pt(),caloCluster.eta(),caloCluster.phi(),caloCluster.pt());
-      ecalClusters->push_back(temp);
+      std::cout << "RCT Cluster found: pT " << rctCluster.pt()  << ", "
+		<< "eta "               << rctCluster.eta() << ", "
+		<< "phi "               << rctCluster.phi() << std::endl;
+      temp.SetPtEtaPhiE(rctCluster.pt(),rctCluster.eta(),rctCluster.phi(),rctCluster.pt());
+      rctClusters->push_back(temp);
     }
   }
 
-  // Get the Calo towers
-  if(evt.getByToken(caloTowersSrc_, caloL1Towers)) {
-    for (const auto & caloTower : *caloL1Towers){
+  // Get the RCT towers from the emulator
+  if(evt.getByToken(rctTowersSrc_, rctCaloL1Towers)) {
+    for (const auto & rctTower : *rctCaloL1Towers){
       TLorentzVector temp;
-      float totalEt = caloTower.ecalTowerEt() + caloTower.hcalTowerEt();
+      float totalEt = rctTower.ecalTowerEt() + rctTower.hcalTowerEt();
       if (totalEt > 0) {
-	std::cout << "Tower found: ECAL ET " << caloTower.ecalTowerEt()  << ", "
-		  << "HCAL ET " << caloTower.hcalTowerEt()  << ", "
-		  << "iEta, iPhi " << caloTower.towerIEta() << " " << caloTower.towerIPhi() << ", "
-		  << "eta "             << caloTower.towerEta() << ", "
-		  << "phi "             << caloTower.towerPhi() << std::endl;
+	// std::cout << "Tower found: ECAL ET " << rctTower.ecalTowerEt()  << ", "
+	// 	  << "HCAL ET " << rctTower.hcalTowerEt()  << ", "
+	// 	  << "iEta, iPhi " << rctTower.towerIEta() << " " << rctTower.towerIPhi() << ", "
+	// 	  << "eta "             << rctTower.towerEta() << ", "
+	// 	  << "phi "             << rctTower.towerPhi() << std::endl;
 	temp.SetPtEtaPhiE(totalEt,
-			  caloTower.towerEta(), caloTower.towerPhi(),
+			  rctTower.towerEta(), rctTower.towerPhi(),
 			  totalEt);
-	caloTowers->push_back(temp);
+	rctTowers->push_back(temp);
       }
     }
   }
+  
+  // Get the GCT clusters from the emulator                                            
+  if(evt.getByToken(gctClustersSrc_, gctCaloCrystalClusters)){
+    for(const auto & gctCluster : *gctCaloCrystalClusters){
+      //fill vector                                                                             
+      TLorentzVector temp ;
+      std::cout << "GCT Cluster found: pT " << gctCluster.pt()  << ", "
+                << "eta "               << gctCluster.eta() << ", "
+                << "phi "               << gctCluster.phi() << std::endl;
+      temp.SetPtEtaPhiE(gctCluster.pt(),gctCluster.eta(),gctCluster.phi(),gctCluster.pt());
+      gctClusters->push_back(temp);
+    }
+  }
 
+  // get the ECAL inputs (i.e. ECAL crystals)
   if(!evt.getByToken(ecalSrc_, ecalTPGs))
     std::cout<<"ERROR GETTING THE ECAL TPGS"<<std::endl;
   else
@@ -277,7 +301,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   }
 
   // Loop through the cluster 4-vectors and do deltaR matching
-  for (size_t i = 0; i < ecalClusters->size(); ++i) {
+  for (size_t i = 0; i < rctClusters->size(); ++i) {
 
     cPt  = 0;
     cEta = -999;
@@ -287,33 +311,39 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     genEta = -999;
     genPhi = -999;
 
-    deltaR = -999;
+    deltaR = 999;
     
-    std::cout << "ecalClusters pT " << ecalClusters->at(i).Pt() 
-	      << " eta " << ecalClusters->at(i).Eta()
-	      << " phi " << ecalClusters->at(i).Phi() << std::endl;
+    std::cout << "rctClusters pT " << rctClusters->at(i).Pt() 
+	      << " eta " << rctClusters->at(i).Eta()
+	      << " phi " << rctClusters->at(i).Phi() << std::endl;
 
-    cPt  = ecalClusters->at(i).Pt();
-    cEta = ecalClusters->at(i).Eta();
-    cPhi = ecalClusters->at(i).Phi();
+    cPt  = rctClusters->at(i).Pt();
+    cEta = rctClusters->at(i).Eta();
+    cPhi = rctClusters->at(i).Phi();
 
-    // (*ecalClusters)[i].Phi()
+    // (*rctClusters)[i].Phi()
     for (auto genElectron : genElectrons) {
-      
-      if(( reco::deltaR(ecalClusters->at(i).Eta(), ecalClusters->at(i).Phi(), 
-			genElectron.eta(), genElectron.phi()) < 0.5 )) {
+
+      float thisdeltaR = reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(),
+				      genElectron.eta(), genElectron.phi());
+      std::cout << "Comparing "<< thisdeltaR << " to current deltaR " << deltaR << std::endl;
+
+      //      if(( reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(), 
+      //			genElectron.eta(), genElectron.phi()) < 0.5 )) {
+      if (thisdeltaR < deltaR) {
 	genPt = genElectron.pt();
 	genEta = genElectron.eta();
 	genPhi = genElectron.phi();
-	deltaR = reco::deltaR(ecalClusters->at(i).Eta(), ecalClusters->at(i).Phi(),  
-			      genElectron.eta(), genElectron.phi());
-	
-	std::cout << " matched  genElectron " << genElectron.pt()
-		  << " eta: " << genElectron.eta()
-		  << " phi: " << genElectron.phi() << std::endl;
+	deltaR = thisdeltaR;
       }
     }	 
-	 
+    std::cout << "Matched cluster " << cPt 
+	      << " eta: " << cEta
+	      << " phi: " << cPhi
+	      << " with genElectron " << genPt
+	      << " eta: " << genEta
+	      << " phi: " << genPhi << std::endl;
+      
     efficiencyTree->Fill();
   } // end of loop over clusters
 

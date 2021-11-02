@@ -112,8 +112,11 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   std::vector<double> *recoJetsDr  = new std::vector<double>;
 
   // Outputs of the emulator
-  std::vector<TLorentzVector> *ecalClusters  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *caloTowers    = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *rctClusters  = new std::vector<TLorentzVector>; 
+  std::vector<TLorentzVector> *rctTowers    = new std::vector<TLorentzVector>;
+
+  std::vector<TLorentzVector> *gctClusters  = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *gctTowers    = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -219,8 +222,10 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<vector <l1extra::L1JetParticle> > l1ExtraJetSource_;
   std::vector< edm::EDGetTokenT<l1t::TauBxCollection> > stage2TauSource_;
   edm::EDGetTokenT<vector <L1CaloRegion> > regionSource_;
-  edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> ecalClustersSrc_;
-  edm::EDGetTokenT<l1tp2::CaloTowerCollection> caloTowersSrc_;
+  edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> rctClustersSrc_;
+  edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> gctClustersSrc_;
+  edm::EDGetTokenT<l1tp2::CaloTowerCollection> rctTowersSrc_;
+  edm::EDGetTokenT<l1tp2::CaloTowerCollection> gctTowersSrc_;
   edm::InputTag genSrc_;
   std::string folderName_;
   double recoPt_;
