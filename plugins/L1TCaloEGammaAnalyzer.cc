@@ -82,15 +82,27 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("event",  &event,   "event/I");
     efficiencyTree->Branch("nvtx",   &nvtx,         "nvtx/I");
 
-    efficiencyTree->Branch("cPt",  &cPt,  "cPt/D");
-    efficiencyTree->Branch("cEta", &cEta, "cEta/D");
-    efficiencyTree->Branch("cPhi", &cPhi, "cPhi/D");
+    // RCT emulator clusters and their matched gen electrons
+    efficiencyTree->Branch("rct_cPt",  &rct_cPt,  "rct_cPt/D");
+    efficiencyTree->Branch("rct_cEta", &rct_cEta, "rct_cEta/D");
+    efficiencyTree->Branch("rct_cPhi", &rct_cPhi, "rct_cPhi/D");
     
-    efficiencyTree->Branch("genPt",  &genPt,  "genPt/D");
-    efficiencyTree->Branch("genEta", &genEta, "genEta/D");
-    efficiencyTree->Branch("genPhi", &genPhi, "genPhi/D");
+    efficiencyTree->Branch("rct_genPt",  &rct_genPt,  "rct_genPt/D");
+    efficiencyTree->Branch("rct_genEta", &rct_genEta, "rct_genEta/D");
+    efficiencyTree->Branch("rct_genPhi", &rct_genPhi, "rct_genPhi/D");
 
-    efficiencyTree->Branch("deltaR", &deltaR, "deltaR/D");
+    efficiencyTree->Branch("rct_deltaR", &rct_deltaR, "rct_deltaR/D");
+
+    // GCT emulator clusters etc.
+    efficiencyTree->Branch("gct_cPt",  &gct_cPt,  "gct_cPt/D");
+    efficiencyTree->Branch("gct_cEta", &gct_cEta, "gct_cEta/D");
+    efficiencyTree->Branch("gct_cPhi", &gct_cPhi, "gct_cPhi/D");
+
+    efficiencyTree->Branch("gct_genPt",  &gct_genPt,  "gct_genPt/D");
+    efficiencyTree->Branch("gct_genEta", &gct_genEta, "gct_genEta/D");
+    efficiencyTree->Branch("gct_genPhi", &gct_genPhi, "gct_genPhi/D");
+
+    efficiencyTree->Branch("gct_deltaR", &gct_deltaR, "gct_deltaR/D");
     
   }
 
@@ -107,12 +119,17 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   edm::Handle<l1tp2::CaloCrystalClusterCollection> rctCaloCrystalClusters;
   edm::Handle<l1tp2::CaloTowerCollection> rctCaloL1Towers;
   
+  edm::Handle<l1tp2::CaloCrystalClusterCollection> gctCaloCrystalClusters;
+  edm::Handle<l1tp2::CaloTowerCollection> gctCaloL1Towers;
+  
   edm::Handle<EcalEBTrigPrimDigiCollection> ecalTPGs;
   edm::Handle<HcalTrigPrimDigiCollection> hcalTPGs;  
   edm::Handle<edm::SortedCollection<HcalTriggerPrimitiveDigi> > hbhecoll;
  
   rctClusters->clear(); 
   rctTowers->clear();
+  gctClusters->clear();
+  gctTowers->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
 
@@ -125,7 +142,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   es.get<CaloTPGRecord>().get(decoder_);
 
-  // Get the RCT clusters from the emulator
+  // Get the RCT clusters from the emulator and sort them by pT
   if(evt.getByToken(rctClustersSrc_, rctCaloCrystalClusters)){
     for(const auto & rctCluster : *rctCaloCrystalClusters){
       //    for( vector<l1tp2::CaloCrystalClusterCollection>::const_iterator rctCluster = caloCrystalClusters->begin(); 
@@ -134,14 +151,15 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       //fill vector
       TLorentzVector temp ;
       std::cout << "RCT Cluster found: pT " << rctCluster.pt()  << ", "
-		<< "eta "               << rctCluster.eta() << ", "
-		<< "phi "               << rctCluster.phi() << std::endl;
+		<< "eta "                   << rctCluster.eta() << ", "
+		<< "phi "                   << rctCluster.phi() << std::endl;
       temp.SetPtEtaPhiE(rctCluster.pt(),rctCluster.eta(),rctCluster.phi(),rctCluster.pt());
       rctClusters->push_back(temp);
     }
   }
+  std::sort(rctClusters->begin(), rctClusters->end(), L1TCaloEGammaAnalyzer::comparePt);
 
-  // Get the RCT towers from the emulator
+  // Get the RCT towers from the emulator 
   if(evt.getByToken(rctTowersSrc_, rctCaloL1Towers)) {
     for (const auto & rctTower : *rctCaloL1Towers){
       TLorentzVector temp;
@@ -160,7 +178,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     }
   }
   
-  // Get the GCT clusters from the emulator                                            
+  // Get the GCT clusters from the emulator, and sort them by pT
   if(evt.getByToken(gctClustersSrc_, gctCaloCrystalClusters)){
     for(const auto & gctCluster : *gctCaloCrystalClusters){
       //fill vector                                                                             
@@ -172,6 +190,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       gctClusters->push_back(temp);
     }
   }
+  std::sort(gctClusters->begin(), gctClusters->end(), L1TCaloEGammaAnalyzer::comparePt);
 
   // get the ECAL inputs (i.e. ECAL crystals)
   if(!evt.getByToken(ecalSrc_, ecalTPGs))
@@ -279,7 +298,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     allHcalTPGs->push_back(temp);
   }
 
-  // Get genParticles
+  // Get genParticles and build a vector of genElectrons
   edm::Handle<GenParticleCollectionType> genParticleHandle;
   if(!evt.getByToken(genToken_,genParticleHandle))
     std::cout<<"No gen Particles Found "<<std::endl;
@@ -300,54 +319,138 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     }
   }
 
-  // Loop through the cluster 4-vectors and do deltaR matching
+  // Keep track of which genElectrons are already matched to a RCT cluster, and to a GCT cluster
+  // 0 if false, 1 if true
+  int isGenEleMatchedToRCT[genElectrons.size()] = {0};
+  int isGenEleMatchedToGCT[genElectrons.size()] = {0};
+
+  //************************************************************************************/ 
+  // Loop through the RCT cluster 4-vectors, and gen-match. If multiple RCT clusters
+  // satisfy the deltaR criterion for a single gen electron, only match the highest pT
+  // cluster, and the rejected clusters will have genEta = -999 (and all default values for gen*).
+  //************************************************************************************/ 
   for (size_t i = 0; i < rctClusters->size(); ++i) {
 
-    cPt  = 0;
-    cEta = -999;
-    cPhi = -999;
-
-    genPt  = 0;
-    genEta = -999;
-    genPhi = -999;
-
-    deltaR = 999;
+    rct_cPt    = 0;    rct_cEta   = -999;    rct_cPhi   = -999;
+    rct_genPt  = 0;    rct_genEta = -999;    rct_genPhi = -999;
+    rct_deltaR = 999;
     
     std::cout << "rctClusters pT " << rctClusters->at(i).Pt() 
 	      << " eta " << rctClusters->at(i).Eta()
 	      << " phi " << rctClusters->at(i).Phi() << std::endl;
 
-    cPt  = rctClusters->at(i).Pt();
-    cEta = rctClusters->at(i).Eta();
-    cPhi = rctClusters->at(i).Phi();
+    rct_cPt  = rctClusters->at(i).Pt();
+    rct_cEta = rctClusters->at(i).Eta();
+    rct_cPhi = rctClusters->at(i).Phi();
 
-    // (*rctClusters)[i].Phi()
+    int thisGenEle = 0;  // counter for current gen electron
+    int lastGenEle = 0;  // the last gen electron to have been matched
     for (auto genElectron : genElectrons) {
-
-      float thisdeltaR = reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(),
+      float this_rct_deltaR = reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(),
 				      genElectron.eta(), genElectron.phi());
-      std::cout << "Comparing "<< thisdeltaR << " to current deltaR " << deltaR << std::endl;
-
-      //      if(( reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(), 
-      //			genElectron.eta(), genElectron.phi()) < 0.5 )) {
-      if (thisdeltaR < deltaR) {
-	genPt = genElectron.pt();
-	genEta = genElectron.eta();
-	genPhi = genElectron.phi();
-	deltaR = thisdeltaR;
+      std::cout << "   Comparing "<< this_rct_deltaR << " to current rct_deltaR " << rct_deltaR << std::endl;
+      // If this rct_deltaR is the smallest one so far and this gen electron has not been already matched
+      if ((this_rct_deltaR < rct_deltaR) && (isGenEleMatchedToRCT[thisGenEle] == 0)) {
+	rct_genPt = genElectron.pt();
+	rct_genEta = genElectron.eta();
+	rct_genPhi = genElectron.phi();
+	rct_deltaR = this_rct_deltaR;
+	lastGenEle = thisGenEle;
       }
-    }	 
-    std::cout << "Matched cluster " << cPt 
-	      << " eta: " << cEta
-	      << " phi: " << cPhi
-	      << " with genElectron " << genPt
-	      << " eta: " << genEta
-	      << " phi: " << genPhi << std::endl;
+      // Increment our counter as we loop through the gen electrons
+      thisGenEle += 1;
+    }
+
+    // Modify our record of whether this gen electron was matched (the record persists as we
+    // loop through the RCT clusters)
+    std::cout << "   Mark this gen electron as matched, set isGenEleMatchedToRCT to 1 at element "\
+	      << lastGenEle << std::endl;
+    isGenEleMatchedToRCT[lastGenEle] = 1;
+      
+
+    // n.b. if a cluster was never matched, its rct_cPt will be zero, rct_cEta will be 999 (all default)
+    if (rct_cPt > 0) {
+      std::cout << "--> Matched cluster " << rct_cPt 
+		<< " eta: " << rct_cEta
+		<< " phi: " << rct_cPhi
+		<< " with genElectron " << rct_genPt
+		<< " eta: " << rct_genEta
+		<< " phi: " << rct_genPhi << std::endl;
+    }
+    else {
+      std::cout << "--> No genElectron matched" << std::endl;
+    }
       
     efficiencyTree->Fill();
-  } // end of loop over clusters
+  } // end of loop over RCT clusters
 
+  
+  //************************************************************************************/
+  // Loop through the GCT cluster 4-vectors, and gen-match. If multiple GCT clusters
+  // satisfy the deltaR criterion for a single gen electron, only match the highest pT
+  // cluster, and the rejected clusters will have genEta = -999 (and all default values for gen*).
+  //************************************************************************************/ 
+  std::cout << ">>> Doing GCT clusters..." << std::endl;
+  for (size_t i = 0; i < gctClusters->size(); ++i) {
+
+    gct_cPt    = 0;    gct_cEta   = -999;   gct_cPhi  = -999;
+    gct_genPt  = 0;    gct_genEta = -999;   gct_genPhi = -999;
+    gct_deltaR = 999;
+    
+    std::cout << " gctClusters pT " << gctClusters->at(i).Pt() 
+	      << " eta " << gctClusters->at(i).Eta()
+	      << " phi " << gctClusters->at(i).Phi() << std::endl;
+
+    gct_cPt  = gctClusters->at(i).Pt();
+    gct_cEta = gctClusters->at(i).Eta();
+    gct_cPhi = gctClusters->at(i).Phi();
+
+    int thisGenEle = 0;  // counter for current gen electron
+    int lastGenEle = 0;  // the last gen electron to have been matched
+    for (auto genElectron : genElectrons) {
+      float this_gct_deltaR = reco::deltaR(gctClusters->at(i).Eta(), gctClusters->at(i).Phi(),
+					   genElectron.eta(), genElectron.phi());
+      std::cout << "     Comparing "<< this_gct_deltaR << " to current gct_deltaR " << gct_deltaR << std::endl;
+      // If this gct_deltaR is the smallest one so far and this gen electron has not been already matched
+      if ((this_gct_deltaR < gct_deltaR) && (isGenEleMatchedToGCT[thisGenEle] == 0)) {
+	gct_genPt = genElectron.pt();
+	gct_genEta = genElectron.eta();
+	gct_genPhi = genElectron.phi();
+	gct_deltaR = this_gct_deltaR;
+	lastGenEle = thisGenEle;
+      }
+      // Increment our counter as we loop through the gen electrons
+      thisGenEle += 1;
+    }
+
+    // Modify our record of whether this gen electron was matched (the record persists as we
+    // loop through the GCT clusters)
+    std::cout << "   Mark this gen electron as matched, set isGenEleMatchedToGCT to 1 at element "\
+	      << lastGenEle << std::endl;
+    isGenEleMatchedToGCT[lastGenEle] = 1;
+      
+
+    // n.b. if a cluster was never matched, its gct_cPt will be zero, gct_cEta will be 999 (all default)
+    if (gct_cPt > 0.0) {
+      std::cout << "  --> Matched cluster " << gct_cPt 
+		<< " eta: " << gct_cEta
+		<< " phi: " << gct_cPhi
+		<< " with genElectron " << gct_genPt
+		<< " eta: " << gct_genEta
+		<< " phi: " << gct_genPhi << std::endl;
+    }
+    else {
+      std::cout << "--> No genElectron matched" << std::endl;
+    }
+      
+    efficiencyTree->Fill();
+  } // end of loop over GCT clusters
+  
+  
+
+  
  }
+
 
 void L1TCaloEGammaAnalyzer::endJob() {
 }

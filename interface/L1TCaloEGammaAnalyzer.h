@@ -132,9 +132,13 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   TTree* efficiencyTree;
 
   int run, lumi, event;
-  double cPt, cEta, cPhi;
-  double genPt, genEta, genPhi;
-  double deltaR;
+  double rct_cPt, rct_cEta, rct_cPhi;
+  double rct_genPt, rct_genEta, rct_genPhi;
+  double rct_deltaR;
+
+  double gct_cPt, gct_cEta, gct_cPhi;
+  double gct_genPt, gct_genEta, gct_genPhi;
+  double gct_deltaR;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;
@@ -426,6 +430,11 @@ int get5x5TPGs(const int maxTPGPt_eta,
     for(int i = 0; i <73; i++){
       tpgPhiMap[i] = convertGenPhi(i);
     }
+  }
+
+  static bool comparePt(const TLorentzVector& lhs,
+			const TLorentzVector& rhs) {
+    return ( lhs.Pt() > rhs.Pt() );
   }
 
 };

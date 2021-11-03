@@ -8,7 +8,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Dataset: 
 #   /RelValElectronGunPt2To100/CMSSW_10_6_0_patch2-106X_upgrade2023_realistic_v3_2023D41noPU-v1/GEN-SIM-DIGI-RAW
@@ -51,7 +51,7 @@ process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.l1N
 
 # output file
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('L1EventDisplay.root')
+    fileName = cms.string('analyzer.root')
 )
 
 process.Out = cms.OutputModule( "PoolOutputModule",
