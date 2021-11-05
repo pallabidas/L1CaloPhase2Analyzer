@@ -132,12 +132,11 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   TTree* efficiencyTree;
 
   int run, lumi, event;
+  double genPt, genEta, genPhi;
   double rct_cPt, rct_cEta, rct_cPhi;
-  double rct_genPt, rct_genEta, rct_genPhi;
   double rct_deltaR;
 
   double gct_cPt, gct_cEta, gct_cPhi;
-  double gct_genPt, gct_genEta, gct_genPhi;
   double gct_deltaR;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
