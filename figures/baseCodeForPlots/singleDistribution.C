@@ -49,12 +49,22 @@ void applyLegStyle(TLegend *leg){
 }
  
 /* Generate a single distribution plot.
-   treePath specifies the tree in the ROOT file to use.
-   The ROOT file is located at inputDirectory. The resulting plots are written to outputDirectory, with filename including "variable". The histogram has (bins)
-   number of bins and ranges from integers low to high.
-   "legend" is the legend label, "xLabel" is the x-axis label. */
-int singleDistributionPlots(TString name, TString variable, TString cut, TString legend, TString treePath, TString inputDirectory, TString outputDirectory,
-			    TString xLabel, int bins, float low, float high){ 
+   name: name of the output .png/.pdf
+   variable: the string that will be passed to TTree->Draw()
+   cut: baseline cut
+   legend: legend on the x-axis (usually a description of the variable), LaTeX allowed
+   treePath: path to the TTree inside the ROOT file, e.g. folderName/efficiencyTree
+   inputDirectory: relative/absolute path to the ROOT file
+   outputDirectory: relative/absolute path to the folder where .pngs and .pdfs will be written
+   bins: number of bins in the histo
+   low: min x-range
+   high: max x-range
+   ymax: if non-zero positive value, histogram will be capped at this max value on the y-axis
+         (start with a -99 dummy value, then adjust/fine tune when you know what it will look like)
+   */
+int singleDistributionPlots(TString name, TString variable, TString cut, TString legend,
+                            TString treePath, TString inputDirectory, TString outputDirectory,
+			                      TString xLabel, int bins, float low, float high, float ymax){ 
  
   gROOT->LoadMacro("/Users/stephaniekwan/Documents/Phase2L1Calo/phase2-l1Calo-analyzer/figures/baseCodeForPlots/CMS_lumi.C");
   //gROOT->ProcessLine(".L ~/Documents/work/Analysis/PhaseIIStudies/2018/tdrstyle.C");
@@ -111,9 +121,9 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   hist->GetYaxis()->SetLabelSize(0.04);
   hist->GetYaxis()->SetNdivisions(505, kTRUE);
 
-  // Features specific to this analyzer: if the plot is deltaR, draw a line at the y = crystalSize
+  // Features specific to this analyzer: if the plot is rct_deltaR, draw a line at the y = crystalSize
   float crystalSize = 0.01746;
-  if (variable == "deltaR") {
+  if (variable.Contains("deltaR")) {
 
     TLine *line = new TLine(crystalSize, 0, crystalSize, 1.05 * hist->GetMaximum());
     line->SetLineColor(kRed);
@@ -129,10 +139,14 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
     Tcan->Update();
   }
 
-  // For eta distribution, give more room at the top
-  if ((variable == "cEta") || (variable == "genEta") || (variable == "cPhi") || (variable == "genPhi") || (variable=="pT_fractional_diff")) {
-    float max = hist->GetMaximum();
+  // Finicky ymax values
+  // For specific distributions, give more room at the top
+  if (variable.Contains("Eta") || variable.Contains("Phi") || variable.Contains("pT_fractional_diff")) {  
+    float max = hist->GetMaximum(); 
     hist->SetMaximum(max * 1.5);
+  }
+  if (ymax > 0) {
+    hist->SetMaximum(ymax);
   }
 
 
@@ -147,13 +161,21 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   latex->SetNDC();
   latex->SetTextFont(42);
   latex->SetTextColor(kBlack);
-  latex->DrawLatex(0.19, 0.920, "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}");
+
+  // Default to RCT label, use GCT if not
+  TString emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 GCT emulator}}";  
+  if (variable.Contains("rct")) {
+    emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}";  
+  }
+  latex->DrawLatex(0.19, 0.920, emuLabel);  
+  // latex->DrawLatex(0.19, 0.920, "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}"); 
+
 
   float commentaryXpos = 0.47;
   latex->DrawLatex(0.80, 0.920, "#scale[0.8]{0 PU}");
   latex->DrawLatex(commentaryXpos, 0.820, "#scale[0.6]{EG Barrel}");
   latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
-  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{No ECAL propagation,}");
+  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
   latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
 
   Tcan->Update();
