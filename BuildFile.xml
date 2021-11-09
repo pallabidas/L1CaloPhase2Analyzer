@@ -4,13 +4,14 @@
 
 <use name="DataFormats/Math"/>
 
-<use   name="CommonTools/Utils"/>
+<use name="CommonTools/Utils"/>
+<use name="CommonTools/BaseParticlePropagator"/>
 
-<use   name="roottmva"/>
+<use name="roottmva"/>
 
 
-<use   name="hls"/>
-<use   name="clhep"/>
+<use name="hls"/>
+<use name="clhep"/>
 
 <export> 
   <lib   name="1"/>
