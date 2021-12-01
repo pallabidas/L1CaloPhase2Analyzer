@@ -2,6 +2,7 @@
 // Create plots of variables from a TTree
 
 #include "../baseCodeForPlots/singleDistribution.C"
+#include "../baseCodeForPlots/scatterPlot.cpp"
 
 void runDistributionPlots(TString sampleName, TString legend, TString inputDirectory)
 {
@@ -15,39 +16,66 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
   gSystem->Exec("mkdir -p " + outputDirectory);
 
   TString cut = "(genPt > 0)";  
+  TString defaultBonusDescriptor = "";
 
   int nBins = 35;
 
   float ymaxDummyValue = -99;
-  float ymaxPtDiff = 0.8;
-  float ymaxDeltaR = 0.8;
-  float ymaxPt = 0.14;
+  float ymaxPtDiff = 0.7;
+  float ymaxDeltaR = 0.3;
+  float ymaxPt = 0.06;
   float ymaxPhi = 0.05;
 
+  // // Troubleshooting:
+  // // 
+  // TString poorMatchCut = "(gct_cPt - genPt)/(genPt) < -0.6";  
+  // TString bonusDescriptorPoorMatchCut = "#scale[0.6]{p_{T} diff < -0.6}";
+  // scatterPlot("pTdiff_lt_neg0p6_scatter_gct_cPt_vs_genPt", "gct_cPt:genPt", poorMatchCut, legend, treePath, inputDirectory, outputDirectory, 
+  //             "Gen Ele p_{T}", "GCT Cluster p_{T}",  bonusDescriptorPoorMatchCut, nBins, 0, 100, nBins, 0, 100);
+  // singleDistributionPlots("pTdiff_lt_neg0p6_genPt",  "genPt",  poorMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele p_{T}", bonusDescriptorPoorMatchCut, nBins, 0, 100, 0.10);
+  // singleDistributionPlots("pTdiff_lt_neg0p6_genPhi", "genPhi", poorMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #phi", bonusDescriptorPoorMatchCut, nBins, -3.2, 3.2, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_lt_neg0p6_genEta", "genEta", poorMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #eta", bonusDescriptorPoorMatchCut, nBins, -1.5, 1.5, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_lt_neg0p6_gct_deltaR", "gct_deltaR", poorMatchCut, legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", bonusDescriptorPoorMatchCut, nBins, 0, 0.5, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_lt_neg0p6_gct_pT_fractional_diff", "(gct_cPt - genPt)/(genPt)", poorMatchCut, legend, treePath, inputDirectory, outputDirectory,
+  //                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", bonusDescriptorPoorMatchCut, nBins, -1.5, 1.5, ymaxPtDiff);
+
+
+  // TString goodMatchCut = "(gct_cPt - genPt)/(genPt) > -0.6";  
+  // TString bonusDescriptorGoodMatchCut = "#scale[0.6]{p_{T} diff > -0.6}";
+  // scatterPlot("pTdiff_gr_neg0p6_scatter_gct_cPt_vs_genPt", "gct_cPt:genPt", goodMatchCut, legend, treePath, inputDirectory, outputDirectory, 
+  //             "Gen Ele p_{T}", "GCT Cluster p_{T}",  bonusDescriptorGoodMatchCut, nBins, 0, 100, nBins, 0, 100);
+  // singleDistributionPlots("pTdiff_gr_neg0p6_genPt",  "genPt",  goodMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele p_{T}", bonusDescriptorGoodMatchCut, nBins, 0, 100, 0.10);
+  // singleDistributionPlots("pTdiff_gr_neg0p6_genPhi", "genPhi", goodMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #phi", bonusDescriptorGoodMatchCut, nBins, -3.2, 3.2, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_gr_neg0p6_genEta", "genEta", goodMatchCut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #eta", bonusDescriptorGoodMatchCut, nBins, -1.5, 1.5, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_gr_neg0p6_gct_deltaR", "gct_deltaR", goodMatchCut, legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", bonusDescriptorGoodMatchCut, nBins, 0, 0.5, ymaxDummyValue);
+  // singleDistributionPlots("pTdiff_gr_neg0p6_gct_pT_fractional_diff", "(gct_cPt - genPt)/(genPt)", goodMatchCut, legend, treePath, inputDirectory, outputDirectory,
+  //                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", bonusDescriptorGoodMatchCut, nBins, -1.5, 1.5, ymaxPtDiff);
+
+
   // Gen quantities
-  singleDistributionPlots("genPt",  "genPt",  cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele p_{T}", nBins, 0, 100,   0.06);
-  singleDistributionPlots("genPhi", "genPhi", cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #phi", nBins, -3.2, 3.2, ymaxDummyValue);
-  singleDistributionPlots("genEta", "genEta", cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #eta", nBins, -1.5, 1.5, ymaxDummyValue);
+  singleDistributionPlots("genPt",  "genPt",  cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele p_{T}", defaultBonusDescriptor, nBins, 0, 100,   0.06);
+  singleDistributionPlots("genPhi", "genPhi", cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #phi", defaultBonusDescriptor, nBins, -3.2, 3.2, ymaxDummyValue);
+  singleDistributionPlots("genEta", "genEta", cut, legend, treePath, inputDirectory, outputDirectory, "Gen Ele #eta", defaultBonusDescriptor, nBins, -1.5, 1.5, ymaxDummyValue);
   
 
   // RCT
-  singleDistributionPlots("rct_deltaR", "rct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "RCT #DeltaR (L1, Gen)", nBins, 0, 0.5, ymaxDeltaR);
+  singleDistributionPlots("rct_deltaR", "rct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "RCT #DeltaR (L1, Gen)", defaultBonusDescriptor, nBins, 0, 0.10, ymaxDeltaR);
   singleDistributionPlots("rct_pT_fractional_diff", "(rct_cPt - genPt)/(genPt)", cut, legend, treePath, inputDirectory, outputDirectory,
-                          "RCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", nBins, -1.5, 1.5, ymaxPtDiff);
+                          "RCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", defaultBonusDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
 
-  singleDistributionPlots("rct_cPt",  "rct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster p_{T}", nBins, 0, 100, ymaxPt);
-  singleDistributionPlots("rct_cPhi", "rct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster #phi", nBins, -3.2, 3.2, ymaxPhi);
-  singleDistributionPlots("rct_cEta", "rct_cEta", cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster #eta", nBins, -1.5, 1.5, ymaxDummyValue);
+  singleDistributionPlots("rct_cPt",  "rct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster p_{T}", defaultBonusDescriptor, nBins, 0, 100, ymaxPt);
+  singleDistributionPlots("rct_cPhi", "rct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster #phi", defaultBonusDescriptor, nBins, -3.2, 3.2, ymaxPhi);
+  singleDistributionPlots("rct_cEta", "rct_cEta", cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster #eta", defaultBonusDescriptor, nBins, -1.5, 1.5, ymaxDummyValue);
 
 
   // GCT
-  singleDistributionPlots("gct_deltaR", "gct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", nBins, 0, 0.5, ymaxDeltaR);
+  singleDistributionPlots("gct_deltaR", "gct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", defaultBonusDescriptor, nBins, 0, 0.10, ymaxDeltaR);
   singleDistributionPlots("gct_pT_fractional_diff", "(gct_cPt - genPt)/(genPt)", cut, legend, treePath, inputDirectory, outputDirectory,
-                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", nBins, -1.5, 1.5, ymaxPtDiff);
+                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", defaultBonusDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
 
-  singleDistributionPlots("gct_cPt",  "gct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster p_{T}", nBins, 0, 100, ymaxPt);
-  singleDistributionPlots("gct_cPhi", "gct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster #phi", nBins, -3.2, 3.2, ymaxPhi);
-  singleDistributionPlots("gct_cEta", "gct_cEta", cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster #eta", nBins, -1.5, 1.5, ymaxDummyValue);
+  singleDistributionPlots("gct_cPt",  "gct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster p_{T}", defaultBonusDescriptor, nBins, 0, 100, ymaxPt);
+  singleDistributionPlots("gct_cPhi", "gct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster #phi", defaultBonusDescriptor, nBins, -3.2, 3.2, ymaxPhi);
+  singleDistributionPlots("gct_cEta", "gct_cEta", cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster #eta", defaultBonusDescriptor, nBins, -1.5, 1.5, ymaxDummyValue);
 
 
 }
