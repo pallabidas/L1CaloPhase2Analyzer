@@ -45,6 +45,17 @@ void applyLegStyle(TLegend *leg){
   leg->SetShadowColor(0);
 }
  
+/* Apply smaller legend style to a TLegend *leg. */
+void applySmallerLegStyle(TLegend *leg){
+  leg->SetFillColor(0);
+  leg->SetFillStyle(0);
+  leg->SetBorderSize(0);
+  leg->SetTextSize(0.044);
+  leg->SetTextFont(42);
+  leg->SetHeader("");
+  leg->SetShadowColor(0);
+}
+
 /* Generate a comparison plot of "variable", using the gen-level genCut, and selecting fakes using fakeCut. treePath specifies the tree in the ROOT file to use.
    The ROOT file is located at inputDirectory. The resulting plots are written to outputDirectory, with filename including "name". The histogram has (bins)
    number of bins and ranges from integers low to high. */

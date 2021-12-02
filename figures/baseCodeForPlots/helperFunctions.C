@@ -14,7 +14,9 @@
 
 /*******************************************************************/
 
-double getEvents(TString rootFileDirectory, TString folderName)
+// Get the number of entries in an nEvents histogram, at the file
+// rootFileDirectory and the folder/hist name histPath.
+double getEvents(TString rootFileDirectory, TString histPath)
 {
   /* Load file */
   TFile *file = new TFile(rootFileDirectory);
@@ -24,7 +26,7 @@ double getEvents(TString rootFileDirectory, TString folderName)
       return 0;
     }
   
-  TH1F* nEvents = (TH1F*) file->Get(folderName + "/nEvents");
+  TH1F* nEvents = (TH1F*) file->Get(histPath);
   return (double) nEvents->GetEntries();
 
 }

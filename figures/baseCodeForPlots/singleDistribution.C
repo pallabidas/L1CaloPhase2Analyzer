@@ -143,7 +143,7 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   // More specifics: if the plot is the pT difference %, draw a line at x = 0
   float zeroDiff = 0;
   if (name.Contains("pT_fractional_diff")) {
-        TLine *line = new TLine(zeroDiff, 0, zeroDiff, 0.5); // 1.10* hist->GetMaximum());
+        TLine *line = new TLine(zeroDiff, 0, zeroDiff, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
     line->SetLineColor(kBlue);
     line->SetLineStyle(kDashed);
     line->SetLineWidth(3);
@@ -194,8 +194,13 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   latex->DrawLatex(commentaryXpos, 0.820, "#scale[0.6]{EG Barrel}");
   latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
   latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
-  latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
-  latex->DrawLatex(commentaryXpos, 0.660, bonusDescriptor);
+
+  if (bonusDescriptor != "") {
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841, " + bonusDescriptor + "}");
+  }
+  else {
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
+  }
   Tcan->Update();
 
   Tcan->SaveAs(outputDirectory+name+".png");

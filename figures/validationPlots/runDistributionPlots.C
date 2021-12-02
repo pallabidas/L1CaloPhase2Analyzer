@@ -17,11 +17,12 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
 
   TString cut = "(genPt > 0)";  
   TString defaultBonusDescriptor = "";
+  TString tdrCutDescriptor = "L1 p_{T} > 15";
 
   int nBins = 35;
 
   float ymaxDummyValue = -99;
-  float ymaxPtDiff = 0.7;
+  float ymaxPtDiff = 0.8;
   float ymaxDeltaR = 0.3;
   float ymaxPt = 0.06;
   float ymaxPhi = 0.05;
@@ -59,9 +60,10 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
   
 
   // RCT
-  singleDistributionPlots("rct_deltaR", "rct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "RCT #DeltaR (L1, Gen)", defaultBonusDescriptor, nBins, 0, 0.10, ymaxDeltaR);
-  singleDistributionPlots("rct_pT_fractional_diff", "(rct_cPt - genPt)/(genPt)", cut, legend, treePath, inputDirectory, outputDirectory,
-                          "RCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", defaultBonusDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
+  // Note that the next two plots have an additional pT cut (reflected in the caption)
+  singleDistributionPlots("rct_deltaR", "rct_deltaR", cut + "&& (rct_cPt > 15)", legend, treePath, inputDirectory, outputDirectory, "RCT #DeltaR (L1, Gen)", tdrCutDescriptor, nBins, 0, 0.10, ymaxDeltaR);
+  singleDistributionPlots("rct_pT_fractional_diff", "(rct_cPt - genPt)/(genPt)", cut + "&& (rct_cPt > 15)", legend, treePath, inputDirectory, outputDirectory,
+                          "RCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", tdrCutDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
 
   singleDistributionPlots("rct_cPt",  "rct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster p_{T}", defaultBonusDescriptor, nBins, 0, 100, ymaxPt);
   singleDistributionPlots("rct_cPhi", "rct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "RCT Cluster #phi", defaultBonusDescriptor, nBins, -3.2, 3.2, ymaxPhi);
@@ -69,9 +71,10 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
 
 
   // GCT
-  singleDistributionPlots("gct_deltaR", "gct_deltaR", cut, legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", defaultBonusDescriptor, nBins, 0, 0.10, ymaxDeltaR);
-  singleDistributionPlots("gct_pT_fractional_diff", "(gct_cPt - genPt)/(genPt)", cut, legend, treePath, inputDirectory, outputDirectory,
-                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", defaultBonusDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
+  // Note that the next two plots have an additional pT cut (reflected in the caption)
+  singleDistributionPlots("gct_deltaR", "gct_deltaR", cut + "&& (gct_cPt > 15)", legend, treePath, inputDirectory, outputDirectory, "GCT #DeltaR (L1, Gen)", tdrCutDescriptor, nBins, 0, 0.10, ymaxDeltaR);
+  singleDistributionPlots("gct_pT_fractional_diff", "(gct_cPt - genPt)/(genPt)", cut + "&& (gct_cPt > 15)", legend, treePath, inputDirectory, outputDirectory,
+                          "GCT (p_{T}^{reco} - p_{T}^{gen})/p_{T}^{gen}", tdrCutDescriptor, nBins, -1.2, 1.2, ymaxPtDiff);
 
   singleDistributionPlots("gct_cPt",  "gct_cPt",  cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster p_{T}", defaultBonusDescriptor, nBins, 0, 100, ymaxPt);
   singleDistributionPlots("gct_cPhi", "gct_cPhi", cut, legend, treePath, inputDirectory, outputDirectory, "GCT Cluster #phi", defaultBonusDescriptor, nBins, -3.2, 3.2, ymaxPhi);
