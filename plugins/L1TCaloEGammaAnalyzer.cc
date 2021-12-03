@@ -141,13 +141,12 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   es.get<CaloTPGRecord>().get(decoder_);
 
+  std::cout << "Doing event " << event << "...." << std::endl;
+
   // Get the RCT clusters from the emulator and sort them by pT
   if(evt.getByToken(rctClustersSrc_, rctCaloCrystalClusters)){
     for(const auto & rctCluster : *rctCaloCrystalClusters){
-      //    for( vector<l1tp2::CaloCrystalClusterCollection>::const_iterator rctCluster = caloCrystalClusters->begin(); 
-      //	 rctCluster != caloCrystalClusters->end(); 
-      //	 rctCluster++ ) {
-      //fill vector
+
       TLorentzVector temp ;
       std::cout << "RCT Cluster found: pT " << rctCluster.pt()  << ", "
 		<< "eta "                   << rctCluster.eta() << ", "
@@ -378,29 +377,44 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     rct_cPt    = 0;    rct_cEta   = -999;    rct_cPhi   = -999;
     rct_deltaR = 999;
 
+    std::vector<TLorentzVector> rctClustersMatched;
+    std::vector<TLorentzVector> gctClustersMatched;
+
     // Loop through the RCT clusters which are already sorted in decreasing pT, and check for
     // the first cluster within deltaR < 0.5. 
+    std::cout << "Event " << event << ": check that RCT clusters are sorted!" << std::endl;
+    for (size_t i = 0; i < rctClusters->size(); ++i) {
+      std::cout << "sorted? RCT Cluster found: pT " << rctClusters->at(i).Pt()  << ", "
+                << "eta "                   << rctClusters->at(i).Eta() << ", "
+                << "phi "                   << rctClusters->at(i).Phi() << std::endl;
+    }
+    
     for (size_t i = 0; i < rctClusters->size(); ++i) {
 
       float this_rct_deltaR = reco::deltaR(rctClusters->at(i).Eta(), rctClusters->at(i).Phi(),
 					   genElectron.Eta(), genElectron.Phi());
       // std::cout << "   Comparing "<< this_rct_deltaR << " to current rct_deltaR " << rct_deltaR << std::endl;
 
-      // If this rct_deltaR is the smallest one so far and this gen electron has not been already matched
       if (this_rct_deltaR < 0.5) {
 
 	// std::cout << "rctClusters pT " << rctClusters->at(i).Pt() 
 	// 	  << " eta " << rctClusters->at(i).Eta()
 	// 	  << " phi " << rctClusters->at(i).Phi() << std::endl;
 	
-	rct_cPt  = rctClusters->at(i).Pt();
-	rct_cEta = rctClusters->at(i).Eta();
-	rct_cPhi = rctClusters->at(i).Phi();
-	rct_deltaR = this_rct_deltaR;
-	
-	continue;
+	TLorentzVector temp ;
+	temp.SetPtEtaPhiE(rctClusters->at(i).Pt(), rctClusters->at(i).Eta(),
+			  rctClusters->at(i).Phi(), rctClusters->at(i).M());
+	rctClustersMatched.push_back(temp);
       }
     }
+    
+    // For this gen electron, sort the matched clusters by pT, and only save the highest pT one
+    std::sort(rctClustersMatched.begin(), rctClustersMatched.end(), L1TCaloEGammaAnalyzer::comparePt);
+    rct_cPt  = rctClustersMatched.at(0).Pt();
+    rct_cEta = rctClustersMatched.at(0).Eta();
+    rct_cPhi = rctClustersMatched.at(0).Phi();
+    rct_deltaR = reco::deltaR(rct_cEta, rct_cPhi,
+			      genElectron.Eta(), genElectron.Phi());
     std::cout << "--> Matched RCT cluster " << rct_cPt 
 	      << " eta: " << rct_cEta
 	      << " phi: " << rct_cPhi
@@ -424,25 +438,31 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       float this_gct_deltaR = reco::deltaR(gctClusters->at(i).Eta(), gctClusters->at(i).Phi(),
 					   genElectron.Eta(), genElectron.Phi());
       if (this_gct_deltaR < 0.5) {
-	gct_cPt  = gctClusters->at(i).Pt();
-	gct_cEta = gctClusters->at(i).Eta();
-	gct_cPhi = gctClusters->at(i).Phi();
-	gct_deltaR = this_gct_deltaR;
-	continue;
+	TLorentzVector temp;
+        temp.SetPtEtaPhiE(gctClusters->at(i).Pt(), gctClusters->at(i).Eta(),
+                          gctClusters->at(i).Phi(), gctClusters->at(i).M());
+        gctClustersMatched.push_back(temp);
       }
     }
 	
-    std::cout << "  --> Matched GCT cluster " << gct_cPt 
-	      << " eta: " << gct_cEta
-	      << " phi: " << gct_cPhi
-	      << " with genElectron " << genPt
-	      << " eta: " << genEta
-     	      << " phi: " << genPhi << std::endl;
-    
+    // For this gen electron, sort the matched clusters by pT, and only save the highest pT one     
+    std::sort(gctClustersMatched.begin(), gctClustersMatched.end(), L1TCaloEGammaAnalyzer::comparePt);
+    gct_cPt  = gctClustersMatched.at(0).Pt();
+    gct_cEta = gctClustersMatched.at(0).Eta();
+    gct_cPhi = gctClustersMatched.at(0).Phi();
+    gct_deltaR = reco::deltaR(gct_cEta, gct_cPhi,
+                              genElectron.Eta(), genElectron.Phi());
+    std::cout << "--> Matched GCT cluster " << gct_cPt
+              << " eta: " << gct_cEta
+              << " phi: " << gct_cPhi
+              << " with genElectron " << genPt
+              << " eta: " << genEta
+              << " phi: " << genPhi << std::endl;
+
     efficiencyTree->Fill();
 
   } // end of loop over gen electrons
-  
+
  }
 
 
