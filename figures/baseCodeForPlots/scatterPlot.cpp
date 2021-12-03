@@ -25,30 +25,15 @@
 #include "tdrstyle.C"
 #include "CMS_lumi.h"
 
-#ifndef SINGLE_DISTRIBUTION_C_INCL
-#define SINGLE_DISTRIBUTION_C_INCL 
- 
-/* Apply template style to a TPad* pad1. */
-void applyPadStyle(TPad* pad1){
-  pad1->SetFillColor(0);
-  pad1->Draw();  pad1->cd();  pad1->SetLeftMargin(0.2);  pad1->SetBottomMargin(0.13); pad1->SetRightMargin(0.1);
-  pad1->SetTopMargin(0.1);
-  //pad1->SetGrid(); 
-  //pad1->SetGrid(10,10); 
-}
+#include "singleDistribution.C"
 
-/* Apply legend style to a TLegend *leg. */
-void applyLegStyle(TLegend *leg){
-  leg->SetFillColor(0);
-  leg->SetFillStyle(0);
-  leg->SetBorderSize(0);
-  leg->SetTextSize(0.06);
-  leg->SetTextFont(42);
-  leg->SetHeader("");
-  leg->SetShadowColor(0);
-}
+#ifndef SCATTER_PLOT_C_INCL
+#define SCATTER_PLOT_C_INCL
  
-/* Generate a single distribution plot.
+
+ 
+/* Generate a single scatter plot. N.B.: has some more argument than singleDistribution.C, namely "yLabel"
+   and the y-axes properties.
    name: name of the output .png/.pdf
    variable: the string that will be passed to TTree->Draw()
    cut: baseline cut
@@ -62,10 +47,12 @@ void applyLegStyle(TLegend *leg){
    ymax: if non-zero positive value, histogram will be capped at this max value on the y-axis
          (start with a -99 dummy value, then adjust/fine tune when you know what it will look like)
    */
-int singleDistributionPlots(TString name, TString variable, TString cut, TString legend,
+int scatterPlot(TString name, TString variable, TString cut, TString legend,
                             TString treePath, TString inputDirectory, TString outputDirectory,
-			                      TString xLabel, TString bonusDescriptor,
-                            int bins, float low, float high, float ymax){ 
+                            TString xLabel, TString yLabel, 
+                            TString bonusDescriptor,
+                            int xbins, float xlow, float xhigh,
+                            int ybins, float ylow, float yhigh){ 
  
   gROOT->LoadMacro("/Users/stephaniekwan/Documents/Phase2L1Calo/phase2-l1Calo-analyzer/figures/baseCodeForPlots/CMS_lumi.C");
   //gROOT->ProcessLine(".L ~/Documents/work/Analysis/PhaseIIStudies/2018/tdrstyle.C");
@@ -100,15 +87,14 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
     return 0;
   }
  
-  TH1F *hist = new TH1F("hist","hist", bins,low, high);
+  TH2F *hist = new TH2F("hist","hist", xbins, xlow, xhigh, ybins, ylow, yhigh);
   tree->Draw(variable+">>+hist", cut);
 
-  hist->SetMarkerColor(0);
+  hist->SetMarkerColor(kBlack);
+  hist->SetMarkerStyle(kFullDotLarge);
   hist->SetLineWidth(2);
   hist->SetLineColor(kBlack);
 
-  hist->Scale(1/hist->Integral());
-  //  Tcan->SetLogy();
 
   hist->Draw("HIST"); 
 
@@ -118,54 +104,9 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   hist->GetXaxis()->SetNdivisions(-505);
 
 
-  hist->GetYaxis()->SetTitle("Events_{bin}/Events_{tot}");
+  hist->GetYaxis()->SetTitle(yLabel);
   hist->GetYaxis()->SetLabelSize(0.04);
   hist->GetYaxis()->SetNdivisions(505, kTRUE);
-
-  // Features specific to this analyzer: if the plot is rct_deltaR, draw a line at x = crystalSize
-  float crystalSize = 0.01746;
-  if (variable.Contains("deltaR")) {
-
-    TLine *line = new TLine(crystalSize, 0, crystalSize, 1.10* hist->GetMaximum());
-    line->SetLineColor(kRed);
-    line->SetLineStyle(kDashed);
-    line->SetLineWidth(5);
-    line->Draw();
-
-    TLatex *l = new TLatex(); 
-    l->SetNDC();
-    l->SetTextFont(42);
-    l->SetTextColor(kRed);
-    l->DrawLatex(0.25, 0.75, "#scale[0.8]{Crystal size}");
-    Tcan->Update();
-  }
-
-  // More specifics: if the plot is the pT difference %, draw a line at x = 0
-  float zeroDiff = 0;
-  if (name.Contains("pT_fractional_diff")) {
-        TLine *line = new TLine(zeroDiff, 0, zeroDiff, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
-    line->SetLineColor(kBlue);
-    line->SetLineStyle(kDashed);
-    line->SetLineWidth(3);
-    line->Draw();
-
-    TLatex *l = new TLatex(); 
-    l->SetNDC();
-    l->SetTextFont(42);
-    l->SetTextColor(kBlue);
-    l->DrawLatex(0.538, 0.091, "#scale[0.9]{0}");
-    Tcan->Update();
-  }
-
-  // Finicky ymax values
-  // For specific distributions, give more room at the top
-  if (name.Contains("Eta") || name.Contains("Phi") || name.Contains("pT_fractional_diff")) {  
-    float max = hist->GetMaximum(); 
-    hist->SetMaximum(max * 1.5);
-  }
-  if (ymax > 0) {
-    hist->SetMaximum(ymax);
-  }
 
 
   // // leg->AddEntry(hist, legend,"l");
@@ -173,7 +114,6 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
  
   Tcan->cd();
  
-
 
   TLatex *latex = new TLatex(); 
   latex->SetNDC();
@@ -189,18 +129,14 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   // latex->DrawLatex(0.19, 0.920, "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}"); 
 
 
-  float commentaryXpos = 0.47;
+  float commentaryXpos = 0.23;
   latex->DrawLatex(0.80, 0.920, "#scale[0.8]{0 PU}");
-  latex->DrawLatex(commentaryXpos, 0.820, "#scale[0.6]{EG Barrel}");
-  latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
-  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
+  latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.6]{EG Barrel}");
+  latex->DrawLatex(commentaryXpos, 0.800, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
+  latex->DrawLatex(commentaryXpos, 0.760, "#scale[0.6]{v0 ECAL propagation (no ECAL stitching),}");
+  latex->DrawLatex(commentaryXpos, 0.720, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
+  latex->DrawLatex(commentaryXpos, 0.660, bonusDescriptor);
 
-  if (bonusDescriptor != "") {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841, " + bonusDescriptor + "}");
-  }
-  else {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
-  }
   Tcan->Update();
 
   Tcan->SaveAs(outputDirectory+name+".png");
