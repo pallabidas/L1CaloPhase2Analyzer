@@ -4,7 +4,7 @@
 #include "../baseCodeForPlots/singleDistribution.C"
 #include "../baseCodeForPlots/scatterPlot.cpp"
 
-void runDistributionPlots(TString sampleName, TString legend, TString inputDirectory)
+void makeDistributionPlots(TString sampleName, TString legend, TString inputDirectory)
 {
   // Load the macro
   //  gROOT->ProcessLine(".L ../baseCodeForPlots/comparisonPlots.C");
@@ -15,7 +15,7 @@ void runDistributionPlots(TString sampleName, TString legend, TString inputDirec
   TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/figures" + sampleName + "/"; 
   gSystem->Exec("mkdir -p " + outputDirectory);
 
-  TString cut = "(genPt > 0)";  
+  TString cut = "(genPt > 0) && (abs(genEta) < 1.305)";  
   TString defaultBonusDescriptor = "";
   TString tdrCutDescriptor = "L1 p_{T} > 15";
 
