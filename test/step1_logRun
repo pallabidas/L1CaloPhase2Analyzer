@@ -1,0 +1,116 @@
+[skkwan@uwlogin test]$ cmsRun step1_L1_ProdLike.py 
+%MSG-i ThreadStreamSetup:  (NoModuleName) 07-Dec-2021 12:33:40 EST pre-events
+setting # threads 8
+setting # streams 8
+%MSG
+07-Dec-2021 12:35:07 EST  Initiating request to open file file:/afs/cern.ch/work/s/skkwan/private/phase2RCTDev/CMSSW_11_1_7/src/L1Trigger/L1CaloPhase2Analyzer/D2F3C292-2269-E811-8021-FA163E5D6003.root
+07-Dec-2021 12:35:08 EST  Successfully opened file file:/afs/cern.ch/work/s/skkwan/private/phase2RCTDev/CMSSW_11_1_7/src/L1Trigger/L1CaloPhase2Analyzer/D2F3C292-2269-E811-8021-FA163E5D6003.root
+Begin processing the 1st record. Run 317434, Event 342016620, LumiSection 256 on stream 5 at 07-Dec-2021 12:38:21.391 EST
+Begin processing the 2nd record. Run 317434, Event 341830031, LumiSection 256 on stream 1 at 07-Dec-2021 12:38:21.392 EST
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:siStripDigis  07-Dec-2021 12:38:29 EST Run: 317434 Event: 342016620
+NULL pointer to FEDRawData for FED: id 59
+Note: further warnings of this type will be suppressed (this can be changed by enabling debugging printout)
+%MSG
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:siStripDigis  07-Dec-2021 12:38:29 EST Run: 317434 Event: 342016620
+Exception caught when creating FEDBuffer object for FED: id 66: Channel does not fit into buffer
+Note: further warnings of this type will be suppressed (this can be changed by enabling debugging printout)
+%MSG
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:siStripDigis  07-Dec-2021 12:38:33 EST Run: 317434 Event: 341830031
+NULL pointer to FEDRawData for FED: id 59
+Note: further warnings of this type will be suppressed (this can be changed by enabling debugging printout)
+%MSG
+----- Begin Fatal Exception 07-Dec-2021 12:38:33 EST-----------------------
+An exception of category 'ProductNotFound' occurred while
+   [0] Processing  Event run: 317434 lumi: 256 event: 342016620 stream: 5
+   [1] Running path 'pL1EG'
+   [2] Prefetching for module L1TCaloEGammaAnalyzerRates/'l1NtupleProducer'
+   [3] Calling method for module Phase2L1CaloEGammaEmulator/'Phase2L1CaloEGammaEmulatorProducer'
+Exception Message:
+Principal::getByToken: Found zero products matching all criteria
+Looking for type: edm::SortedCollection<EcalEBTriggerPrimitiveDigi,edm::StrictWeakOrdering<EcalEBTriggerPrimitiveDigi> >
+Looking for module label: ecalDigis
+Looking for productInstanceName: EcalTriggerPrimitives
+Looking for process: L1
+   Additional Info:
+      [a] If you wish to continue processing events after a ProductNotFound exception,
+add "SkipEvent = cms.untracked.vstring('ProductNotFound')" to the "options" PSet in the configuration.
+
+----- End Fatal Exception -------------------------------------------------
+----- Begin Fatal Exception 07-Dec-2021 12:38:33 EST-----------------------
+An exception of category 'ProductNotFound' occurred while
+   [0] Processing  Event run: 317434 lumi: 256 event: 341830031 stream: 1
+   [1] Running path 'pL1EG'
+   [2] Prefetching for module L1TCaloEGammaAnalyzerRates/'l1NtupleProducer'
+   [3] Calling method for module Phase2L1CaloEGammaEmulator/'Phase2L1CaloEGammaEmulatorProducer'
+Exception Message:
+Principal::getByToken: Found zero products matching all criteria
+Looking for type: edm::SortedCollection<EcalEBTriggerPrimitiveDigi,edm::StrictWeakOrdering<EcalEBTriggerPrimitiveDigi> >
+Looking for module label: ecalDigis
+Looking for productInstanceName: EcalTriggerPrimitives
+Looking for process: L1
+   Additional Info:
+      [a] If you wish to continue processing events after a ProductNotFound exception,
+add "SkipEvent = cms.untracked.vstring('ProductNotFound')" to the "options" PSet in the configuration.
+
+----- End Fatal Exception -------------------------------------------------
+07-Dec-2021 12:38:33 EST  Closed file file:/afs/cern.ch/work/s/skkwan/private/phase2RCTDev/CMSSW_11_1_7/src/L1Trigger/L1CaloPhase2Analyzer/D2F3C292-2269-E811-8021-FA163E5D6003.root
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:siStripDigis@endStream  07-Dec-2021 12:38:36 EST End Run: 317434
+[sistrip::RawToDigiUnpacker::createDigis] warnings:
+NULL pointer to FEDRawData for FED (3)
+%MSG
+%MSG-w SiStripRawToDigi:  SiStripRawToDigiModule:siStripDigis@endStream  07-Dec-2021 12:38:36 EST End Run: 317434
+[sistrip::RawToDigiUnpacker::createDigis] warnings:
+Exception caught when creating FEDBuffer object for FED (1)
+NULL pointer to FEDRawData for FED (3)
+%MSG
+TimeReport> Time report complete in 299.982 seconds
+ Time Summary: 
+ - Min event:   12.3499
+ - Max event:   12.3508
+ - Avg event:   12.3504
+ - Total loop:  202.372
+ - Total init:  94.6221
+ - Total job:   299.982
+ - EventSetup Lock:   107.167
+ - EventSetup Get:   39.4586
+ Event Throughput: 0.00988278 ev/s
+ CPU Summary: 
+ - Total loop:  11.1002
+ - Total init:  9.20663
+ - Total extra: 0
+ - Total job:   23.1935
+ Processing Summary: 
+ - Number of Events:  2
+ - Number of Global Begin Lumi Calls:  1
+ - Number of Global Begin Run Calls: 1
+
+
+=============================================
+
+MessageLogger Summary
+
+ type     category        sev    module        subroutine        count    total
+ ---- -------------------- -- ---------------- ----------------  -----    -----
+    1 SiStripRawToDigi     -w SiStripRawToDigi                       3        3
+    2 SiStripRawToDigi     -w SiStripRawToDigi                       2        2
+    3 TimeReport           -e AfterModEndJob                         1        1
+    4 Fatal Exception      -s PostModuleEvent                        2        2
+    5 fileAction           -s file_close                             1        1
+    6 fileAction           -s file_open                              2        2
+
+ type    category    Examples: run/evt        run/evt          run/evt
+ ---- -------------------- ---------------- ---------------- ----------------
+    1 SiStripRawToDigi     317434/342016620 317434/342016620 317434/341830031
+    2 SiStripRawToDigi     End Run: 317434  End Run: 317434  
+    3 TimeReport           EndJob                            
+    4 Fatal Exception      317434/341830031 317434/341830031 
+    5 fileAction           End Run: 317434                   
+    6 fileAction           pre-events       pre-events       
+
+Severity    # Occurrences   Total Occurrences
+--------    -------------   -----------------
+Warning                 5                   5
+Error                   1                   1
+System                  5                   5
+
+dropped waiting message count 0
