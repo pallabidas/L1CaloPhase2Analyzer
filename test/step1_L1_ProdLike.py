@@ -124,8 +124,8 @@ process.end = cms.EndPath( process.Out )
 
 # Schedule definition
 # process.schedule = cms.Schedule(process.raw2digi_step,process.L1TrackTrigger_step,process.L1simulation_step,process.endjob_step,process.FEVTDEBUGHLToutput_step)
-# Temp: only keep these two)
-process.schedule = cms.Schedule(process.raw2digi_step,process.L1simulation_step,process.end)
+# Temp: only keep these two
+process.schedule = cms.Schedule(process.raw2digi_step,process.end)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
