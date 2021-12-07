@@ -7,7 +7,8 @@ l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzerRates",
                                   #packedPfCands           = cms.InputTag("packedPFCandidates"),
                                   #pfCands                 = cms.InputTag("particleFlow"),
                                   
-                                  ecalDigis = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
+#                                   ecalDigis = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
+                                  ecalDigis = cms.InputTag("ecalDigis", "EcalTriggerPrimitives", "L1"),
                                   hcalDigis = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
                                   rctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer", "RCT"),
                                   gctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer", "GCT")

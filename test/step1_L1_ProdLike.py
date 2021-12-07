@@ -108,6 +108,16 @@ process.L1simulation_step = cms.Path(process.SimL1Emulator)
 process.endjob_step = cms.EndPath(process.endOfProcess)
 process.FEVTDEBUGHLToutput_step = cms.EndPath(process.FEVTDEBUGHLToutput)
 
+process.load('L1Trigger.L1CaloTrigger.Phase2L1CaloEGammaEmulatorRates_cfi')
+process.load('L1Trigger.L1CaloPhase2Analyzer.l1TCaloEGammaAnalyzerRates_cfi')
+
+process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.l1NtupleProducer )
+
+# output file
+process.TFileService = cms.Service("TFileService",
+    fileName = cms.string('analyzer-rates.root')
+)
+
 process.Out = cms.OutputModule( "PoolOutputModule",
     fileName = cms.untracked.string( "phase2L1EGammaAnalyzerRates.root" ),
                                      outputCommands = cms.untracked.vstring(
@@ -125,7 +135,7 @@ process.end = cms.EndPath( process.Out )
 # Schedule definition
 # process.schedule = cms.Schedule(process.raw2digi_step,process.L1TrackTrigger_step,process.L1simulation_step,process.endjob_step,process.FEVTDEBUGHLToutput_step)
 # Temp: only keep these two
-process.schedule = cms.Schedule(process.raw2digi_step,process.end)
+process.schedule = cms.Schedule(process.raw2digi_step,process.pL1EG,process.end)
 from PhysicsTools.PatAlgos.tools.helpers import associatePatAlgosToolsTask
 associatePatAlgosToolsTask(process)
 
