@@ -8,7 +8,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 # Dataset: 
 #   /RelValElectronGunPt2To100/CMSSW_10_6_0_patch2-106X_upgrade2023_realistic_v3_2023D41noPU-v1/GEN-SIM-DIGI-RAW
@@ -16,7 +16,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
 
 process.source = cms.Source("PoolSource",
 #                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_190EDE9F-770B-174A-8BA6-F7814FC67FD4.root'),
-                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/ZeroBias_Run2018B_RAW_38363080-ED68-E811-AFF1-FA163E1B57DB.root'),
+#                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/ZeroBias_Run2018B_RAW_38363080-ED68-E811-AFF1-FA163E1B57DB.root'),
+                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/MinBias_Phase2HLTTDRWinter20DIGI-PU200_GEN-SIM-DIGI-RAW_007847DC-86AA-0B4A-9719-C3623ED7D2FC.root'),
                             inputCommands = cms.untracked.vstring(
                                 "keep *"
                             )
@@ -72,7 +73,7 @@ process.Out = cms.OutputModule( "PoolOutputModule",
 
 process.end = cms.EndPath( process.Out )
 
-process.schedule = cms.Schedule(process.EcalEBtp_step, process.pL1EG, process.end)
+process.schedule = cms.Schedule(process.pL1EG, process.end)
 #process.schedule = cms.Schedule(process.pL1EG, process.end)     
 
 dump_file = open("dump_file.py", "w")
