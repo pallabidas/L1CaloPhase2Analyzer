@@ -20,10 +20,11 @@ void makeEfficienciesPlot(void)
   TString treePath = "l1NtupleProducer/efficiencyTree";
   //  TString rootFileDirectory = "../test/analyzer.root";
   TString rootFileDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/analyzer.root";
-  TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/efficiencyPlots/";
+  TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/efficiencyPlots/zoomed";
 
   float xMin, xMax;
   TString genCut, l1Cut;
+  bool useVariableBinning;
 
   std::vector<TGraphAsymmErrors*> vGraphs;
   std::vector<TString> vLabels;
@@ -33,91 +34,91 @@ void makeEfficienciesPlot(void)
   /* efficiency as a function of genPt                  */
   /*******************************************************/
 
-  xMin = 0;
-  xMax = 100;
-  genCut  = "(abs(genEta) < 1.4841)";
-  l1Cut   = "(abs(genEta) < 1.4841) && (rct_cPt > 25)";
-  bool useVariableBinning = false;
+  // xMin = 0;
+  // xMax = 100;
+  // genCut  = "(abs(genEta) < 1.4841)";
+  // l1Cut   = "(abs(genEta) < 1.4841) && (rct_cPt > 25)";
+  // useVariableBinning = false;
 
-  TGraphAsymmErrors* loose = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                l1Cut + "&& rct_cPt > 30",
-                genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(loose);
-  vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kGreen+2);
+  // TGraphAsymmErrors* loose = calculateEfficiency("genPt", treePath, rootFileDirectory,
+  //               l1Cut + "&& rct_cPt > 30",
+  //               genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(loose);
+  // vLabels.push_back("L1 p_{T} > 30");
+  // vColors.push_back(kGreen+2);
 
-  TGraphAsymmErrors* medium = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                 l1Cut + "&& rct_cPt > 35",
-                 genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(medium);
-  vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kBlue);
+  // TGraphAsymmErrors* medium = calculateEfficiency("genPt", treePath, rootFileDirectory,
+  //                l1Cut + "&& rct_cPt > 35",
+  //                genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(medium);
+  // vLabels.push_back("L1 p_{T} > 35");
+  // vColors.push_back(kBlue);
   
-  TGraphAsymmErrors* tight = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                l1Cut + "&& rct_cPt > 40",
-                genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(tight);
-  vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kBlack);
+  // TGraphAsymmErrors* tight = calculateEfficiency("genPt", treePath, rootFileDirectory,
+  //               l1Cut + "&& rct_cPt > 40",
+  //               genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(tight);
+  // vLabels.push_back("L1 p_{T} > 40");
+  // vColors.push_back(kBlack);
 
-  TGraphAsymmErrors* all = calculateEfficiency("genPt", treePath, rootFileDirectory,
-              l1Cut,
-              genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(all);
-  vLabels.push_back("No additional cut");
-  vColors.push_back(kRed);
+  // TGraphAsymmErrors* all = calculateEfficiency("genPt", treePath, rootFileDirectory,
+  //             l1Cut,
+  //             genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(all);
+  // vLabels.push_back("No additional cut");
+  // vColors.push_back(kRed);
 
-  plotNEfficiencies(vGraphs, vLabels, vColors,
-        "Gen Electron p_{T} [GeV]",
-        "Phase 2 RCT",                                                                
-        "efficiency_genPt_barrel_RCT",        
-        outputDirectory);    
+  // plotNEfficiencies(vGraphs, vLabels, vColors,
+  //       "Gen Electron p_{T} [GeV]",
+  //       "Phase 2 RCT",                                                                
+  //       "efficiency_genPt_barrel_RCT",        
+  //       outputDirectory);    
   
   /*******************************************************/
   /* efficiency as a function of recoEta                 */
   /*******************************************************/
-  vGraphs.clear();  vLabels.clear();  vColors.clear();
+  // vGraphs.clear();  vLabels.clear();  vColors.clear();
 
-  xMin = -1.5;
-  xMax = 1.5;
+  // xMin = -1.5;
+  // xMax = 1.5;
 
-  genCut  = "(abs(genEta) < 1.4841)";
-  l1Cut   = "(abs(genEta) < 1.4841) && (rct_cPt > 25)";
-  useVariableBinning = false;
+  // genCut  = "(abs(genEta) < 1.4841)";
+  // l1Cut   = "(abs(genEta) < 1.4841) && (rct_cPt > 25)";
+  // useVariableBinning = false;
 
-  TGraphAsymmErrors* loose2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                l1Cut + "&& rct_cPt > 30",
-                genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(loose2);
-  vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kGreen+2);
+  // TGraphAsymmErrors* loose2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
+  //               l1Cut + "&& rct_cPt > 30",
+  //               genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(loose2);
+  // vLabels.push_back("L1 p_{T} > 30");
+  // vColors.push_back(kGreen+2);
 
-  TGraphAsymmErrors* medium2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                 l1Cut + "&& rct_cPt > 35",
-                 genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(medium2);
-  vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kBlue);
+  // TGraphAsymmErrors* medium2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
+  //                l1Cut + "&& rct_cPt > 35",
+  //                genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(medium2);
+  // vLabels.push_back("L1 p_{T} > 35");
+  // vColors.push_back(kBlue);
   
-  TGraphAsymmErrors* tight2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                l1Cut + "&& rct_cPt > 40",
-                genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(tight2);
-  vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kBlack);
+  // TGraphAsymmErrors* tight2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
+  //               l1Cut + "&& rct_cPt > 40",
+  //               genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(tight2);
+  // vLabels.push_back("L1 p_{T} > 40");
+  // vColors.push_back(kBlack);
 
-  TGraphAsymmErrors* all2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-              l1Cut,
-              genCut, xMin, xMax, useVariableBinning);
-  vGraphs.push_back(all2);
-  vLabels.push_back("No additional cut");
-  vColors.push_back(kRed);
+  // TGraphAsymmErrors* all2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
+  //             l1Cut,
+  //             genCut, xMin, xMax, useVariableBinning);
+  // vGraphs.push_back(all2);
+  // vLabels.push_back("No additional cut");
+  // vColors.push_back(kRed);
 
-  plotNEfficiencies(vGraphs, vLabels, vColors,
-        "Gen Electron #eta",
-        "Phase 2 RCT",                                                                
-        "efficiency_genEta_barrel_RCT",        
-        outputDirectory);    
+  // plotNEfficiencies(vGraphs, vLabels, vColors,
+  //       "Gen Electron #eta",
+  //       "Phase 2 RCT",                                                                
+  //       "efficiency_genEta_barrel_RCT",        
+  //       outputDirectory);    
 
 
 
