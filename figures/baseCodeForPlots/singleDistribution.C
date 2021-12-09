@@ -195,11 +195,11 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
   latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
 
-  if (bonusDescriptor != "") {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841, " + bonusDescriptor + "}");
+  if (bonusDescriptor != "") { // 1.4841
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.305, " + bonusDescriptor + "}");
   }
   else {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.305}");
   }
   Tcan->Update();
 

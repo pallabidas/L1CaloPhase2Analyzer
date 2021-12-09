@@ -44,28 +44,28 @@ void makeEfficienciesPlot(void)
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose);
   vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kBlue-3);
+  vColors.push_back(kGreen+2);
 
   TGraphAsymmErrors* medium = calculateEfficiency("genPt", treePath, rootFileDirectory,
                  l1Cut + "&& rct_cPt > 35",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium);
   vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kViolet-5);
+  vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight = calculateEfficiency("genPt", treePath, rootFileDirectory,
                 l1Cut + "&& rct_cPt > 40",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight);
   vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kPink+6);
+  vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all = calculateEfficiency("genPt", treePath, rootFileDirectory,
               l1Cut,
               genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(all);
   vLabels.push_back("No additional cut");
-  vColors.push_back(kAzure+1);
+  vColors.push_back(kRed);
 
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron p_{T} [GeV]",
@@ -90,28 +90,28 @@ void makeEfficienciesPlot(void)
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose2);
   vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kBlue-3);
+  vColors.push_back(kGreen+2);
 
   TGraphAsymmErrors* medium2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
                  l1Cut + "&& rct_cPt > 35",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium2);
   vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kViolet-5);
+  vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
                 l1Cut + "&& rct_cPt > 40",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight2);
   vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kPink+6);
+  vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all2 = calculateEfficiency("genEta", treePath, rootFileDirectory,
               l1Cut,
               genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(all2);
   vLabels.push_back("No additional cut");
-  vColors.push_back(kAzure+1);
+  vColors.push_back(kRed);
 
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron #eta",
@@ -137,28 +137,28 @@ void makeEfficienciesPlot(void)
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose3);
   vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kBlue-3);
+  vColors.push_back(kGreen + 2);
 
   TGraphAsymmErrors* medium3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
                  l1Cut + "&& gct_cPt > 35",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium3);
   vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kViolet-5);
+  vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
                 l1Cut + "&& gct_cPt > 40",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight3);
   vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kPink+6);
+  vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
               l1Cut,
               genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(all3);
   vLabels.push_back("No additional cut");
-  vColors.push_back(kAzure+1);
+  vColors.push_back(kRed);
 
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron p_{T} [GeV]",
@@ -185,28 +185,28 @@ void makeEfficienciesPlot(void)
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose4);
   vLabels.push_back("L1 p_{T} > 30");
-  vColors.push_back(kBlue-3);
+  vColors.push_back(kGreen+2);
 
   TGraphAsymmErrors* medium4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
                  l1Cut + "&& gct_cPt > 35",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium4);
   vLabels.push_back("L1 p_{T} > 35");
-  vColors.push_back(kViolet-5);
+  vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
                 l1Cut + "&& gct_cPt > 40",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight4);
   vLabels.push_back("L1 p_{T} > 40");
-  vColors.push_back(kPink+6);
+  vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
               l1Cut,
               genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(all4);
   vLabels.push_back("No additional cut");
-  vColors.push_back(kAzure+1);
+  vColors.push_back(kRed);
 
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron p_{T} [GeV]",
