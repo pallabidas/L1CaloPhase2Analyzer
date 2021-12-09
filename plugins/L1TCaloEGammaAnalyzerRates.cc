@@ -297,23 +297,28 @@ void L1TCaloEGammaAnalyzerRates::analyze( const Event& evt, const EventSetup& es
 
   std::cout << "Building collections for rates: there are " << gctClusters->size() << " GCT clusters in the event" << std::endl;
   if (gctClusters->size() > 0) {
+    std::cout << "GCT cluster (highest pT in this event): " << gctClusters->at(0).Pt() << std::endl;
     
     l1eg_pt->Fill(gctClusters->at(0).Pt());
-  
+    
     if (gctClusters->at(0).Pt() > 25) {
       l1egVLoose_pt->Fill(gctClusters->at(0).Pt());
+      std::cout << "  filled l1egVLoose_pt " ;
     }
     
     if (gctClusters->at(0).Pt() > 30) {
       l1egLoose_pt->Fill(gctClusters->at(0).Pt());
+      std::cout << "  filled l1egLoose_pt  ";
     }
     
     if (gctClusters->at(0).Pt() > 35) {
       l1egMedium_pt->Fill(gctClusters->at(0).Pt());
+      std::cout << "  filled l1egMedium_pt  ";
     }
     
     if (gctClusters->at(0).Pt() > 40) {
       l1egTight_pt->Fill(gctClusters->at(0).Pt());
+      std::cout << " filled l1egTight_pt  ";
     }
   }
   
