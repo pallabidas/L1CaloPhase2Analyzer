@@ -43,6 +43,7 @@ void makeRatesPlots(void)
   std::vector<TH1F*> vHists;
   std::vector<TString> vLabels;
   std::vector<int> vColors;
+  bool useLogy;
 
 
   /*******************************************************/
@@ -53,6 +54,7 @@ void makeRatesPlots(void)
   xMax = 60.0;
   yMin = 10.0;
   yMax = 50000;
+  useLogy = true;
 
   /* EG rates in barrel */
   TString folder= "l1NtupleProducer/";
@@ -71,7 +73,8 @@ void makeRatesPlots(void)
              xMin, xMax, yMin, yMax,
              "L1 EGamma p_{T}",
              "rates_barrel_GCT",
-             outputDirectory);
+             outputDirectory,
+             useLogy);
 
   vHists.clear();  vLabels.clear();  vColors.clear();
 
