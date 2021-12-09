@@ -60,6 +60,7 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
   Tcan->cd();     /* Set current canvas */
   Tcan->SetFillColor(0);
 
+
   std::vector<TGraphAsymmErrors*>::iterator itGraph;
   std::vector<TString>::iterator itLabel;
   std::vector<int>::iterator itColor;
