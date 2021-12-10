@@ -168,7 +168,7 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
     lDebug->SetNDC();
     lDebug->SetTextFont(42);
     lDebug->SetTextColor(kBlack);
-    lDebug->DrawLatex(0.420, 0.50, "#scale[0.9]{-0.1}");
+    lDebug->DrawLatex(0.410, 0.50, "#scale[0.9]{-0.1}");
     Tcan->Update();
   }
 
