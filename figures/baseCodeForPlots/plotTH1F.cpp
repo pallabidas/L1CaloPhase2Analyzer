@@ -55,6 +55,7 @@ void applyLegStyle(TLegend *leg){
     histPath :  the path to the TH1F inside the file (usually the name of the folder in the ROOT file).
     inputDirectory : the path to the ROOT file (~/myRepo/input.root).
     outputDirectory: the directory where the output plots will be saved.
+    useLogy:  if True, use log y-axis.
 */
 
 int plotTH1F(TString th1fName, 
@@ -62,7 +63,8 @@ int plotTH1F(TString th1fName,
              bool isAU,
              TString histPath, 
 			       TString inputDirectory,
-             TString outputDirectory){ 
+             TString outputDirectory,
+             bool useLogy){ 
  
   //gROOT->LoadMacro("CMS_lumi.C");
   //gROOT->ProcessLine(".L ~/Documents/work/Analysis/PhaseIIStudies/2018/tdrstyle.C");
@@ -76,6 +78,8 @@ int plotTH1F(TString th1fName,
   Tcan->SetFillColor(0);
   //TPad* pad1 = new TPad("pad1","The pad",0,0.0,0.98,1);
   //applyPadStyle(pad1);
+
+  if (useLogy) gPad->SetLogy();
  
   TLegend *leg = new TLegend(0.60,0.75,0.85,0.9);
   applyLegStyle(leg);
@@ -97,8 +101,8 @@ int plotTH1F(TString th1fName,
   file->GetObject(histPath+th1fName, hist);
 
   hist->SetMarkerColor(0);
-  hist->SetFillStyle(1001);
-  hist->SetFillColorAlpha(kBlue+2, 0.1);
+  // hist->SetFillStyle(1001);
+  //  hist->SetFillColorAlpha(kBlue+2, 0.1);
   hist->SetLineWidth(1);
   hist->SetLineColor(kBlue+2);
 

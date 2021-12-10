@@ -155,6 +155,37 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
     l->SetTextColor(kBlue);
     l->DrawLatex(0.538, 0.091, "#scale[0.9]{0}");
     Tcan->Update();
+
+    // Make line at -0.10 for debugging studies
+    float debugDiff = -0.1;
+    TLine *lineDebug = new TLine(debugDiff, 0, debugDiff, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
+    lineDebug->SetLineColor(kBlack);
+    lineDebug->SetLineStyle(kDashed);
+    lineDebug->SetLineWidth(3);
+    lineDebug->Draw();
+    // Make line at -0.10 for debugging studies
+    TLatex *lDebug = new TLatex(); 
+    lDebug->SetNDC();
+    lDebug->SetTextFont(42);
+    lDebug->SetTextColor(kBlack);
+    lDebug->DrawLatex(0.420, 0.50, "#scale[0.9]{-0.1}");
+    Tcan->Update();
+  }
+
+  // More specifics: overlay the eta boundaries
+    // More specifics: if the plot is the pT difference %, draw a line at x = 0
+  if (name.Contains("Eta")) {
+    std:vector<float> etaBoundaries{-1.479, -1.3096, -1.0476, -0.7857, -0.5238, -0.2619, 0, 0.2619, 0.5238, 0.7857, 1.0476, 1.3096, 1.479};
+    for (float b : etaBoundaries) {
+
+  //      TLine *line = new TLine(b, 0.012, b, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
+      TLine *line = new TLine(b, 0.012, b, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
+      line->SetLineColor(kBlue);
+      line->SetLineStyle(kDashed);
+      line->SetLineWidth(3);
+      line->Draw();
+      Tcan->Update();
+    }
   }
 
   // Finicky ymax values
@@ -196,10 +227,10 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
   latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
 
   if (bonusDescriptor != "") { // 1.4841
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.305, " + bonusDescriptor + "}");
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841, " + bonusDescriptor + "}");
   }
   else {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.305}");
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
   }
   Tcan->Update();
 

@@ -60,6 +60,7 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
   Tcan->cd();     /* Set current canvas */
   Tcan->SetFillColor(0);
 
+
   std::vector<TGraphAsymmErrors*>::iterator itGraph;
   std::vector<TString>::iterator itLabel;
   std::vector<int>::iterator itColor;
@@ -96,7 +97,8 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
   histDummy->GetYaxis()->SetTitle("L1 Efficiency");
   histDummy->GetXaxis()->SetTitleSize(0.06); // default is 0.03                                                                    
   /* Set y-axis limits */  
-  histDummy->GetYaxis()->SetRangeUser(0.0, 1.1);
+  // histDummy->GetYaxis()->SetRangeUser(0.0, 1.1);
+  histDummy->GetYaxis()->SetRangeUser(0.8, 1.02);
 
   /* Customize legend */
   for (itGraph = graphs.begin(), itLabel = labels.begin();
@@ -136,6 +138,9 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
   Tcan->cd();
   Tcan->SaveAs(outputDir+outputName+".pdf");
   Tcan->SaveAs(outputDir+outputName+".png");
+
+  Tcan->Close();
+  delete Tcan;
 }
              
 

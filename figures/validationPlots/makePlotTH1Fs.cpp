@@ -1,10 +1,10 @@
-// Usage: root -l -b -q runPlotTH1F.cpp
+// Usage: root -l -b -q makePlotTH1F.cpp
 
 // Customize this file
 
 #include "../baseCodeForPlots/plotTH1F.cpp"
 
-void runPlotTH1Fs()
+void makePlotTH1Fs()
 {
   
 
@@ -19,18 +19,12 @@ void runPlotTH1Fs()
     outputDirectory: the directory where the output plots will be saved.
     */
  
-  TString treePath = "mutau_slimmed/";
-  TString inputDirectory  = "~/Dropbox/Princeton G3/Pre-Thesis/hists.root";
-  TString outputDirectory = "myPlots/";
+  TString treePath = "l1NtupleProducer/";
+  TString inputDirectory  = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/analyzer-rates.root";
+  TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/ratesPlots/";
 
-  TString label = "(MC) ggH #rightarrow aa #rightarrow bb#tau#tau, #mu#tau_{H} final state";
-  TString llabel = "#mu#tau_{H}";
+  TString label = "MinBias 200 PU, no cuts";
   bool isAU = false;
-
-
-  plotTH1F("muPt", "Muon p_{T}", label, isAU, treePath, inputDirectory, outputDirectory);
-  plotTH1F("muEta", "Muon #eta", label, isAU, treePath, inputDirectory, outputDirectory);
-  plotTH1F("tauPt", "#tau_{H} p_{t}", label, isAU, treePath, inputDirectory, outputDirectory);
-  plotTH1F("tauEta", "#tau_{H} #eta", label, isAU, treePath, inputDirectory, outputDirectory);
-  
+  bool useLogy = false;
+  plotTH1F("l1eg_pt", "L1 cluster p_{T}", label, isAU, treePath, inputDirectory, outputDirectory, true);
 }

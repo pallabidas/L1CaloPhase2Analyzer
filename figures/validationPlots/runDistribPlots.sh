@@ -1,5 +1,5 @@
 # Troubleshooting 
-root -l -b -q 'makeDistributionPlots.C("RelValElectronGunPt2To100_NoPU_genEta_lt_1p305", \
+root -l -b -q 'makeDistributionPlots.C("RelValElectronGunPt2To100_NoPU_illustrative_debug_goodAgreement", \
                                        "RelVal Electron Gun Pt 2 to 100, No PU",\
                                        "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/analyzer.root")'
 
