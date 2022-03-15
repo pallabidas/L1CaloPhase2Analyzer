@@ -20,7 +20,7 @@ void makeEfficienciesPlot(void)
   TString treePath = "l1NtupleProducer/efficiencyTree";
   //  TString rootFileDirectory = "../test/analyzer.root";
   TString rootFileDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/analyzer.root";
-  TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/efficiencyPlots/zoomed";
+  TString outputDirectory = "/Users/stephaniekwan/Dropbox/Princeton_G4/Phase2RCT/analyzer/efficiencyPlots/";
 
   float xMin, xMax;
   TString genCut, l1Cut;
