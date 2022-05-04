@@ -24,7 +24,12 @@
    If analyzing the firmware-based emulator, make sure the `python/` config file uses the `Phase2L1EGamma`... cluster collection.
 (Otherwise the clusters won't show up)
 
-2. To make a EVENT DISPLAY n-tuple:
+2. To make a EVENT DISPLAY n-tuple, run these steps, which call the emulator and then the analyzer which creates the vector of
+   TLorentzVectors of the input towers and crystals, and the output clusters and towers. This analyzer is
+   `L1CaloPhase2Analyzer/plugins/L1TEventDisplayGenerator.cc`. It produces `l1NtupleProducer/efficiencyTree`; its branches
+   are vectors of the above-described TLorentzVectors. 
+
+   This is a different analyzer than the one for variable distributions, efficiencies, etc (`L1TCaloEGammaAnalyzer.cc`). 
    ```
    cmsenv
    cd test/
@@ -44,11 +49,14 @@
 
 4. Copy the `L1EventDisplay` ROOT files into the event display repo: https://github.com/skkwan/phase2-l1t-eventDisplay and proceed there
 
+
+
 ## To run the emulator and create a TTree for distributions, efficiencies, etc.
 
 1. Same as step 1 above.
 
-2. To make an EFFICIENCYTREE n-tuple:
+2. To make an EFFICIENCYTREE n-tuple, run these steps which calls the emulator and the analyzer `L1TCaloEGammaAnalyzer.cc` 
+   (not to be confused with `L1TEventDisplayGenerator.cc`, which is different).
    ```
    cmsenv
    cd test/
@@ -65,3 +73,11 @@
    source runDistribPlots.sh    # if you get weird ROOT errors make sure there are no mismatched brackets }
    ```
    There should be printout statements saying where the .pngs and .pdfs were written.
+
+
+## To run the rates n-tuple (to-verify these steps)
+
+   ```
+   cd test/
+   cmsRun test-analyzer-rates.py
+   ```
