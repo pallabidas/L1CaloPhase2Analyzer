@@ -52,10 +52,13 @@ void applyLegStyle(TLegend *leg){
    name: name of the output .png/.pdf
    variable: the string that will be passed to TTree->Draw()
    cut: baseline cut
-   legend: legend on the x-axis (usually a description of the variable), LaTeX allowed
+   legend: legend on the x-axis (usually a description of the sample), LaTeX allowed
    treePath: path to the TTree inside the ROOT file, e.g. folderName/efficiencyTree
    inputDirectory: relative/absolute path to the ROOT file
    outputDirectory: relative/absolute path to the folder where .pngs and .pdfs will be written
+   xLabel: x-axis label
+   descriptor: first row descriptor in inset text
+   bonusDescriptor: second row descriptor in inset text
    bins: number of bins in the histo
    low: min x-range
    high: max x-range
@@ -64,7 +67,7 @@ void applyLegStyle(TLegend *leg){
    */
 int singleDistributionPlots(TString name, TString variable, TString cut, TString legend,
                             TString treePath, TString inputDirectory, TString outputDirectory,
-			                      TString xLabel, TString bonusDescriptor,
+			                      TString xLabel, TString descriptor, TString bonusDescriptor,
                             int bins, float low, float high, float ymax){ 
  
   gROOT->LoadMacro("/Users/stephaniekwan/Documents/Phase2L1Calo/phase2-l1Calo-analyzer/figures/baseCodeForPlots/CMS_lumi.C");
@@ -142,7 +145,7 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
 
   // More specifics: if the plot is the pT difference %, draw a line at x = 0
   float zeroDiff = 0;
-  if (name.Contains("pT_fractional_diff")) {
+  if (name.Contains("pT_fractional_diff") || name.Contains("pT_resolution")) {
         TLine *line = new TLine(zeroDiff, 0, zeroDiff, 1.05* hist->GetMaximum()); // 1.10* hist->GetMaximum());
     line->SetLineColor(kBlue);
     line->SetLineStyle(kDashed);
@@ -190,13 +193,13 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
 
   // Finicky ymax values
   // For specific distributions, give more room at the top
-  if (name.Contains("Eta") || name.Contains("Phi") || name.Contains("pT_fractional_diff")) {  
-    float max = hist->GetMaximum(); 
-    hist->SetMaximum(max * 1.5);
-  }
-  if (ymax > 0) {
-    hist->SetMaximum(ymax);
-  }
+  // if (name.Contains("Eta") || name.Contains("Phi") || name.Contains("diff")) {  
+  float max = hist->GetMaximum(); 
+  hist->SetMaximum(max * 1.5);
+  //}
+  //if (ymax > 0) {
+  //  hist->SetMaximum(ymax);
+  //}
 
 
   // // leg->AddEntry(hist, legend,"l");
@@ -221,16 +224,18 @@ int singleDistributionPlots(TString name, TString variable, TString cut, TString
 
 
   float commentaryXpos = 0.47;
+//  float commentaryXpos = 0.40;
   latex->DrawLatex(0.80, 0.920, "#scale[0.8]{0 PU}");
   latex->DrawLatex(commentaryXpos, 0.820, "#scale[0.6]{EG Barrel}");
-  latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{RelVal ElectronGun Pt 2 to 100}");
-  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
+  latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.6]{" + legend + "}");
+  //  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{v0 ECAL propagation,}");
+  latex->DrawLatex(commentaryXpos, 0.740, "#scale[0.6]{" + descriptor + "}");
 
-  if (bonusDescriptor != "") { // 1.4841
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841, " + bonusDescriptor + "}");
+  if (bonusDescriptor != "") { // 
+    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{" + bonusDescriptor + "}");
   }
   else {
-    latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
+    // latex->DrawLatex(commentaryXpos, 0.700, "#scale[0.6]{|#eta^{Gen}| < 1.4841}");
   }
   Tcan->Update();
 
