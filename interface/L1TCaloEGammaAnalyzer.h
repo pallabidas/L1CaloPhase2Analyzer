@@ -111,6 +111,21 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   std::vector<TLorentzVector> *recoJets  = new std::vector<TLorentzVector>; 
   std::vector<double> *recoJetsDr  = new std::vector<double>;
 
+  // Struct representing a cluster
+  struct Cluster {
+
+    TLorentzVector p4;
+    double et2x5;
+    double et5x5;
+    bool is_ss;
+    bool is_looseTkss;
+
+  };
+
+  // Re-packaged outputs of the emulator
+  std::vector<Cluster> *rctClusterInfo = new std::vector<L1TCaloEGammaAnalyzer::Cluster>;
+  std::vector<Cluster> *gctClusterInfo = new std::vector<L1TCaloEGammaAnalyzer::Cluster>; 
+
   // Outputs of the emulator
   std::vector<TLorentzVector> *rctClusters  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *rctTowers    = new std::vector<TLorentzVector>;
@@ -135,9 +150,12 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   double genPt, genEta, genPhi;
   double rct_cPt, rct_cEta, rct_cPhi;
   double rct_deltaR;
+  double rct_et2x5, rct_et5x5;
 
   double gct_cPt, gct_cEta, gct_cPhi;
   double gct_deltaR;
+  double gct_et2x5, gct_et5x5;
+  int gct_is_ss, gct_is_looseTkss;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;
@@ -432,10 +450,14 @@ int get5x5TPGs(const int maxTPGPt_eta,
   }
 
   static bool comparePt(const TLorentzVector& lhs,
-			const TLorentzVector& rhs) {
+  			const TLorentzVector& rhs) {
     return ( lhs.Pt() > rhs.Pt() );
   }
-
+  
+  static bool compareClusterPt(const Cluster& lhs,
+				const Cluster& rhs) {
+    return (lhs.p4.Pt() > rhs.p4.Pt());
+  }
 };
 
 #endif
