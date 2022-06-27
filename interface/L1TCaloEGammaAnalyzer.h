@@ -117,6 +117,7 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
     TLorentzVector p4;
     double et2x5;
     double et5x5;
+    double iso;
     bool is_ss;
     bool is_looseTkss;
 
@@ -155,6 +156,7 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   double gct_cPt, gct_cEta, gct_cPhi;
   double gct_deltaR;
   double gct_et2x5, gct_et5x5;
+  double gct_iso;   // only meaningful for GCT
   int gct_is_ss, gct_is_looseTkss;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;

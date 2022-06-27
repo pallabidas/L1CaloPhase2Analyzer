@@ -106,6 +106,7 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("gct_deltaR", &gct_deltaR, "gct_deltaR/D");
     efficiencyTree->Branch("gct_et2x5", &gct_et2x5, "gct_et2x5/D");
     efficiencyTree->Branch("gct_et5x5", &gct_et5x5, "gct_et5x5/D");
+    efficiencyTree->Branch("gct_iso",   &gct_iso,   "gct_iso/D");
     efficiencyTree->Branch("gct_is_ss", &gct_is_ss, "gct_is_ss/I");
     efficiencyTree->Branch("gct_is_looseTkss", &gct_is_looseTkss, "gct_is_looseTkss/I");
     
@@ -214,12 +215,14 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp_p4;
       std::cout << "GCT Cluster found: pT " << gctCluster.pt()  << ", "
                 << "eta "               << gctCluster.eta() << ", "
-                << "phi "               << gctCluster.phi() << std::endl;
+                << "phi "               << gctCluster.phi() << ", " 
+		<< "iso "               << gctCluster.isolation() << std::endl;
       temp_p4.SetPtEtaPhiE(gctCluster.pt(),gctCluster.eta(),gctCluster.phi(),gctCluster.pt());
 
       temp.p4 = temp_p4;
-      temp.et2x5 = gctCluster.e2x5();
+      temp.et2x5 = gctCluster.e2x5();  // see https://cmssdt.cern.ch/lxr/source/DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h
       temp.et5x5 = gctCluster.e5x5();
+      temp.iso   = gctCluster.isolation();
       temp.is_ss = gctCluster.standaloneWP();
       temp.is_looseTkss = gctCluster.looseL1TkMatchWP();
       
@@ -489,6 +492,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     
     gct_cPt   = 0;    gct_cEta   = -999;   gct_cPhi  = -999;
     gct_deltaR = 999;
+    gct_iso = 0;
     gct_et2x5 = 0; gct_et5x5 = 0;
     gct_is_ss = 0; gct_is_looseTkss = 0;
     
@@ -505,11 +509,12 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 
 	Cluster myTemp;
 	myTemp.p4    = temp_p4;
+	myTemp.iso   = gctClusterInfo->at(i).iso;
 	myTemp.et2x5 = gctClusterInfo->at(i).et2x5;
 	myTemp.et5x5 = gctClusterInfo->at(i).et5x5;
 	myTemp.is_ss = gctClusterInfo->at(i).is_ss;
 	myTemp.is_looseTkss = gctClusterInfo->at(i).is_looseTkss;
-	
+
         gctClustersMatched.push_back(myTemp);
 
       }
@@ -525,6 +530,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       gct_cPhi = gctClustersMatched.at(0).p4.Phi();
       gct_deltaR = reco::deltaR(gct_cEta, gct_cPhi,
     				genElectron.Eta(), genElectron.Phi());
+      gct_iso   = gctClustersMatched.at(0).iso;
       gct_et2x5 = gctClustersMatched.at(0).et2x5;
       gct_et5x5 = gctClustersMatched.at(0).et5x5; 
       gct_is_ss = gctClustersMatched.at(0).is_ss;
@@ -536,6 +542,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     		<< " with genElectron " << genPt
     		<< " eta: " << genEta
     		<< " phi: " << genPhi  << ". "
+		<< " iso: "   << gct_iso
     		<< " et2x5: " << gct_et2x5 
 		<< " et5x5: " << gct_et5x5 
 		<< " is_ss: " << gct_is_ss 
