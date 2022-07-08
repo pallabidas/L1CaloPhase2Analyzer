@@ -120,7 +120,8 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
     double iso;
     bool is_ss;
     bool is_looseTkss;
-
+    bool is_iso;
+    bool is_looseTkiso;
   };
 
   // Re-packaged outputs of the emulator
@@ -158,6 +159,7 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   double gct_et2x5, gct_et5x5;
   double gct_iso;   // only meaningful for GCT
   int gct_is_ss, gct_is_looseTkss;
+  int gct_is_iso, gct_is_looseTkiso;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;
