@@ -111,6 +111,25 @@ class L1EGammaCrystalsProducerAnalyzer : public edm::EDAnalyzer {
   std::vector<TLorentzVector> *recoJets  = new std::vector<TLorentzVector>; 
   std::vector<double> *recoJetsDr  = new std::vector<double>;
 
+  // Struct representing a cluster
+  struct Cluster {
+
+    TLorentzVector p4;
+    double et2x5;
+    double et5x5;
+    double iso;
+    bool is_ss;
+    bool is_looseTkss;
+    bool is_iso;
+    bool is_looseTkiso;
+  };
+
+
+
+  // Re-packaged outputs of the emulator
+  std::vector<Cluster> *gctClusterInfo = new std::vector<L1EGammaCrystalsProducerAnalyzer::Cluster>; 
+
+  
   // Outputs of the emulator
   std::vector<TLorentzVector> *rctClusters  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *rctTowers    = new std::vector<TLorentzVector>;
@@ -135,9 +154,14 @@ class L1EGammaCrystalsProducerAnalyzer : public edm::EDAnalyzer {
   double genPt, genEta, genPhi;
   double rct_cPt, rct_cEta, rct_cPhi;
   double rct_deltaR;
+  double rct_et2x5, rct_et5x5;
 
   double gct_cPt, gct_cEta, gct_cPhi;
   double gct_deltaR;
+  double gct_et2x5, gct_et5x5;
+  double gct_iso;   // only meaningful for GCT
+  int gct_is_ss, gct_is_looseTkss;
+  int gct_is_iso, gct_is_looseTkiso;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;
@@ -434,6 +458,11 @@ int get5x5TPGs(const int maxTPGPt_eta,
   static bool comparePt(const TLorentzVector& lhs,
 			const TLorentzVector& rhs) {
     return ( lhs.Pt() > rhs.Pt() );
+  }
+
+  static bool compareClusterPt(const Cluster& lhs,
+			       const Cluster& rhs) {
+    return (lhs.p4.Pt() > rhs.p4.Pt());
   }
 
 };
