@@ -187,6 +187,7 @@ class L1TEventDisplayGenerator : public edm::EDAnalyzer {
   // Outputs of the emulator
   std::vector<TLorentzVector> *ecalClusters  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *caloTowers    = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -286,6 +287,7 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<vector <L1CaloRegion> > regionSource_;
   edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> ecalClustersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> caloTowersSrc_;
+  edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
 
   std::string folderName_;
   double recoPt_;

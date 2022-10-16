@@ -3,7 +3,7 @@
 /* Author: Stephanie Kwan                                          */
 /*******************************************************************/
 
-#include "TGraphAsymmErrors.h"
+#include "TH1F.h"
 #include "TH1.h"
 #include "TH1F.h"
 
@@ -29,12 +29,12 @@
 #include "../baseCodeForPlots/tdrstyle.C"
 #include "../baseCodeForPlots/comparisonPlots.C"
 
-#ifndef EFFICIENCY_HIST_CPP_INCL
-#define EFFICIENCY_HIST_CPP_INCL
+#ifndef RESOLUTION_HIST_CPP_INCL
+#define RESOLUTION_HIST_CPP_INCL
 
 /*******************************************************************/
 
-void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs, 
+void plotNResolutions(std::vector<TH1F*> graphs, 
              std::vector<TString> labels,
              std::vector<int> colors,
              TString xAxisLabel,
@@ -47,7 +47,7 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
 
   setTDRStyle();
   TCanvas* Tcan = new TCanvas("Tcan","", 100, 20, 1000, 800);
-  TLegend* leg = new TLegend(0.55,0.15,0.90,0.45);
+  TLegend* leg = new TLegend(0.65,0.15,0.90,0.45);
   applySmallerLegStyle(leg);
 
   Tcan->SetGrid();
@@ -61,21 +61,21 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
   Tcan->SetFillColor(0);
 
 
-  std::vector<TGraphAsymmErrors*>::iterator itGraph;
+  std::vector<TH1F*>::iterator itGraph;
   std::vector<TString>::iterator itLabel;
   std::vector<int>::iterator itColor;
   
-  TGraphAsymmErrors* histDummy;
+  TH1F* histDummy;
   for (itGraph = graphs.begin(), itLabel = labels.begin(), itColor = colors.begin();
        itGraph != graphs.end();
        itGraph++, itLabel++, itColor++)
     {
       if (itGraph == graphs.begin()) // only do this once 
    {
-     histDummy = new TGraphAsymmErrors(**itGraph);
+     histDummy = new TH1F(**itGraph);
    }
       
-      // De-reference the iterator to get the TGraphAsymmErrors*
+      // De-reference the iterator to get the TH1F*
       (*itGraph)->SetMarkerColor(*itColor);
       (*itGraph)->SetMarkerStyle(kFullCircle);
       (*itGraph)->SetLineWidth(2);
@@ -90,14 +90,14 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
 
   for (itGraph = graphs.begin(); itGraph != graphs.end(); itGraph++)
     {
-      (*itGraph)->Draw("P");
+      (*itGraph)->Draw("hist same");
     }
 
-  histDummy->GetXaxis()->SetTitle(xAxisLabel);
-  histDummy->GetYaxis()->SetTitle("L1 Efficiency");
+  histDummy->GetXaxis()->SetTitle("Resolution vs Gen Electron p_{T} [GeV]");
+  histDummy->GetYaxis()->SetTitle("#entries");
   histDummy->GetXaxis()->SetTitleSize(0.06); // default is 0.03                                                                    
   /* Set y-axis limits */  
-  histDummy->GetYaxis()->SetRangeUser(0.0, 1.5);
+  //histDummy->GetYaxis()->SetRangeUser(0.0, 1.5);
   // histDummy->GetYaxis()->SetRangeUser(0.8, 1.02);
 
   /* Customize legend */
@@ -105,7 +105,7 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
        itGraph != graphs.end();
        itGraph++, itLabel++)
     {
-      leg->AddEntry(*itGraph, *itLabel,  "P");
+      leg->AddEntry(*itGraph, *itLabel,  "l");
     }
   leg->Draw();
 

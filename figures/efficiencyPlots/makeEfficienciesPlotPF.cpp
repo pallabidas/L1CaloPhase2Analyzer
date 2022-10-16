@@ -6,13 +6,15 @@
 
 #include "efficiencyHist.cpp"
 #include "calculateEfficiency.cpp"
+#include "resolutionHist.cpp"
+#include "calculateResolution.cpp"
 
 #include <string>
 /*********************************************************************/
 
-/* Plots L1 RCT and GCT EGamma efficiency as a function of gen-level variables. */
+/* Plots L1 RCT and PF cluster efficiency as a function of gen-level variables. */
 
-void makeEfficienciesPlot(void)
+void makeEfficienciesPlotPF(void)
 {
   gROOT->ProcessLine(".L calculateEfficiency.cpp");
 
@@ -29,6 +31,9 @@ void makeEfficienciesPlot(void)
   std::vector<TGraphAsymmErrors*> vGraphs;
   std::vector<TString> vLabels;
   std::vector<int> vColors;
+  std::vector<TH1F*> vReso;
+  std::vector<TString> vResoLabels;
+  std::vector<int> vResoColors;
 
   /*******************************************************/
   /* efficiency as a function of genPt                  */
@@ -121,37 +126,59 @@ void makeEfficienciesPlot(void)
   //       outputDirectory);    
 
 
+  vReso.clear(); vResoLabels.clear(); vResoColors.clear();
+
+  TH1F* reso1 = calculateResolution("gct_cPt - genPt", treePath, rootFileDirectory,
+                "gct_cPt > 0",
+                "(abs(genEta) < 1.4841)", -40, 100, useVariableBinning);
+  vReso.push_back(reso1);
+  vResoLabels.push_back("EG cluster");
+  vResoColors.push_back(kBlack);
+
+  TH1F* reso2 = calculateResolution("pf_cPt - genPt", treePath, rootFileDirectory,
+                "pf_cPt > 0",
+                "(abs(genEta) < 1.4841)", -40, 100, useVariableBinning);
+  vReso.push_back(reso2);
+  vResoLabels.push_back("PF cluster");
+  vResoColors.push_back(kRed);
+
+  plotNResolutions(vReso, vResoLabels, vResoColors,
+        "Resolution vs Gen Electron p_{T} [GeV]",
+        "Phase 2 GCT",
+        "resolution_genPt_barrel",
+        outputDirectory);
+
 
   /*******************************************************/
-  /* efficiency as a function of genPt: GCT              */
+  /* efficiency as a function of genPt: PF               */
   /*******************************************************/
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
   xMin = 0;
   xMax = 100;
   genCut  = "(abs(genEta) < 1.4841)";
-  l1Cut   = "(abs(genEta) < 1.4841) && (gct_cPt > 25)";
+  l1Cut   = "(abs(genEta) < 1.4841) && (pf_cPt > 1)";
   useVariableBinning = false;
 
   TGraphAsymmErrors* loose3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 30",
+                l1Cut + "&& pf_cPt > 2",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose3);
-  vLabels.push_back("L1 p_{T} > 30");
+  vLabels.push_back("L1 p_{T} > 2");
   vColors.push_back(kGreen + 2);
 
   TGraphAsymmErrors* medium3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                 l1Cut + "&& gct_cPt > 35",
+                 l1Cut + "&& pf_cPt > 5",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium3);
-  vLabels.push_back("L1 p_{T} > 35");
+  vLabels.push_back("L1 p_{T} > 5");
   vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 40",
+                l1Cut + "&& pf_cPt > 10",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight3);
-  vLabels.push_back("L1 p_{T} > 40");
+  vLabels.push_back("L1 p_{T} > 10");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
@@ -164,12 +191,12 @@ void makeEfficienciesPlot(void)
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron p_{T} [GeV]",
         "Phase 2 GCT",                                                                
-        "efficiency_genPt_barrel_GCT",        
+        "efficiency_genPt_barrel_PF_lowPt",        
         outputDirectory);    
   
 
   /*******************************************************/
-  /* efficiency as a function of genEta: GCT             */
+  /* efficiency as a function of genEta: PF              */
   /*******************************************************/
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
@@ -177,29 +204,29 @@ void makeEfficienciesPlot(void)
   xMax = 1.5;
 
   genCut  = "(abs(genEta) < 1.4841)";
-  l1Cut   = "(abs(genEta) < 1.4841) && (gct_cPt > 25)";
+  l1Cut   = "(abs(genEta) < 1.4841) && (pf_cPt > 1)";
   useVariableBinning = false;
 
 
   TGraphAsymmErrors* loose4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 30",
+                l1Cut + "&& pf_cPt > 2",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose4);
-  vLabels.push_back("L1 p_{T} > 30");
+  vLabels.push_back("L1 p_{T} > 2");
   vColors.push_back(kGreen+2);
 
   TGraphAsymmErrors* medium4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                 l1Cut + "&& gct_cPt > 35",
+                 l1Cut + "&& pf_cPt > 5",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium4);
-  vLabels.push_back("L1 p_{T} > 35");
+  vLabels.push_back("L1 p_{T} > 5");
   vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 40",
+                l1Cut + "&& pf_cPt > 10",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight4);
-  vLabels.push_back("L1 p_{T} > 40");
+  vLabels.push_back("L1 p_{T} > 10");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all4 = calculateEfficiency("genEta", treePath, rootFileDirectory,
@@ -212,12 +239,11 @@ void makeEfficienciesPlot(void)
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron #eta",
         "Phase 2 GCT",                                                                
-        "efficiency_genEta_barrel_GCT",        
+        "efficiency_genEta_barrel_PF_lowPt",        
         outputDirectory);    
   
-
   /*******************************************************/
-  /* efficiency as a function of genPhi: GCT             */
+  /* efficiency as a function of genPhi: PF              */
   /*******************************************************/
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
@@ -225,29 +251,29 @@ void makeEfficienciesPlot(void)
   xMax = 3.142;
 
   genCut  = "(abs(genEta) < 1.4841)";
-  l1Cut   = "(abs(genEta) < 1.4841) && (gct_cPt > 25)";
+  l1Cut   = "(abs(genEta) < 1.4841) && (pf_cPt > 1)";
   useVariableBinning = false;
 
 
   TGraphAsymmErrors* loose5 = calculateEfficiency("genPhi", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 30",
+                l1Cut + "&& pf_cPt > 2",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(loose5);
-  vLabels.push_back("L1 p_{T} > 30");
+  vLabels.push_back("L1 p_{T} > 2");
   vColors.push_back(kGreen+2);
 
   TGraphAsymmErrors* medium5 = calculateEfficiency("genPhi", treePath, rootFileDirectory,
-                 l1Cut + "&& gct_cPt > 35",
+                 l1Cut + "&& pf_cPt > 5",
                  genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(medium5);
-  vLabels.push_back("L1 p_{T} > 35");
+  vLabels.push_back("L1 p_{T} > 5");
   vColors.push_back(kBlue);
 
   TGraphAsymmErrors* tight5 = calculateEfficiency("genPhi", treePath, rootFileDirectory,
-                l1Cut + "&& gct_cPt > 40",
+                l1Cut + "&& pf_cPt > 10",
                 genCut, xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight5);
-  vLabels.push_back("L1 p_{T} > 40");
+  vLabels.push_back("L1 p_{T} > 10");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all5 = calculateEfficiency("genPhi", treePath, rootFileDirectory,
@@ -260,9 +286,8 @@ void makeEfficienciesPlot(void)
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen Electron #phi",
         "Phase 2 GCT",
-        "efficiency_genPhi_barrel_GCT",
+        "efficiency_genPhi_barrel_PF_lowPt",
         outputDirectory);
-
   
 }
 /*********************************************************************/

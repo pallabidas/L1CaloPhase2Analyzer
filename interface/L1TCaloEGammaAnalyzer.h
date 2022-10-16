@@ -65,6 +65,7 @@
 #include "L1Trigger/L1TCaloLayer1/src/UCTRegion.hh"
 #include "L1Trigger/L1TCaloLayer1/src/UCTGeometry.hh"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 
 //#ifdef __MAKECINT__
 #pragma extra_include "TLorentzVector.h";
@@ -134,6 +135,7 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
 
   std::vector<TLorentzVector> *gctClusters  = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *gctTowers    = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -160,6 +162,8 @@ class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
   double gct_iso;   // only meaningful for GCT
   int gct_is_ss, gct_is_looseTkss;
   int gct_is_iso, gct_is_looseTkiso;
+
+  double pf_cPt, pf_cEta, pf_cPhi, pf_deltaR;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;
@@ -251,6 +255,7 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> gctClustersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> rctTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> gctTowersSrc_;
+    edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
   edm::InputTag genSrc_;
   std::string folderName_;
   double recoPt_;

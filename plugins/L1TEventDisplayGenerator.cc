@@ -37,6 +37,7 @@
 // Output tower collection
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloTower.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1Trigger/interface/EGamma.h"
 
 #include "L1Trigger/L1CaloTrigger/interface/ParametricCalibration.h"
@@ -58,7 +59,8 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
-  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("clusters")))
+  caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("towers"))),
+  caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection >(cfg.getParameter<edm::InputTag>("PFclusters")))
   {
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
@@ -70,6 +72,7 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
     efficiencyTree->Branch("ecalClusters", "vector<TLorentzVector>", &ecalClusters, 32000, 0); 
     efficiencyTree->Branch("caloTowers",   "vector<TLorentzVector>", &caloTowers, 32000, 0);
+    efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
     
@@ -96,6 +99,7 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
 
   edm::Handle<l1tp2::CaloCrystalClusterCollection> caloCrystalClusters;
   edm::Handle<l1tp2::CaloTowerCollection> caloL1Towers;
+  edm::Handle<l1tp2::CaloPFClusterCollection> PFClusters;
   
   edm::Handle<EcalEBTrigPrimDigiCollection> ecalTPGs;
   edm::Handle<HcalTrigPrimDigiCollection> hcalTPGs;  
@@ -103,6 +107,7 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
  
   ecalClusters->clear(); 
   caloTowers->clear();
+  caloPFClusters->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
 
@@ -147,6 +152,18 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
 			  totalEt);
 	caloTowers->push_back(temp);
       }
+    }
+  }
+
+  // Get PF clusters
+  if(evt.getByToken(caloPFClustersSrc_, PFClusters)) {
+    for (const auto & PFCluster : *PFClusters){
+      std::cout << "PF cluster found: ET " << PFCluster.clusterEt()  << ", "
+                << "iEta, iPhi " << PFCluster.clusterIEta() << " " << PFCluster.clusterIPhi() << ", "
+                << "eta, phi " << PFCluster.clusterEta() << " " << PFCluster.clusterPhi() << std::endl;
+      TLorentzVector temp;
+      temp.SetPtEtaPhiE(PFCluster.clusterEt(), PFCluster.clusterEta(), PFCluster.clusterPhi(), PFCluster.clusterEt());
+      caloPFClusters->push_back(temp);
     }
   }
 

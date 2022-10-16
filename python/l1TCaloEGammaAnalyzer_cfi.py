@@ -9,6 +9,7 @@ l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzer",
                                   ecalDigis = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
                                   hcalDigis = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
                                   rctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer", "RCT"),
-                                  gctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer", "GCT")
+                                  gctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer", "GCT"),
+                                  PFclusters              = cms.InputTag("Phase2L1CaloPFClusterEmulatorProducer", "GCTPFCluster")
 #                                  clusters  = cms.InputTag('L1EGammaClusterEmuProducer')
 )

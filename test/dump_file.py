@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("L1AlgoTest")
 
 process.source = cms.Source("PoolSource",
-    fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/ZeroBias_Run2018B_RAW_38363080-ED68-E811-AFF1-FA163E1B57DB.root'),
+    fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_71C02E39-ED72-054B-871F-6B1FD1A1C14A_1_32_3108.root'),
     inputCommands = cms.untracked.vstring('keep *')
 )
 process.AODEventContent = cms.PSet(
@@ -1493,11 +1493,7 @@ process.FEVTDEBUGEventContent = cms.PSet(
         'keep *_hgcalTowerProducer_*_*', 
         'keep *_L1EGammaClusterEmuProducer_*_*', 
         'keep *_l1EGammaEEProducer_*_*', 
-        'keep *_L1VertexFinder_*_*', 
         'keep *_L1TkPrimaryVertex_*_*', 
-        'keep *_L1TowerCalibration_*_*', 
-        'keep *_L1CaloJet_*_*', 
-        'keep *_L1CaloJetHTT_*_*', 
         'keep *_L1TkElectronsCrystal_*_*', 
         'keep *_L1TkElectronsLooseCrystal_*_*', 
         'keep *_L1TkElectronsEllipticMatchCrystal_*_*', 
@@ -2253,11 +2249,7 @@ process.FEVTDEBUGHLTEventContent = cms.PSet(
         'keep *_hgcalTowerProducer_*_*', 
         'keep *_L1EGammaClusterEmuProducer_*_*', 
         'keep *_l1EGammaEEProducer_*_*', 
-        'keep *_L1VertexFinder_*_*', 
         'keep *_L1TkPrimaryVertex_*_*', 
-        'keep *_L1TowerCalibration_*_*', 
-        'keep *_L1CaloJet_*_*', 
-        'keep *_L1CaloJetHTT_*_*', 
         'keep *_L1TkElectronsCrystal_*_*', 
         'keep *_L1TkElectronsLooseCrystal_*_*', 
         'keep *_L1TkElectronsEllipticMatchCrystal_*_*', 
@@ -5686,11 +5678,7 @@ process.L1TriggerFEVTDEBUG = cms.PSet(
         'keep *_hgcalTowerProducer_*_*', 
         'keep *_L1EGammaClusterEmuProducer_*_*', 
         'keep *_l1EGammaEEProducer_*_*', 
-        'keep *_L1VertexFinder_*_*', 
         'keep *_L1TkPrimaryVertex_*_*', 
-        'keep *_L1TowerCalibration_*_*', 
-        'keep *_L1CaloJet_*_*', 
-        'keep *_L1CaloJetHTT_*_*', 
         'keep *_L1TkElectronsCrystal_*_*', 
         'keep *_L1TkElectronsLooseCrystal_*_*', 
         'keep *_L1TkElectronsEllipticMatchCrystal_*_*', 
@@ -14474,7 +14462,7 @@ process.ecalLocalRecoRECO = cms.PSet(
 )
 
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(5),
+    input = cms.untracked.int32(1),
     output = cms.optional.untracked.allowed(cms.int32,cms.PSet)
 )
 
@@ -14565,18 +14553,10 @@ process.Phase2L1CaloEGammaEmulatorProducer = cms.EDProducer("Phase2L1CaloEGammaE
 )
 
 
+process.Phase2L1CaloPFClusterEmulatorProducer = cms.EDProducer("Phase2L1CaloPFClusterEmulator")
+
+
 process.randomEngineStateProducer = cms.EDProducer("RandomEngineStateProducer")
-
-
-process.simEcalEBTriggerPrimitiveDigis = cms.EDProducer("EcalEBTrigPrimProducer",
-    BarrelOnly = cms.bool(True),
-    Debug = cms.bool(False),
-    Famos = cms.bool(False),
-    TcpOutput = cms.bool(False),
-    barrelEcalDigis = cms.InputTag("simEcalUnsuppressedDigis"),
-    binOfMaximum = cms.int32(6),
-    nOfSamples = cms.int32(1)
-)
 
 
 process.simHcalTriggerPrimitiveDigis = cms.EDProducer("HcalTrigPrimDigiProducer",
@@ -14623,18 +14603,18 @@ process.simHcalTriggerPrimitiveDigis = cms.EDProducer("HcalTrigPrimDigiProducer"
 )
 
 
-process.l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzerRates",
+process.l1NtupleProducer = cms.EDAnalyzer("L1TEventDisplayGenerator",
+    PFclusters = cms.InputTag("Phase2L1CaloPFClusterEmulatorProducer","GCTPFCluster"),
+    clusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer","GCT"),
     ecalDigis = cms.InputTag("simEcalEBTriggerPrimitiveDigis","","HLT"),
     folderName = cms.untracked.string('firstFolder'),
-    gctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer","GCT"),
-    genParticles = cms.InputTag("genParticles","","HLT"),
     hcalDigis = cms.InputTag("simHcalTriggerPrimitiveDigis","","HLT"),
-    rctClusters = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer","RCT")
+    towers = cms.InputTag("Phase2L1CaloEGammaEmulatorProducer","GCTFullTowers")
 )
 
 
 process.Out = cms.OutputModule("PoolOutputModule",
-    fileName = cms.untracked.string('phase2L1EGammaAnalyzerRates.root'),
+    fileName = cms.untracked.string('phase2L1CaloEGamma.root'),
     outputCommands = cms.untracked.vstring('keep *_Phase2L1CaloEGammaEmulatorProducer_*_*')
 )
 
@@ -14896,7 +14876,7 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 
 
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('analyzer-rates.root')
+    fileName = cms.string('L1EventDisplay.root')
 )
 
 
@@ -16020,13 +16000,10 @@ process.prefer("es_hardcode")
 
 process.prefer("ppsDBESSource")
 
-process.EcalEBtp_step = cms.Path(process.simEcalEBTriggerPrimitiveDigis)
-
-
-process.pL1EG = cms.Path(process.Phase2L1CaloEGammaEmulatorProducer+process.l1NtupleProducer)
+process.pL1EG = cms.Path(process.Phase2L1CaloEGammaEmulatorProducer+process.Phase2L1CaloPFClusterEmulatorProducer+process.l1NtupleProducer)
 
 
 process.end = cms.EndPath(process.Out)
 
 
-process.schedule = cms.Schedule(*[ process.EcalEBtp_step, process.pL1EG, process.end ])
+process.schedule = cms.Schedule(*[ process.pL1EG, process.end ])
