@@ -21,8 +21,8 @@ void makeEfficienciesPlotPF(void)
   /* Load the TTree. */
   TString treePath = "l1NtupleProducer/efficiencyTree";
   //  TString rootFileDirectory = "../test/analyzer.root";
-  TString rootFileDirectory = "/afs/cern.ch/work/p/pdas/emulator_phase2/try/CMSSW_11_1_7/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer.root";
-  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/";
+  TString rootFileDirectory = "/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer.root";
+  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/";
 
   float xMin, xMax;
   TString genCut, l1Cut;

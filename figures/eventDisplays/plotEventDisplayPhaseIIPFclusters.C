@@ -156,7 +156,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   // float half_tower_offset = 0.04365;
   float half_tower_offset = 0.0;
 
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/try/CMSSW_11_1_7/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay.root", "READ");
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay.root", "READ");
 
   // Declare the center of the plot
   float etaCenter = 0.27;
@@ -241,9 +241,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   std::cout<<name<<std::endl;
 
   // Get ECAL TPGs
-  double ecalMinPt = 0.;
+  double ecalMinPt = 0.5;
   if(ecalMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIecalCrystals.C: do not show ECAL TPGs with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show ECAL TPGs with energy under "
               << ecalMinPt << " GeV" << std::endl;
   }
 
@@ -262,9 +262,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   }
 
   // Get HCAL TPGs
-  double hcalMinPt = 0.;
+  double hcalMinPt = 0.5;
   if(hcalMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIecalCrystals.C: do not show HCAL TPGs with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show HCAL TPGs with energy under "
               << hcalMinPt << " GeV" << std::endl;
   }
 
@@ -287,9 +287,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   }
 
   // Get the clusters
-  double clusterMinPt = 0.;
+  double clusterMinPt = 0.5;
   if(clusterMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIecalCrystals.C: do not show EG clusters with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show EG clusters with energy under "
               << clusterMinPt << " GeV" << std::endl;
   }
 
@@ -311,9 +311,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   }
 
   // Get the towers
-  double towerMinPt = 0.;
+  double towerMinPt = 0.5;
   if(towerMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIecalCrystals.C: do not show GCT towers with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show GCT towers with energy under "
               << towerMinPt << " GeV" << std::endl;
   }
 
@@ -336,8 +336,14 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   }
 
   // Get the PF clusters
+  double pfclusterMinPt = 2.0;
+  if(pfclusterMinPt > 0.){
+    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show GCT towers with energy under "
+              << pfclusterMinPt << " GeV" << std::endl;
+  }
+
   for (UInt_t j = 0; j < vPFclusters->size(); ++j) {
-    if(vPFclusters->at(j).Pt() > 5.){
+    if(vPFclusters->at(j).Pt() > pfclusterMinPt){
       float ceta = vPFclusters->at(j).Eta();
       float cphi = vPFclusters->at(j).Phi();
       float cpt  = vPFclusters->at(j).Pt();
@@ -425,10 +431,10 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
  
   char* saveFile = new char[100];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/Event-%u-current_emulator_test.png",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/Event-%u-phase2emulator_test.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/Event-%u-current_emulator_test.pdf",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/Event-%u-phase2emulator_test.pdf",event);
   c1->SaveAs(saveFile);
 
 

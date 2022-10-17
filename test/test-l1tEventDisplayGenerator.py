@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process("L1AlgoTest",eras.Phase2C4)
+process = cms.Process("L1AlgoTest",eras.Phase2C9)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
@@ -38,7 +38,7 @@ process.source = cms.Source("PoolSource",
 # ---- Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 from Configuration.AlCa.GlobalTag import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '100X_upgrade2023_realistic_v1', '')
+process.GlobalTag = GlobalTag(process.GlobalTag, '123X_mcRun4_realistic_v3', '')
 
 # Choose a geometry
 process.load('Configuration.Geometry.GeometryExtended2026D49Reco_cff')
@@ -79,5 +79,5 @@ process.end = cms.EndPath( process.Out )
 
 process.schedule = cms.Schedule(process.pL1EG, process.end)
 
-dump_file = open("dump_file.py", "w")
-dump_file.write(process.dumpPython())
+#dump_file = open("dump_file.py", "w")
+#dump_file.write(process.dumpPython())

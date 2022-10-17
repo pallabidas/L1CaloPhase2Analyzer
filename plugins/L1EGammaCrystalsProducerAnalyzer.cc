@@ -58,6 +58,9 @@ using std::endl;
 using std::vector;
 
 L1EGammaCrystalsProducerAnalyzer::L1EGammaCrystalsProducerAnalyzer( const ParameterSet & cfg ) :
+  decoderToken_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
+  caloGeometryToken_(esConsumes<CaloGeometry, CaloGeometryRecord>(edm::ESInputTag("", ""))),
+  hbTopologyToken_(esConsumes<HcalTopology, HcalRecNumberingRecord>(edm::ESInputTag("", ""))),
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   gctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
@@ -130,13 +133,12 @@ void L1EGammaCrystalsProducerAnalyzer::analyze( const Event& evt, const EventSet
   allHcalTPGs->clear(); 
 
   // Detector geometry
-  es.get<CaloGeometryRecord>().get(caloGeometry_);
+  caloGeometry_ = &es.getData(caloGeometryToken_);
   ebGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Ecal, EcalBarrel);
   hbGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Hcal, HcalBarrel);
-  es.get<HcalRecNumberingRecord>().get(hbTopology);
-  hcTopology_ = hbTopology.product();
+  hcTopology_ = &es.getData(hbTopologyToken_);
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
-  es.get<CaloTPGRecord>().get(decoder_);
+  decoder_ = &es.getData(decoderToken_);
 
   std::cout << "Doing event " << event << "...." << std::endl;
 
@@ -179,12 +181,13 @@ void L1EGammaCrystalsProducerAnalyzer::analyze( const Event& evt, const EventSet
       //fill vector                                                                             
       Cluster temp ;
       TLorentzVector temp_p4;
+      experimentalParams = gctCluster.getExperimentalParams();
       std::cout << "GCT Cluster found: pT " << gctCluster.pt()  << ", "
                 << "eta "               << gctCluster.eta() << ", "
                 << "phi "               << gctCluster.phi() << ", " 
 		<< "iso "               << gctCluster.isolation() << ", " 
-	        << "is_ss"              << gctCluster.experimentalParam("standaloneWP_showerShape") << ", "
-	        << "is_looseTkss"       << gctCluster.experimentalParam("trkMatchWP_showerShape") 
+                << "is_ss"              << experimentalParams["standaloneWP_showerShape"] << ", "
+                << "is_looseTkss"       << experimentalParams["trkMatchWP_showerShape"]
 		<< std::endl;
       temp_p4.SetPtEtaPhiE(gctCluster.pt(),gctCluster.eta(),gctCluster.phi(),gctCluster.pt());
 
@@ -193,10 +196,11 @@ void L1EGammaCrystalsProducerAnalyzer::analyze( const Event& evt, const EventSet
       temp.et5x5 = gctCluster.e5x5();
       temp.iso   = gctCluster.isolation();
 
-      temp.is_ss         = gctCluster.experimentalParam("standaloneWP_showerShape");
-      temp.is_iso        = gctCluster.experimentalParam("standaloneWP_isolation");
-      temp.is_looseTkss  = gctCluster.experimentalParam("trkMatchWP_showerShape");
-      temp.is_looseTkiso = gctCluster.experimentalParam("trkMatchWP_isolation");
+      temp.is_ss         = experimentalParams["standaloneWP_showerShape"];
+      temp.is_iso        = experimentalParams["standaloneWP_isolation"];
+      temp.is_looseTkss  = experimentalParams["trkMatchWP_showerShape"];
+      temp.is_looseTkiso = experimentalParams["trkMatchWP_isolation"];
+
       std::cout << " with flags: " 
 		<< "is_ss " << temp.is_ss << ","
 		<< "is_iso " << temp.is_iso << ", "

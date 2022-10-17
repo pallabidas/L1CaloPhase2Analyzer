@@ -56,6 +56,9 @@ using std::endl;
 using std::vector;
 
 L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
+  decoderToken_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
+  caloGeometryToken_(esConsumes<CaloGeometry, CaloGeometryRecord>(edm::ESInputTag("", ""))),
+  hbTopologyToken_(esConsumes<HcalTopology, HcalRecNumberingRecord>(edm::ESInputTag("", ""))),
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
@@ -112,13 +115,12 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
   allHcalTPGs->clear(); 
 
   // Detector geometry
-  es.get<CaloGeometryRecord>().get(caloGeometry_);
+  caloGeometry_ = &es.getData(caloGeometryToken_);
   ebGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Ecal, EcalBarrel);
   hbGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Hcal, HcalBarrel);
-  es.get<HcalRecNumberingRecord>().get(hbTopology);
-  hcTopology_ = hbTopology.product();
+  hcTopology_ = &es.getData(hbTopologyToken_);
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
-  es.get<CaloTPGRecord>().get(decoder_);
+  decoder_ = &es.getData(decoderToken_);
 
   // Get the ECAL clusters
   if(evt.getByToken(ecalClustersSrc_, caloCrystalClusters)){
@@ -128,9 +130,9 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
       //	 caloCluster++ ) {
       //fill vector
       TLorentzVector temp ;
-      std::cout << "Cluster found: pT " << caloCluster.pt()  << ", "
-		<< "eta "               << caloCluster.eta() << ", "
-		<< "phi "               << caloCluster.phi() << std::endl;
+//      std::cout << "Cluster found: pT " << caloCluster.pt()  << ", "
+//		<< "eta "               << caloCluster.eta() << ", "
+//		<< "phi "               << caloCluster.phi() << std::endl;
       temp.SetPtEtaPhiE(caloCluster.pt(),caloCluster.eta(),caloCluster.phi(),caloCluster.pt());
       ecalClusters->push_back(temp);
     }
@@ -142,11 +144,11 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       float totalEt = caloTower.ecalTowerEt() + caloTower.hcalTowerEt();
       if (totalEt > 0) {
-	std::cout << "Tower found: ECAL ET " << caloTower.ecalTowerEt()  << ", "
-		  << "HCAL ET " << caloTower.hcalTowerEt()  << ", "
-		  << "iEta, iPhi " << caloTower.towerIEta() << " " << caloTower.towerIPhi() << ", "
-		  << "eta "             << caloTower.towerEta() << ", "
-		  << "phi "             << caloTower.towerPhi() << std::endl;
+//	std::cout << "Tower found: ECAL ET " << caloTower.ecalTowerEt()  << ", "
+//		  << "HCAL ET " << caloTower.hcalTowerEt()  << ", "
+//		  << "iEta, iPhi " << caloTower.towerIEta() << " " << caloTower.towerIPhi() << ", "
+//		  << "eta "             << caloTower.towerEta() << ", "
+//		  << "phi "             << caloTower.towerPhi() << std::endl;
 	temp.SetPtEtaPhiE(totalEt,
 			  caloTower.towerEta(), caloTower.towerPhi(),
 			  totalEt);
@@ -158,9 +160,9 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
   // Get PF clusters
   if(evt.getByToken(caloPFClustersSrc_, PFClusters)) {
     for (const auto & PFCluster : *PFClusters){
-      std::cout << "PF cluster found: ET " << PFCluster.clusterEt()  << ", "
-                << "iEta, iPhi " << PFCluster.clusterIEta() << " " << PFCluster.clusterIPhi() << ", "
-                << "eta, phi " << PFCluster.clusterEta() << " " << PFCluster.clusterPhi() << std::endl;
+//      std::cout << "PF cluster found: ET " << PFCluster.clusterEt()  << ", "
+//                << "iEta, iPhi " << PFCluster.clusterIEta() << " " << PFCluster.clusterIPhi() << ", "
+//                << "eta, phi " << PFCluster.clusterEta() << " " << PFCluster.clusterPhi() << std::endl;
       TLorentzVector temp;
       temp.SetPtEtaPhiE(PFCluster.clusterEt(), PFCluster.clusterEta(), PFCluster.clusterPhi(), PFCluster.clusterEt());
       caloPFClusters->push_back(temp);

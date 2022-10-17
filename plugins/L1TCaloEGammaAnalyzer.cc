@@ -60,6 +60,9 @@ using std::endl;
 using std::vector;
 
 L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
+  decoderToken_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
+  caloGeometryToken_(esConsumes<CaloGeometry, CaloGeometryRecord>(edm::ESInputTag("", ""))),
+  hbTopologyToken_(esConsumes<HcalTopology, HcalRecNumberingRecord>(edm::ESInputTag("", ""))),
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   rctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
@@ -148,7 +151,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   std::vector<Cluster> gctClustersMatched;
   std::vector<TLorentzVector> pfClustersMatched;
 
-  std::map<std::string, float> experimentalParams;
+  std::map<std::string, float> rctExperimentalParams;
+  std::map<std::string, float> gctExperimentalParams;
 
   rctClusters->clear(); 
   rctClusterInfo->clear();
@@ -161,38 +165,41 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   allHcalTPGs->clear(); 
 
   // Detector geometry
-  es.get<CaloGeometryRecord>().get(caloGeometry_);
+  caloGeometry_ = &es.getData(caloGeometryToken_);
   ebGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Ecal, EcalBarrel);
   hbGeometry = caloGeometry_->getSubdetectorGeometry(DetId::Hcal, HcalBarrel);
-  es.get<HcalRecNumberingRecord>().get(hbTopology);
-  hcTopology_ = hbTopology.product();
+  hcTopology_ = &es.getData(hbTopologyToken_);
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
-  es.get<CaloTPGRecord>().get(decoder_);
+  decoder_ = &es.getData(decoderToken_);
 
-  std::cout << "Doing event " << event << "...." << std::endl;
+  //std::cout << "Doing event " << event << "...." << std::endl;
 
   // Get the RCT clusters from the emulator and sort them by pT
   if(evt.getByToken(rctClustersSrc_, rctCaloCrystalClusters)){
     for(const auto & rctCluster : *rctCaloCrystalClusters){
 
-      std::cout << "RCT Cluster found: pT " << rctCluster.pt()  << ", "
-		<< "eta "                   << rctCluster.eta() << ", "
-		<< "phi "                   << rctCluster.phi() << ", " 
-		<< "et 2x5"                 << rctCluster.e2x5() << ", "
-		<< "et 5x5"                 << rctCluster.e5x5() << ", "
-		<< "is_ss"                  << rctCluster.experimentalParam("standaloneWP_showerShape") << ", "
-		<< "is_looseTkss"           << rctCluster.experimentalParam("trkMatchWP_showerShape") << std::endl;
-      
+//      std::cout << "RCT Cluster found: pT " << rctCluster.pt()  << ", "
+//		<< "eta "                   << rctCluster.eta() << ", "
+//		<< "phi "                   << rctCluster.phi() << ", " 
+//		<< "et 2x5"                 << rctCluster.e2x5() << ", "
+//		<< "et 5x5"                 << rctCluster.e5x5() << ", " 
+//                << std::endl;     
+ 
       Cluster temp ;
       TLorentzVector temp_p4;
       temp_p4.SetPtEtaPhiE(rctCluster.pt(),rctCluster.eta(),rctCluster.phi(),rctCluster.pt());
-
       temp.p4 = temp_p4;
 
       temp.et2x5 = rctCluster.e2x5();
       temp.et5x5 = rctCluster.e5x5();
-      temp.is_ss         = rctCluster.experimentalParam("standaloneWP_showerShape");
-      temp.is_looseTkss  = rctCluster.experimentalParam("trkMatchWP_showerShape");
+
+      rctExperimentalParams = rctCluster.getExperimentalParams();
+      temp.is_ss         = rctExperimentalParams["standaloneWP_showerShape"];
+      temp.is_looseTkss  = rctExperimentalParams["trkMatchWP_showerShape"];
+
+//      std::cout << " with flags: "
+//                << "is_ss " << temp.is_ss << ","
+//                << "is_looseTkss " << temp.is_looseTkss << ", "
 
       // Save the 4-vector
       rctClusters->push_back(temp_p4);
@@ -211,11 +218,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       float totalEt = rctTower.ecalTowerEt() + rctTower.hcalTowerEt();
       if (totalEt > 0) {
-	// std::cout << "Tower found: ECAL ET " << rctTower.ecalTowerEt()  << ", "
-	// 	  << "HCAL ET " << rctTower.hcalTowerEt()  << ", "
-	// 	  << "iEta, iPhi " << rctTower.towerIEta() << " " << rctTower.towerIPhi() << ", "
-	// 	  << "eta "             << rctTower.towerEta() << ", "
-	// 	  << "phi "             << rctTower.towerPhi() << std::endl;
+//	 std::cout << "Tower found: ECAL ET " << rctTower.ecalTowerEt()  << ", "
+//	 	  << "HCAL ET " << rctTower.hcalTowerEt()  << ", "
+//	 	  << "iEta, iPhi " << rctTower.towerIEta() << " " << rctTower.towerIPhi() << ", "
+//	 	  << "eta "             << rctTower.towerEta() << ", "
+//	 	  << "phi "             << rctTower.towerPhi() << std::endl;
 	temp.SetPtEtaPhiE(totalEt,
 			  rctTower.towerEta(), rctTower.towerPhi(),
 			  totalEt);
@@ -230,11 +237,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       //fill vector                                                                             
       Cluster temp ;
       TLorentzVector temp_p4;
-      std::cout << "GCT Cluster found: pT " << gctCluster.pt()  << ", "
-                << "eta "               << gctCluster.eta() << ", "
-                << "phi "               << gctCluster.phi() << ", " 
-		<< "iso "               << gctCluster.isolation() << ", " 
-		<< std::endl;
+//      std::cout << "GCT Cluster found: pT " << gctCluster.pt()  << ", "
+//                << "eta "               << gctCluster.eta() << ", "
+//                << "phi "               << gctCluster.phi() << ", " 
+//		<< "iso "               << gctCluster.isolation() << ", " 
+//		<< std::endl;
       temp_p4.SetPtEtaPhiE(gctCluster.pt(),gctCluster.eta(),gctCluster.phi(),gctCluster.pt());
 
       temp.p4 = temp_p4;
@@ -242,15 +249,17 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       temp.et5x5 = gctCluster.e5x5();
       temp.iso   = gctCluster.isolation();
 
-      temp.is_ss         = gctCluster.experimentalParam("standaloneWP_showerShape");
-      temp.is_iso        = gctCluster.experimentalParam("standaloneWP_isolation");
-      temp.is_looseTkss  = gctCluster.experimentalParam("trkMatchWP_showerShape");
-      temp.is_looseTkiso = gctCluster.experimentalParam("trkMatchWP_isolation");
-      std::cout << " with flags: " 
-		<< "is_ss " << temp.is_ss << ","
-		<< "is_iso " << temp.is_iso << ", "
-		<< "is_looseTkss " << temp.is_looseTkss << ", "
-		<< "is_looseTkiso " << temp.is_looseTkiso << std::endl;
+      gctExperimentalParams = gctCluster.getExperimentalParams();
+      temp.is_ss         = gctExperimentalParams["standaloneWP_showerShape"];
+      temp.is_iso        = gctExperimentalParams["standaloneWP_isolation"];
+      temp.is_looseTkss  = gctExperimentalParams["trkMatchWP_showerShape"];
+      temp.is_looseTkiso = gctExperimentalParams["trkMatchWP_isolation"];
+
+//      std::cout << " with flags: " 
+//		<< "is_ss " << temp.is_ss << ","
+//		<< "is_iso " << temp.is_iso << ", "
+//		<< "is_looseTkss " << temp.is_looseTkss << ", "
+//		<< "is_looseTkiso " << temp.is_looseTkiso << std::endl;
       
       // Save the 4-vector
       gctClusters->push_back(temp_p4);
@@ -264,9 +273,9 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   // Get the PF clusters from the emulator, and sort them by pT
   if(evt.getByToken(caloPFClustersSrc_, PFClusters)) {
     for (const auto & PFCluster : *PFClusters){
-      std::cout << "PF cluster found: ET " << PFCluster.clusterEt()  << ", "
-                << "iEta, iPhi " << PFCluster.clusterIEta() << " " << PFCluster.clusterIPhi() << ", "
-                << "eta, phi " << PFCluster.clusterEta() << " " << PFCluster.clusterPhi() << std::endl;
+//      std::cout << "PF cluster found: ET " << PFCluster.clusterEt()  << ", "
+//                << "iEta, iPhi " << PFCluster.clusterIEta() << " " << PFCluster.clusterIPhi() << ", "
+//                << "eta, phi " << PFCluster.clusterEta() << " " << PFCluster.clusterPhi() << std::endl;
       TLorentzVector temp;
       temp.SetPtEtaPhiE(PFCluster.clusterEt(), PFCluster.clusterEta(), PFCluster.clusterPhi(), PFCluster.clusterEt());
       caloPFClusters->push_back(temp);
@@ -381,10 +390,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 
   // Get genParticles and build a vector of genElectrons
   edm::Handle<GenParticleCollectionType> genParticleHandle;
-  if(!evt.getByToken(genToken_,genParticleHandle))
-    std::cout<<"No gen Particles Found "<<std::endl;
-  else
-    std::cout<<"Gen Particles size "<<genParticleHandle->size()<<std::endl;
+  if(!evt.getByToken(genToken_,genParticleHandle)) std::cout<<"No gen Particles Found "<<std::endl;
+  //else { std::cout<<"Gen Particles size "<<genParticleHandle->size()<<std::endl; }
   
   std::vector<reco::GenParticle> genElectrons;
   std::vector<reco::GenParticle> genParticles;
@@ -397,10 +404,10 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
       genElectrons.push_back(*ptr);
       // Check isLastCopy() and isLastCopyBeforeFSR()
-      std::cout << "isLastCopy: " << ptr->isLastCopy()  << ", "
-		<< "isLastCopyBeforeFSR: " << ptr->isLastCopyBeforeFSR() << std::endl;
-      
-      std::cout << "Added genElectron " << ptr->pt() << std::endl;
+//      std::cout << "isLastCopy: " << ptr->isLastCopy()  << ", "
+//		<< "isLastCopyBeforeFSR: " << ptr->isLastCopyBeforeFSR() << std::endl;
+//      
+//      std::cout << "Added genElectron " << ptr->pt() << std::endl;
     }
   }
   
@@ -440,14 +447,14 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 				   ecal_pos.phi(),
 				   prop.particle().mass());
       
-      std::cout << ">>> Corrected gen electron pt/eta/phi: (" 
-		<< genElectron.pt() << ", " << genElectron.eta() << ", " << genElectron.phi() 
-		<< ")"
-		<< " to " 
-		<< corrGenElectron.Pt() << ", " << corrGenElectron.Eta() << ", " << corrGenElectron.Phi()
-		<< " with ecal_pos eta/phi "
-		<< ecal_pos.eta() << ", " << ecal_pos.phi()
-		<< std::endl;
+//      std::cout << ">>> Corrected gen electron pt/eta/phi: (" 
+//		<< genElectron.pt() << ", " << genElectron.eta() << ", " << genElectron.phi() 
+//		<< ")"
+//		<< " to " 
+//		<< corrGenElectron.Pt() << ", " << corrGenElectron.Eta() << ", " << corrGenElectron.Phi()
+//		<< " with ecal_pos eta/phi "
+//		<< ecal_pos.eta() << ", " << ecal_pos.phi()
+//		<< std::endl;
       propagatedGenElectrons.push_back(corrGenElectron);
     }
   }
@@ -470,11 +477,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 
     // Loop through the RCT clusters which are already sorted in decreasing pT, and check for
     // the first cluster within deltaR < 0.5. 
-    std::cout << "Event " << event << ": check that RCT clusters are sorted!" << std::endl;
+//    std::cout << "Event " << event << ": check that RCT clusters are sorted!" << std::endl;
     for (size_t i = 0; i < rctClusterInfo->size(); ++i) {
-      std::cout << "sorted? RCT Cluster found: pT " << rctClusterInfo->at(i).p4.Pt()  << ", "
-                << "eta "                   << rctClusterInfo->at(i).p4.Eta() << ", "
-                << "phi "                   << rctClusterInfo->at(i).p4.Phi() << std::endl;
+//      std::cout << "sorted? RCT Cluster found: pT " << rctClusterInfo->at(i).p4.Pt()  << ", "
+//                << "eta "                   << rctClusterInfo->at(i).p4.Eta() << ", "
+//                << "phi "                   << rctClusterInfo->at(i).p4.Phi() << std::endl;
     }
     
     for (size_t i = 0; i < rctClusterInfo->size(); ++i) {
@@ -513,21 +520,21 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       rct_et2x5 = rctClustersMatched.at(0).et2x5;
       rct_et5x5 = rctClustersMatched.at(0).et5x5; 
 
-      std::cout << "--> Matched RCT cluster " << rct_cPt 
-		<< " eta: " << rct_cEta
-		<< " phi: " << rct_cPhi
-		<< " with genElectron " << genPt
-		<< " eta: " << genEta
-		<< " phi: " << genPhi 
-		<< " et2x5: " << rct_et2x5 
-		<< " et5x5: " << rct_et5x5 << std::endl;
+//      std::cout << "--> Matched RCT cluster " << rct_cPt 
+//		<< " eta: " << rct_cEta
+//		<< " phi: " << rct_cPhi
+//		<< " with genElectron " << genPt
+//		<< " eta: " << genEta
+//		<< " phi: " << genPhi 
+//		<< " et2x5: " << rct_et2x5 
+//		<< " et5x5: " << rct_et5x5 << std::endl;
     }
     
     //************************************************************************************/
     // Loop through the GCT cluster 4-vectors, and gen-match. Only take the first 
     // GCT cluster which has deltaR < 0.5.
     //************************************************************************************/ 
-    std::cout << ">>> Doing GCT clusters..." << std::endl;
+//    std::cout << ">>> Doing GCT clusters..." << std::endl;
     
     gct_cPt   = 0;    gct_cEta   = -999;   gct_cPhi  = -999;
     gct_deltaR = 999;
@@ -537,9 +544,9 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     gct_is_iso = 0; gct_is_looseTkiso = 0;
 
     for (size_t i = 0; i < gctClusterInfo->size(); ++i) {
-      std::cout << " gctClusterInfo pT " << gctClusterInfo->at(i).p4.Pt() 
-		<< " eta "               << gctClusterInfo->at(i).p4.Eta()
-		<< " phi "               << gctClusterInfo->at(i).p4.Phi() << std::endl;
+//      std::cout << " gctClusterInfo pT " << gctClusterInfo->at(i).p4.Pt() 
+//		<< " eta "               << gctClusterInfo->at(i).p4.Eta()
+//		<< " phi "               << gctClusterInfo->at(i).p4.Phi() << std::endl;
       float this_gct_deltaR = reco::deltaR(gctClusterInfo->at(i).p4.Eta(), gctClusterInfo->at(i).p4.Phi(),
 					   genElectron.Eta(), genElectron.Phi());
       if (this_gct_deltaR < 0.5) {
@@ -579,33 +586,33 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       gct_is_iso = gctClustersMatched.at(0).is_iso;
       gct_is_looseTkiso = gctClustersMatched.at(0).is_looseTkiso;
       
-      std::cout << "--> Matched GCT cluster " << gct_cPt
-    		<< " eta: " << gct_cEta
-    		<< " phi: " << gct_cPhi
-    		<< " with genElectron " << genPt
-    		<< " eta: " << genEta
-    		<< " phi: " << genPhi  << ". "
-		<< " iso: "   << gct_iso
-    		<< " et2x5: " << gct_et2x5 
-		<< " et5x5: " << gct_et5x5 
-		<< " is_ss: " << gct_is_ss 
-		<< " is_looseTkss: " << gct_is_looseTkss 
-		<< " is_iso: " << gct_is_iso 
-		<< " is_looseTkiso: " << gct_is_looseTkiso 
-		<< std::endl;
+//      std::cout << "--> Matched GCT cluster " << gct_cPt
+//    		<< " eta: " << gct_cEta
+//    		<< " phi: " << gct_cPhi
+//    		<< " with genElectron " << genPt
+//    		<< " eta: " << genEta
+//    		<< " phi: " << genPhi  << ". "
+//		<< " iso: "   << gct_iso
+//    		<< " et2x5: " << gct_et2x5 
+//		<< " et5x5: " << gct_et5x5 
+//		<< " is_ss: " << gct_is_ss 
+//		<< " is_looseTkss: " << gct_is_looseTkss 
+//		<< " is_iso: " << gct_is_iso 
+//		<< " is_looseTkiso: " << gct_is_looseTkiso 
+//		<< std::endl;
     }
     //************************************************************************************/
     // Loop through the PF cluster 4-vetcors, and gen-match. Only take the first
     // PF cluster which has deltaR < 0.5.
     //************************************************************************************/
-    std::cout << ">>> Doing PF clusters..." << std::endl;
+//    std::cout << ">>> Doing PF clusters..." << std::endl;
 
     pf_cPt   = 0;    pf_cEta   = -999;   pf_cPhi  = -999;    pf_deltaR = 999;
 
     for (size_t i = 0; i < caloPFClusters->size(); ++i) {
-      std::cout << " pfClusterInfo pT " << caloPFClusters->at(i).Pt()
-                << " eta "               << caloPFClusters->at(i).Eta()
-                << " phi "               << caloPFClusters->at(i).Phi() << std::endl;
+//      std::cout << " pfClusterInfo pT " << caloPFClusters->at(i).Pt()
+//                << " eta "               << caloPFClusters->at(i).Eta()
+//                << " phi "               << caloPFClusters->at(i).Phi() << std::endl;
       float this_pf_deltaR = reco::deltaR(caloPFClusters->at(i).Eta(), caloPFClusters->at(i).Phi(),
                                            genElectron.Eta(), genElectron.Phi());
       if (this_pf_deltaR < 0.5) {
@@ -626,13 +633,13 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       pf_deltaR = reco::deltaR(pf_cEta, pf_cPhi,
                                 genElectron.Eta(), genElectron.Phi());
 
-      std::cout << "--> Matched PF cluster " << pf_cPt
-                << " eta: " << pf_cEta
-                << " phi: " << pf_cPhi
-                << " with genElectron " << genPt
-                << " eta: " << genEta
-                << " phi: " << genPhi  << ". "
-                << std::endl;
+//      std::cout << "--> Matched PF cluster " << pf_cPt
+//                << " eta: " << pf_cEta
+//                << " phi: " << pf_cPhi
+//                << " with genElectron " << genPt
+//                << " eta: " << genEta
+//                << " phi: " << genPhi  << ". "
+//                << std::endl;
     }
 
     efficiencyTree->Fill();

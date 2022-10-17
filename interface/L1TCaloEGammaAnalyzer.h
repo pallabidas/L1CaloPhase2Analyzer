@@ -17,7 +17,8 @@
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
-#include "FWCore/Framework/interface/EDAnalyzer.h"
+//#include "FWCore/Framework/interface/EDAnalyzer.h"
+#include "FWCore/Framework/interface/one/EDAnalyzer.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Event.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -67,17 +68,17 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 
-//#ifdef __MAKECINT__
-#pragma extra_include "TLorentzVector.h";
-#pragma link C++ class std::vector<TLorentzVector>;
-	 //#endif
+////#ifdef __MAKECINT__
+//#pragma extra_include "TLorentzVector.h";
+//#pragma link C++ class std::vector<TLorentzVector>;
+//	 //#endif
 
 //
 // class declaration
 //
 using std::vector;
 
-class L1TCaloEGammaAnalyzer : public edm::EDAnalyzer {
+class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 
  public:
   
@@ -219,12 +220,17 @@ int get5x5TPGs(const int maxTPGPt_eta,
   std::ofstream logFile_;
   edm::InputTag rctSource_; 
 
-  edm::ESHandle<CaloTPGTranscoder> decoder_;
+  //edm::ESHandle<CaloTPGTranscoder> decoder_;
+  edm::ESGetToken<CaloTPGTranscoder, CaloTPGRecord> decoderToken_;
+  const CaloTPGTranscoder* decoder_;
 
-  edm::ESHandle<CaloGeometry> caloGeometry_;
+  //edm::ESHandle<CaloGeometry> caloGeometry_;
+  edm::ESGetToken<CaloGeometry, CaloGeometryRecord> caloGeometryToken_;
+  const CaloGeometry* caloGeometry_;
   const CaloSubdetectorGeometry* ebGeometry;
   const CaloSubdetectorGeometry* hbGeometry;
-  edm::ESHandle<HcalTopology> hbTopology;
+  //edm::ESHandle<HcalTopology> hbTopology;
+  edm::ESGetToken<HcalTopology, HcalRecNumberingRecord> hbTopologyToken_;
   const HcalTopology* hcTopology_;
 
 
