@@ -2,8 +2,9 @@
 
 ## Description
 
-   Adapted from: https://github.com/skkwan/phase2-l1Calo-analyzer
+   Adapted from: https://github.com/skkwan/phase2-l1Calo-analyzer .
    This repo is for running the Phase-2 calo emulator.
+   Initial setup follows from: https://twiki.cern.ch/twiki/bin/view/CMSPublic/SWGuideL1TPhase2Instructions , specifically `cms-l1t-offline:l1t-phase2-v3.4.44`.
 
 ## Setup (do only once)
 
@@ -12,8 +13,7 @@
    cd CMSSW_12_3_0_pre4/src
    cmsenv
    git cms-init
-   git cms-merge-topic -u cms-l1t-offline:l1t-phase2-v3.4.44
-   git cms-merge-topic pallabidas:test-pfclusters-CMSSW_12_3_0_pre4
+   git cms-merge-topic -u pallabidas:test-pfclusters-CMSSW_12_3_0_pre4
    scram b -j 12
    ```
 
@@ -37,7 +37,7 @@
    cmsRun test-l1tEventDisplayGenerator.py   
    ```
 
-   Use the `L1EventDisplay.root` file as input inside `figures/eventDisplays/plotEventDisplayPhaseIIPFclusters.C`
+   Use the `L1EventDisplay.root` file as input inside `figures/eventDisplays/plotEventDisplayPhaseIIPFclusters.C`.
    Get plot by running `./makedisplay.sh` after suitably changing save location inside the script.
 
 
