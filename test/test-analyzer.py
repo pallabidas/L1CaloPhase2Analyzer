@@ -15,7 +15,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 # xrdcp root://cmsxrootd.fnal.gov///store/relval/CMSSW_10_6_0_patch2/RelValElectronGunPt2To100/GEN-SIM-DIGI-RAW/106X_upgrade2023_realistic_v3_2023D41noPU-v1/10000/190EDE9F-770B-174A-8BA6-F7814FC67FD4.root RelValElectronGunPt2To100_190EDE9F-770B-174A-8BA6-F7814FC67FD4.root
 
 process.source = cms.Source("PoolSource",
-                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_190EDE9F-770B-174A-8BA6-F7814FC67FD4.root'
+                            #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_190EDE9F-770B-174A-8BA6-F7814FC67FD4.root'
+                            fileNames = cms.untracked.vstring("root://cms-xrd-global.cern.ch://store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/SinglePion_PT0to200/GEN-SIM-DIGI-RAW-MINIAOD/NoPU_111X_mcRun4_realistic_T15_v1-v1/120000/6930E519-DD17-DD40-BE77-41A28DEF9278.root"
                                                               # root://cmsxrootd.fnal.gov///store/relval/CMSSW_10_6_0_patch2/RelValElectronGunPt2To100/GEN-SIM-DIGI-RAW/106X_upgrade2023_realistic_v3_2023D41noPU-v1/10000/190EDE9F-770B-174A-8BA6-F7814FC67FD4.root,
                                                               # root://cmsxrootd.fnal.gov///store/relval/CMSSW_10_6_0_patch2/RelValElectronGunPt2To100/GEN-SIM-DIGI-RAW/106X_upgrade2023_realistic_v3_2023D41noPU-v1/10000/283255C6-1E20-6F48-8B8B-31E6A62BD48D.root,
                                                               # root://cmsxrootd.fnal.gov///store/relval/CMSSW_10_6_0_patch2/RelValElectronGunPt2To100/GEN-SIM-DIGI-RAW/106X_upgrade2023_realistic_v3_2023D41noPU-v1/10000/71C02E39-ED72-054B-871F-6B1FD1A1C14A.root,
@@ -23,7 +24,8 @@ process.source = cms.Source("PoolSource",
                                                               # root://cmsxrootd.fnal.gov///store/relval/CMSSW_10_6_0_patch2/RelValElectronGunPt2To100/GEN-SIM-DIGI-RAW/106X_upgrade2023_realistic_v3_2023D41noPU-v1/10000/A22AA5DB-ACEE-1140-B081-104F634079A1.root 
                                                         ),
                             inputCommands = cms.untracked.vstring(
-                                "keep *"
+                                "keep *",
+                                "drop l1tTkPrimaryVertexs_*_*_*",
                             )
                         )
 
@@ -60,13 +62,14 @@ process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.Pha
 
 # output file
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('analyzer.root')
+    fileName = cms.string('analyzer_singlepion.root')
 )
 
 process.Out = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "phase2L1EGammaAnalyzer.root" ),
+    fileName = cms.untracked.string( "phase2L1EGammaAnalyzer_singlepion.root" ),
     outputCommands = cms.untracked.vstring(
         "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*",
+        "keep *_Phase2L1CaloPFClusterEmulatorProducer_*_*",
 #        "keep *_TriggerResults_*_*",
 #        "keep *_simHcalTriggerPrimitiveDigis_*_*",
 #        "keep *_EcalEBTrigPrimProducer_*_*"

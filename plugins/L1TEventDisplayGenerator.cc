@@ -63,7 +63,12 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
   ecalClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("clusters"))),
   caloTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("towers"))),
-  caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection >(cfg.getParameter<edm::InputTag>("PFclusters")))
+  caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection >(cfg.getParameter<edm::InputTag>("PFclusters"))),
+  //genSrc_(consumes<reco::GenParticleCollection>(cfg.getParameter<edm::InputTag>( "GenParticles"))),  // does not work
+  //genSrc_(consumes<pat::PackedGenParticleCollection>(cfg.getParameter<edm::InputTag>( "GenParticles"))),
+  genSrc_(consumes<std::vector<reco::GenParticle>>(cfg.getParameter<edm::InputTag>( "GenParticles"))),
+  tauSrc_(consumes<pat::TauCollection>(cfg.getParameter<edm::InputTag>( "Taus"))),
+  jetSrc_(consumes<pat::JetCollection>(cfg.getParameter<edm::InputTag>( "Jets")))
   {
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
@@ -78,6 +83,9 @@ L1TEventDisplayGenerator::L1TEventDisplayGenerator( const ParameterSet & cfg ) :
     efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
+    efficiencyTree->Branch("genParticles", "vector<TLorentzVector>", &genParticles, 32000, 0);
+    efficiencyTree->Branch("recoTaus", "vector<TLorentzVector>", &recoTaus, 32000, 0);
+    efficiencyTree->Branch("recoJets", "vector<TLorentzVector>", &recoJets, 32000, 0);
     
     //efficiencyTree->Branch("signalPFCands", "vector<TLorentzVector>", &signalPFCands, 32000, 0); 
     //efficiencyTree->Branch("l1Jets", "vector<TLorentzVector>", &l1Jets, 32000, 0); 
@@ -113,6 +121,9 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
   caloPFClusters->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
+  genParticles->clear();
+  recoTaus->clear();
+  recoJets->clear();
 
   // Detector geometry
   caloGeometry_ = &es.getData(caloGeometryToken_);
@@ -121,6 +132,49 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
   hcTopology_ = &es.getData(hbTopologyToken_);
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   decoder_ = &es.getData(decoderToken_);
+
+  // Get the gen particles
+  bool barrelParticles = false;
+  edm::Handle<reco::GenParticleCollection> genParticleHandle;
+  //edm::Handle<pat::PackedGenParticleCollection> genParticleHandle;
+  if(!evt.getByToken(genSrc_, genParticleHandle)) std::cout<<"No gen Particles Found "<<std::endl;
+  if(evt.getByToken(genSrc_, genParticleHandle)){
+    for (unsigned int i = 0; i< genParticleHandle->size(); i++){
+      edm::Ptr<reco::GenParticle> ptr(genParticleHandle, i);
+      //edm::Ptr<pat::PackedGenParticle> ptr(genParticleHandle, i);
+      std::cout<<"gen particle: "<<ptr->pdgId()<<"\t"<<ptr->pt()<<"\t"<<ptr->eta()<<"\t"<<ptr->phi()<<"\t"<<ptr->energy()<<std::endl;
+      if(abs(ptr->eta()) < 1.4841) barrelParticles = true;
+      TLorentzVector temp ;
+      temp.SetPtEtaPhiE(ptr->pt(), ptr->eta(), ptr->phi(), ptr->energy());
+      genParticles->push_back(temp);
+    }
+  }
+
+  // Get the taus
+  edm::Handle<pat::TauCollection> tauHandle;
+  if(!evt.getByToken(tauSrc_, tauHandle)) std::cout<<"No Taus Found "<<std::endl;
+  if(evt.getByToken(tauSrc_, tauHandle)){
+    for (unsigned int i = 0; i< tauHandle->size(); i++){
+      edm::Ptr<pat::Tau> ptr(tauHandle, i);
+      std::cout<<"tau: "<<ptr->pt()<<"\t"<<ptr->eta()<<"\t"<<ptr->phi()<<"\t"<<ptr->energy()<<std::endl;
+      TLorentzVector temp ;
+      temp.SetPtEtaPhiE(ptr->pt(), ptr->eta(), ptr->phi(), ptr->energy());
+      recoTaus->push_back(temp);
+    }
+  }
+
+  // Get the jets
+  edm::Handle<pat::JetCollection> jetHandle;
+  if(!evt.getByToken(jetSrc_, jetHandle)) std::cout<<"No Jets Found "<<std::endl;
+  if(evt.getByToken(jetSrc_, jetHandle)){
+    for (unsigned int i = 0; i< jetHandle->size(); i++){
+      edm::Ptr<pat::Jet> ptr(jetHandle, i);
+      std::cout<<"jet: "<<ptr->pt()<<"\t"<<ptr->eta()<<"\t"<<ptr->phi()<<"\t"<<ptr->energy()<<std::endl;
+      TLorentzVector temp ;
+      temp.SetPtEtaPhiE(ptr->pt(), ptr->eta(), ptr->phi(), ptr->energy());
+      recoJets->push_back(temp);
+    }
+  }
 
   // Get the ECAL clusters
   if(evt.getByToken(ecalClustersSrc_, caloCrystalClusters)){
@@ -328,7 +382,7 @@ void L1TEventDisplayGenerator::analyze( const Event& evt, const EventSetup& es )
     temp.SetPtEtaPhiE(et,eta,phi,et);
     allHcalTPGs->push_back(temp);
   }
-  efficiencyTree->Fill();
+  if(barrelParticles) efficiencyTree->Fill();
  }
 
 int L1TEventDisplayGenerator::get5x5TPGs(const int maxTPGPt_eta, 

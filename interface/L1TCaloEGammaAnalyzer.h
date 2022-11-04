@@ -261,8 +261,8 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> gctClustersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> rctTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> gctTowersSrc_;
-    edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
-  edm::InputTag genSrc_;
+  edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
+  edm::EDGetTokenT<std::vector<reco::GenParticle>> genSrc_;
   std::string folderName_;
   double recoPt_;
 

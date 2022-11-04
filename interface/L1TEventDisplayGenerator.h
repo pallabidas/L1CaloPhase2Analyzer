@@ -66,6 +66,7 @@
 #include "L1Trigger/L1TCaloLayer1/src/UCTRegion.hh"
 #include "L1Trigger/L1TCaloLayer1/src/UCTGeometry.hh"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
+#include "DataFormats/PatCandidates/interface/PackedGenParticle.h"
 
 //
 // class declaration
@@ -184,6 +185,7 @@ class L1TEventDisplayGenerator : public edm::one::EDAnalyzer<edm::one::SharedRes
   std::vector<TLorentzVector> *ecalClusters  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *caloTowers    = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *genParticles = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -273,9 +275,6 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<reco::VertexCollection> vtxLabel_;
   edm::EDGetTokenT<reco::PFTauDiscriminator> discriminatorMu_;
   edm::EDGetTokenT<reco::PFTauDiscriminator> discriminatorIso_;
-  edm::EDGetTokenT<vector<reco::PFTau> > tauSrc_;
-  edm::EDGetTokenT<vector<pat::Tau> > slimmedTauSrc_;
-  edm::EDGetTokenT<vector<pat::Jet> > jetSrc_;
   edm::EDGetTokenT<L1GctJetCandCollection> gctIsoTauJetsSource_;
   edm::EDGetTokenT<L1GctJetCandCollection> gctTauJetsSource_;
   edm::EDGetTokenT<vector <l1extra::L1JetParticle> > l1ExtraIsoTauSource_;
@@ -286,6 +285,10 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::CaloCrystalClusterCollection> ecalClustersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> caloTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
+  edm::EDGetTokenT<std::vector<reco::GenParticle> > genSrc_;
+  //edm::EDGetTokenT<std::vector<pat::PackedGenParticle> > genSrc_;
+  edm::EDGetTokenT<vector<pat::Tau> > tauSrc_;
+  edm::EDGetTokenT<vector<pat::Jet> > jetSrc_;
 
   std::string folderName_;
   double recoPt_;

@@ -8,7 +8,7 @@ process.load('Configuration.StandardSequences.Services_cff')
 process.load("FWCore.MessageService.MessageLogger_cfi")
 process.load('Configuration.EventContent.EventContent_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 
 #Search string: `dataset=/TT*/Phase2HLTTDRWinter20DIGI*/GEN-SIM-DIGI-RAW`
@@ -24,12 +24,14 @@ process.source = cms.Source("PoolSource",
 #                            fileNames = cms.untracked.vstring('file:/eos/user/s/skkwan/phase2RCTDevel/SinglePion_PT0to200_NoPU_04AC207E-AF58-C04A-9F90-746DDC628248.root'),
 #                            fileNames = cms.untracked.vstring('file:/eos/user/s/skkwan/phase2RCTDevel/005E74D6-B50E-674E-89E6-EAA9A617B476.ro ot'),
 #                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/TTBar_005E74D6-B50E-674E-89E6-EAA9A617B476.root'),
-                            fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_71C02E39-ED72-054B-871F-6B1FD1A1C14A_1_32_3108.root'),
+                            #fileNames = cms.untracked.vstring('file:/afs/cern.ch/work/s/skkwan/public/phase2RCT/RelValElectronGunPt2To100_71C02E39-ED72-054B-871F-6B1FD1A1C14A_1_32_3108.root'),
+                            fileNames = cms.untracked.vstring("root://cms-xrd-global.cern.ch://store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/SinglePion_PT0to200/GEN-SIM-DIGI-RAW-MINIAOD/NoPU_111X_mcRun4_realistic_T15_v1-v1/120000/6930E519-DD17-DD40-BE77-41A28DEF9278.root"),
                             inputCommands = cms.untracked.vstring(
-                                "keep *"
+                                "keep *",
+                                "drop l1tTkPrimaryVertexs_*_*_*",
                             )
                         )
-
+process.source.eventsToProcess = cms.untracked.VEventRange("1:3014")
 
 # --------------------------------------------------------------------------------------------                                                    
 #                                                                                                                                                            
@@ -61,11 +63,11 @@ process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.Pha
 
 # output file
 process.TFileService = cms.Service("TFileService",
-    fileName = cms.string('L1EventDisplay.root')
+    fileName = cms.string('L1EventDisplay_singlepion.root')
 )
 
 process.Out = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "phase2L1CaloEGamma.root" ),
+    fileName = cms.untracked.string( "phase2L1CaloEGamma_singlepion.root" ),
     outputCommands = cms.untracked.vstring(
         "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*",
 #        "keep *_TriggerResults_*_*",
