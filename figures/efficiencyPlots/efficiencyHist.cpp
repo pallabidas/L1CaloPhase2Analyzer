@@ -129,8 +129,9 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
 //  else { // genEta: put legend above the efficiency curve
     float commentaryXpos = 0.54;
     latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
-    latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
-    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 25, |#eta^{Gen}| < 1.4841}");
+    //latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
+    latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{SinglePion Pt 0 to 200}");
+    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 0, |#eta^{Gen}| < 1.4841}");
 //  } 
   Tcan->Update();
 
