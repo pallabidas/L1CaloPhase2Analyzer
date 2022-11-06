@@ -93,7 +93,8 @@ void plotNResolutions(std::vector<TH1F*> graphs,
       (*itGraph)->Draw("hist same");
     }
 
-  histDummy->GetXaxis()->SetTitle("Resolution vs Gen Electron p_{T} [GeV]");
+  //histDummy->GetXaxis()->SetTitle("Resolution vs Gen Electron p_{T} [GeV]");
+  histDummy->GetXaxis()->SetTitle("Resolution vs Gen Pion p_{T} [GeV]");
   histDummy->GetYaxis()->SetTitle("#entries");
   histDummy->GetXaxis()->SetTitleSize(0.06); // default is 0.03                                                                    
   /* Set y-axis limits */  
@@ -129,8 +130,9 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 //  else { // genEta: put legend above the efficiency curve
     float commentaryXpos = 0.54;
     latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
-    latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
-    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 25, |#eta^{Gen}| < 1.4841}");
+    //latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
+    latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{SinglePion Pt 0 to 200}");
+    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 2, |#eta^{Gen}| < 1.4841}");
 //  } 
   Tcan->Update();
 
