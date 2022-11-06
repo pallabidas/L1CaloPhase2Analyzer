@@ -156,7 +156,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   // float half_tower_offset = 0.04365;
   float half_tower_offset = 0.0;
 
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay.root", "READ");
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay_singlepion.root", "READ");
 
   // Declare the center of the plot
   float etaCenter = 0.27;
@@ -171,6 +171,10 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   std::vector<TLorentzVector> *vClusters       = 0;
   std::vector<TLorentzVector> *vTowers         = 0;
   std::vector<TLorentzVector> *vPFclusters     = 0;
+  std::vector<TLorentzVector> *vGenParticles   = 0;
+  std::vector<TLorentzVector> *vRecoJets       = 0;
+  std::vector<TLorentzVector> *vRecoTaus       = 0;
+
 
   int event =0;
 
@@ -190,6 +194,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   TBranch *bClusters = 0;
   TBranch *bTowers   = 0;
   TBranch *bPFclusters  = 0;
+  TBranch *bGenParticles = 0;
+  TBranch *bRecoJets = 0;
+  TBranch *bRecoTaus = 0;
 
   t->SetBranchAddress("event",&event,&bEvent);
 
@@ -198,6 +205,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   t->SetBranchAddress("ecalClusters",&vClusters,&bClusters);
   t->SetBranchAddress("caloTowers",&vTowers,&bTowers);
   t->SetBranchAddress("caloPFClusters",&vPFclusters,&bPFclusters);
+  t->SetBranchAddress("genParticles",&vGenParticles,&bGenParticles);
+  t->SetBranchAddress("recoJets",&vRecoJets,&bRecoJets);
+  t->SetBranchAddress("recoTaus",&vRecoTaus,&bRecoTaus);
 
   // Create one histograms
   TH1F   *h                = new TH1F("h","This is the eta distribution",100,-4,4);
@@ -221,6 +231,19 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
 				   -1.4841, 1.4841,
 				   72,
 				   -3.142,3.142);
+  TH2F   *h2GenParticles = new TH2F("h2GenParticles", "Event Display", 34,
+                                   -1.4841, 1.4841,
+                                   72,
+                                   -3.142,3.142);
+  TH2F   *h2RecoJets    = new TH2F("h2RecoJets", "Event Display", 34,
+                                   -1.4841, 1.4841,
+                                   72,
+                                   -3.142,3.142);
+  TH2F   *h2RecoTaus    = new TH2F("h2RecoTaus", "Event Display", 34,
+                                   -1.4841, 1.4841,
+                                   72,
+                                   -3.142,3.142);
+
   
   h->SetFillColor(48);
 
@@ -233,6 +256,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   bClusters->GetEntry(tentry);
   bTowers->GetEntry(tentry);
   bPFclusters->GetEntry(tentry);
+  bGenParticles->GetEntry(tentry);
+  bRecoJets->GetEntry(tentry);
+  bRecoTaus->GetEntry(tentry);
 
   //get the event number
   char name[30];
@@ -255,9 +281,11 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
 
       h2EcalTpgs->Fill(ceta, cphi, cpt);
 
-      std::cout<<"vEcalTpgs->at(j).Pt() "<< cpt
-             <<" eta "<< ceta
-             <<" phi "<< cphi <<std::endl;
+      if(cpt > 10.){
+        std::cout<<"vEcalTpgs->at(j).Pt() "<< cpt
+               <<" eta "<< ceta
+               <<" phi "<< cphi <<std::endl;
+      }
     }
   }
 
@@ -276,8 +304,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
 
       h2HcalTpgs->Fill(ceta, cphi, cpt);
 
-      if ((ceta > (etaCenter - 0.25)) && (ceta < (etaCenter + 0.25))
-          && (cphi > (phiCenter - 0.25)) && (cphi < (phiCenter + 0.25))) {
+      if(cpt > 10.){
 
         std::cout<<"vHcalTpgs->at(j).Pt() "<< cpt
                  <<" eta "<< ceta
@@ -301,8 +328,9 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
 
       h2L1Clusters->Fill(ceta, cphi, cpt);
 
-      if ((ceta > (etaCenter - 0.25)) && (ceta < (etaCenter + 0.25))
-          && (cphi > (phiCenter - 0.25)) && (cphi < (phiCenter + 0.25)) ) {
+//      if ((ceta > (etaCenter - 0.25)) && (ceta < (etaCenter + 0.25))
+//          && (cphi > (phiCenter - 0.25)) && (cphi < (phiCenter + 0.25)) ) {
+      if(cpt > 10.){
           std::cout<<"vClusters->at(j).Pt() "<< cpt
                    <<" eta "<< ceta
                    <<" phi "<< cphi <<std::endl;
@@ -325,9 +353,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
 
       h2L1Towers->Fill(ceta, cphi, cpt);
 
-      if ((ceta > (etaCenter - 0.25)) && (ceta < (etaCenter + 0.25))
-         && (cphi > (phiCenter - 0.25)) && (cphi < (phiCenter + 0.25))) {
-
+      if(cpt > 10.){
         std::cout<<"vTowers->at(j).Pt() "<< cpt
                  <<" eta "<< ceta
                  <<" phi "<< cphi <<std::endl;
@@ -349,9 +375,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
       float cpt  = vPFclusters->at(j).Pt();
       h2PFclusters->Fill(ceta, cphi, cpt);
 
-      if ((ceta > (etaCenter - 0.25)) && (ceta < (etaCenter + 0.25))
-          && (cphi > (phiCenter - 0.25)) && (cphi < (phiCenter + 0.25))) {
-
+      if(cpt > 10.){
         std::cout<<"vPFclusters->at(j).Pt() "<< cpt
                  <<" eta "<< ceta
                  <<" phi "<< cphi <<std::endl;
@@ -417,6 +441,48 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   h2PFclusters->SetLineWidth(2);
   h2PFclusters->Draw("SAME BOXL");
 
+  for (UInt_t j = 0; j < vRecoJets->size(); ++j) {
+    float ceta = vRecoJets->at(j).Eta();
+    float cphi = vRecoJets->at(j).Phi();
+    float cpt  = vRecoJets->at(j).Pt();
+    h2RecoJets->Fill(ceta, cphi, cpt);
+
+    TEllipse *circ = new TEllipse(ceta,cphi,.4,.4);
+    circ->SetFillStyle(0);
+    circ->SetLineColor(kViolet+2);
+    circ->Draw("SAME");
+  }
+
+  for (UInt_t j = 0; j < vRecoTaus->size(); ++j) {
+    float ceta = vRecoTaus->at(j).Eta();
+    float cphi = vRecoTaus->at(j).Phi();
+    float cpt  = vRecoTaus->at(j).Pt();
+    h2RecoTaus->Fill(ceta, cphi, cpt);
+
+    TEllipse *circ = new TEllipse(ceta,cphi,.2,.2);
+    circ->SetFillStyle(0);
+    circ->SetLineColor(kBlack);
+    circ->Draw("SAME");
+  }
+
+  for (UInt_t j = 0; j < vGenParticles->size(); ++j) {
+    float ceta = vGenParticles->at(j).Eta();
+    float cphi = vGenParticles->at(j).Phi();
+    float cpt  = vGenParticles->at(j).Pt();
+    h2GenParticles->Fill(ceta, cphi, cpt);
+
+    std::ostringstream strs;
+    strs << cpt;
+    std::string text = "gen p_{T}: " + strs.str();
+    TPaveText *tempText = new TPaveText(ceta, cphi, ceta+0.25, cphi+0.25);
+    tempText->AddText(text.c_str());
+    tempText->SetFillColor(0);
+    tempText->SetLineColor(0);
+    tempText->SetShadowColor(0);
+    tempText->SetTextColor(kBlue);
+    tempText->Draw("SAME");
+  }
+
   float xR=0.70;
   TLegend *l = new TLegend(xR,0.80,xR+0.30,1.0);
   //TLegend *l = new TLegend(0.9,0.70,1.0,1.0);
@@ -427,16 +493,16 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   l->AddEntry(h2L1Clusters, "EG Clusters", "F");
   l->AddEntry(h2L1Towers,   "Full Towers",   "F");
   l->AddEntry(h2PFclusters, "PF Clusters", "F");
+  l->AddEntry(h2RecoTaus, "Reco Taus", "l");
+  l->AddEntry(h2RecoJets, "Reco Jets", "l");
   l->Draw();
  
   char* saveFile = new char[100];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/Event-%u-phase2emulator_test.png",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/singlepion/Event-%u-phase2emulator_test.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/Event-%u-phase2emulator_test.pdf",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/singlepion/Event-%u-phase2emulator_test.pdf",event);
   c1->SaveAs(saveFile);
-
-
 
 }
