@@ -403,8 +403,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     //std::cout<<"gen particle id: "<<ptr->pdgId()<<std::endl;
     
     // Get gen electrons in barrel + overlap
-    if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
-    //if ( (abs(ptr->pdgId()) == 211) && ( abs(ptr->eta()) < 1.4841 )) {
+    //if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
+    if ( (abs(ptr->pdgId()) == 211) && ( abs(ptr->eta()) < 1.4841 )) {
       genElectrons.push_back(*ptr);
       // Check isLastCopy() and isLastCopyBeforeFSR()
 //      std::cout << "isLastCopy: " << ptr->isLastCopy()  << ", "
@@ -422,8 +422,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   for (auto genElectron : genElectrons) {
     RawParticle particle(genElectron.p4());
     particle.setVertex(genElectron.vertex().x(), genElectron.vertex().y(), genElectron.vertex().z(), 0.);
-    if (fabs(genElectron.pdgId())==11) particle.setMass(.511);
-    //if (fabs(genElectron.pdgId())==211) particle.setMass(139.57039);
+    //if (fabs(genElectron.pdgId())==11) particle.setMass(.511);
+    if (fabs(genElectron.pdgId())==211) particle.setMass(139.57039);
     else particle.setMass(0.);
     
     int pdgId = genElectron.pdgId();
