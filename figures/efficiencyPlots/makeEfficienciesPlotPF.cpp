@@ -22,7 +22,7 @@ void makeEfficienciesPlotPF(void)
   TString treePath = "l1NtupleProducer/efficiencyTree";
   //  TString rootFileDirectory = "../test/analyzer.root";
   TString rootFileDirectory = "/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer.root";
-  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/";
+  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/bugfix/";
 
   float xMin, xMax;
   TString genCut, l1Cut;
@@ -129,14 +129,12 @@ void makeEfficienciesPlotPF(void)
   vReso.clear(); vResoLabels.clear(); vResoColors.clear();
 
   TH1F* reso1 = calculateResolution("gct_cPt - genPt", treePath, rootFileDirectory,
-                "gct_cPt > 0",
                 "(abs(genEta) < 1.4841)", -40, 100, useVariableBinning);
   vReso.push_back(reso1);
   vResoLabels.push_back("EG cluster");
   vResoColors.push_back(kBlack);
 
   TH1F* reso2 = calculateResolution("pf_cPt - genPt", treePath, rootFileDirectory,
-                "pf_cPt > 0",
                 "(abs(genEta) < 1.4841)", -40, 100, useVariableBinning);
   vReso.push_back(reso2);
   vResoLabels.push_back("PF cluster");
