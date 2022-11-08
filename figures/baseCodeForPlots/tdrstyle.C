@@ -59,11 +59,11 @@ void setTDRStyle() {
   // tdrStyle->SetLegoInnerR(Float_t rad = 0.5);
   // tdrStyle->SetNumberContours(Int_t number = 20);
 
-  tdrStyle->SetEndErrorSize(2);
-//  tdrStyle->SetErrorMarker(20);
-  tdrStyle->SetErrorX(0.1);
+  tdrStyle->SetEndErrorSize(2);   // remove for response
+//  tdrStyle->SetErrorMarker(20); 
+  tdrStyle->SetErrorX(0.1);   // remove for response
   
-  tdrStyle->SetMarkerStyle(20);
+  tdrStyle->SetMarkerStyle(20);   // remove for response
 
 //For the fit/function:
   tdrStyle->SetOptFit(1);

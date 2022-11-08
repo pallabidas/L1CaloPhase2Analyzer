@@ -111,12 +111,12 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
 
 
   // Default to RCT label, use GCT if not
-  TString emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 GCT emulator}}";  
+  TString emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 GCT simulation}}";
   if (outputName.Contains("RCT")) {
     emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}";  
   }
   latex->DrawLatex(0.16, 0.960, emuLabel); 
-  latex->DrawLatex(0.91, 0.960, "#scale[0.8]{0 PU}"); 
+  latex->DrawLatex(0.79, 0.960, "#scale[0.8]{14 TeV (0 PU)}");
 
 //  if (!(outputName.Contains("genEta")) && !(outputName.Contains("genPhi"))) {  // genPt: put legend below the efficiecy curve
 //    float commentaryXpos = 0.54;
@@ -127,11 +127,13 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
 //  //latex->DrawLatex(commentaryXpos, 0.660, bonusDescriptor);
 //  }  
 //  else { // genEta: put legend above the efficiency curve
-    float commentaryXpos = 0.54;
+    float commentaryXpos = 0.62;
+    latex->DrawLatex(0.2, 0.840, "#scale[0.8]{Work in progress}");
     latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
     //latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
     latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{SinglePion Pt 0 to 200}");
-    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 0, |#eta^{Gen}| < 1.4841}");
+    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{Gen p_{T} > 5, |#eta^{Gen}| < 1.4841}");
+    latex->DrawLatex(0.57, 0.42, "#scale[0.8]{PF cluster}");
 //  } 
   Tcan->Update();
 

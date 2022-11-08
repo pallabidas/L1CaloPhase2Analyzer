@@ -38,7 +38,7 @@ void plotNResolutions(std::vector<TH1F*> graphs,
              std::vector<TString> labels,
              std::vector<int> colors,
              TString xAxisLabel,
-             TString legendName,
+             //TString legendName,
              TString outputName,
              TString outputDir
              )
@@ -47,10 +47,10 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 
   setTDRStyle();
   TCanvas* Tcan = new TCanvas("Tcan","", 100, 20, 1000, 800);
-  TLegend* leg = new TLegend(0.65,0.15,0.90,0.45);
+  TLegend* leg = new TLegend(0.75,0.15,0.95,0.45);
   applySmallerLegStyle(leg);
 
-  Tcan->SetGrid();
+  //Tcan->SetGrid();
 
   TLatex *latex = new TLatex(); 
   latex->SetNDC();
@@ -94,9 +94,16 @@ void plotNResolutions(std::vector<TH1F*> graphs,
     }
 
   //histDummy->GetXaxis()->SetTitle("Resolution vs Gen Electron p_{T} [GeV]");
-  histDummy->GetXaxis()->SetTitle("Resolution vs Gen Pion p_{T} [GeV]");
+  //histDummy->GetXaxis()->SetTitle("Resolution vs Gen p_{T} [GeV]");
+  //histDummy->GetYaxis()->SetTitle("#entries");
+  histDummy->GetXaxis()->SetTitle(xAxisLabel);
+  histDummy->GetXaxis()->SetTitleSize(0.06); // default is 0.03
+  histDummy->GetXaxis()->SetTitleOffset(0.9);
+  histDummy->GetXaxis()->SetLabelSize(0.05);
   histDummy->GetYaxis()->SetTitle("#entries");
-  histDummy->GetXaxis()->SetTitleSize(0.06); // default is 0.03                                                                    
+  histDummy->GetYaxis()->SetTitleSize(0.06);
+  histDummy->GetYaxis()->SetTitleOffset(1.25);
+  histDummy->GetYaxis()->SetLabelSize(0.05);
   /* Set y-axis limits */  
   //histDummy->GetYaxis()->SetRangeUser(0.0, 1.5);
   // histDummy->GetYaxis()->SetRangeUser(0.8, 1.02);
@@ -112,12 +119,12 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 
 
   // Default to RCT label, use GCT if not
-  TString emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 GCT emulator}}";  
+  TString emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 GCT simulation}}";
   if (outputName.Contains("RCT")) {
     emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}";  
   }
   latex->DrawLatex(0.16, 0.960, emuLabel); 
-  latex->DrawLatex(0.91, 0.960, "#scale[0.8]{0 PU}"); 
+  latex->DrawLatex(0.79, 0.960, "#scale[0.8]{14 TeV (0 PU)}");
 
 //  if (!(outputName.Contains("genEta")) && !(outputName.Contains("genPhi"))) {  // genPt: put legend below the efficiecy curve
 //    float commentaryXpos = 0.54;
@@ -128,11 +135,12 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 //  //latex->DrawLatex(commentaryXpos, 0.660, bonusDescriptor);
 //  }  
 //  else { // genEta: put legend above the efficiency curve
-    float commentaryXpos = 0.54;
+    float commentaryXpos = 0.62;
+    latex->DrawLatex(0.2, 0.840, "#scale[0.8]{Work in progress}");
     latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
     //latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
     latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{SinglePion Pt 0 to 200}");
-    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{L1 p_{T} > 2, |#eta^{Gen}| < 1.4841}");
+    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{Gen p_{T} > 5, |#eta^{Gen}| < 1.4841}");
 //  } 
   Tcan->Update();
 
