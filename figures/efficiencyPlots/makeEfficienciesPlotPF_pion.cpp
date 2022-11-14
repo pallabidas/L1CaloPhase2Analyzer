@@ -110,8 +110,8 @@ void makeEfficienciesPlotPF_pion(void)
   vGraphs.clear();  vLabels.clear();  vColors.clear();
   xMin = 0;
   xMax = 200;
-  genCut  = "(abs(genEta) < 1.4841) && genPt > 5";
-  l1Cut   = "(abs(genEta) < 1.4841) && genPt > 5 && pf_deltaR < 0.2";
+  genCut  = "(abs(genEta) < 1.4841)";
+  l1Cut   = "(abs(genEta) < 1.4841) && pf_deltaR < 0.2";
   useVariableBinning = false;
 
   TGraphAsymmErrors* loose3 = calculateEfficiency("genPt", treePath, rootFileDirectory,
@@ -156,8 +156,8 @@ void makeEfficienciesPlotPF_pion(void)
   xMin = -1.5;
   xMax = 1.5;
 
-  genCut  = "(abs(genEta) < 1.4841) && genPt > 5";
-  l1Cut   = "(abs(genEta) < 1.4841) && genPt > 5 && pf_deltaR < 0.2";
+  genCut  = "(abs(genEta) < 1.4841)";
+  l1Cut   = "(abs(genEta) < 1.4841) && pf_deltaR < 0.2";
   useVariableBinning = false;
 
 
@@ -203,8 +203,8 @@ void makeEfficienciesPlotPF_pion(void)
   xMin = -3.142;
   xMax = 3.142;
 
-  genCut  = "(abs(genEta) < 1.4841) && genPt > 5";
-  l1Cut   = "(abs(genEta) < 1.4841) && genPt > 5 && pf_deltaR < 0.2";
+  genCut  = "(abs(genEta) < 1.4841)";
+  l1Cut   = "(abs(genEta) < 1.4841) && pf_deltaR < 0.2";
   useVariableBinning = false;
 
 
