@@ -55,11 +55,11 @@ process.load('CalibCalorimetry.CaloTPG.CaloTPGTranscoder_cfi')
 #
 # ----    Produce the L1EGCrystal clusters using Emulator
 
-process.load('L1Trigger.L1CaloTrigger.Phase2L1CaloEGammaEmulator_cfi')
+process.load('L1Trigger.L1CaloTrigger.l1tPhase2L1CaloEGammaEmulator_cfi')
+process.load('L1Trigger.L1CaloTrigger.l1tPhase2CaloPFClusterEmulator_cfi')
 process.load('L1Trigger.L1CaloPhase2Analyzer.l1TEventDisplayGenerator_cfi')
-process.Phase2L1CaloPFClusterEmulatorProducer = cms.EDProducer("Phase2L1CaloPFClusterEmulator")
 
-process.pL1EG = cms.Path( process.Phase2L1CaloEGammaEmulatorProducer*process.Phase2L1CaloPFClusterEmulatorProducer*process.l1NtupleProducer )
+process.pL1EG = cms.Path( process.l1tPhase2L1CaloEGammaEmulator*process.l1tPhase2CaloPFClusterEmulator*process.l1NtupleProducer )
 
 # output file
 process.TFileService = cms.Service("TFileService",
@@ -69,7 +69,7 @@ process.TFileService = cms.Service("TFileService",
 process.Out = cms.OutputModule( "PoolOutputModule",
     fileName = cms.untracked.string( "phase2L1CaloEGamma_singlepion.root" ),
     outputCommands = cms.untracked.vstring(
-        "keep *_Phase2L1CaloEGammaEmulatorProducer_*_*",
+        "keep *_l1tPhase2L1CaloEGammaEmulator_*_*",
 #        "keep *_TriggerResults_*_*",
 #        "keep *_simHcalTriggerPrimitiveDigis_*_*",
 #        "keep *_EcalEBTrigPrimProducer_*_*"

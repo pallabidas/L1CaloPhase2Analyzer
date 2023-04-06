@@ -156,7 +156,7 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
   // float half_tower_offset = 0.04365;
   float half_tower_offset = 0.0;
 
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay_singlepion.root", "READ");
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/L1EventDisplay_singlepion.root", "READ");
 
   // Declare the center of the plot
   float etaCenter = 0.27;
@@ -499,10 +499,10 @@ void plotEventDisplayPhaseIIPFclusters(int iEvent){
  
   char* saveFile = new char[100];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/singlepion/Event-%u-phase2emulator_test.png",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/singlepion/Event-%u-phase2emulator_test.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_3_0_pre4/singlepion/Event-%u-phase2emulator_test.pdf",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/singlepion/Event-%u-phase2emulator_test.pdf",event);
   c1->SaveAs(saveFile);
 
 }
