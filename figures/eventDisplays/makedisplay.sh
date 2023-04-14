@@ -7,9 +7,9 @@ cat > runDisplay.C << EOF
 
 void runDisplay() {
 
-  gROOT->ProcessLine(".L plotEventDisplayPhaseIIPFclusters.C++");
+  gROOT->ProcessLine(".L plotEventDisplayPhaseIICaloJets.C++");
 
-  gROOT->ProcessLine(".x plotEventDisplayPhaseIIPFclusters.C(0)");
+  gROOT->ProcessLine(".x plotEventDisplayPhaseIICaloJets.C(0)");
 
 
 }

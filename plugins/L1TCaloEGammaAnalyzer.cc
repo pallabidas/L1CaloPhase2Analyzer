@@ -27,6 +27,7 @@
 #include "FWCore/Framework/interface/MakerMacros.h"
 #include "DataFormats/HcalDetId/interface/HcalSubdetector.h"
 #include "DataFormats/HcalDetId/interface/HcalDetId.h"
+#include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 // ECAL TPs
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
@@ -70,6 +71,9 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   rctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
   gctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("gctClusters"))),
   caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection >(cfg.getParameter<edm::InputTag>("PFclusters"))),
+  hgcalTowersSrc_(consumes<l1t::HGCalTowerBxCollection>(cfg.getParameter<edm::InputTag>("L1HgcalTowersInputTag"))),
+  caloJetSrc_(consumes<l1tp2::Phase2L1CaloJetCollection >(cfg.getParameter<edm::InputTag>("caloJets"))),
+  recoJetSrc_(consumes<vector<pat::Jet> >(cfg.getParameter<edm::InputTag>("recoJets"))),
   //genSrc_ (( cfg.getParameter<edm::InputTag>( "genParticles")))
   genSrc_ (consumes<std::vector<reco::GenParticle> >(cfg.getParameter<edm::InputTag>( "genParticles")))
 {
@@ -84,9 +88,10 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
 
-
     efficiencyTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
     efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
+    efficiencyTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
+    efficiencyTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
     
     efficiencyTree->Branch("run",    &run,     "run/I");
     efficiencyTree->Branch("lumi",   &lumi,    "lumi/I");
@@ -124,6 +129,7 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("pf_cEta", &pf_cEta, "pf_cEta/D");
     efficiencyTree->Branch("pf_cPhi", &pf_cPhi, "pf_cPhi/D");
     efficiencyTree->Branch("pf_deltaR", &pf_deltaR, "pf_deltaR/D");
+
   }
 
 void L1TCaloEGammaAnalyzer::beginJob( const EventSetup & es) {
@@ -135,6 +141,10 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   run = evt.id().run();
   lumi = evt.id().luminosityBlock();
   event = evt.id().event();
+
+  edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
+  edm::Handle<l1tp2::Phase2L1CaloJetCollection> caloJets;
+  edm::Handle<vector<pat::Jet>> recoJets;
 
   edm::Handle<l1tp2::CaloCrystalClusterCollection> rctCaloCrystalClusters;
   edm::Handle<l1tp2::CaloTowerCollection> rctCaloL1Towers;
@@ -162,6 +172,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   gctClusterInfo->clear();
   gctTowers->clear();
   caloPFClusters->clear();
+  offlineJets->clear();
+  gctCaloJets->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear(); 
 
@@ -172,6 +184,36 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   hcTopology_ = &es.getData(hbTopologyToken_);
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   decoder_ = &es.getData(decoderToken_);
+
+  //evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle);
+  //l1t::HGCalTowerBxCollection hgcalTowers;
+  //hgcalTowers = (*hgcalTowersHandle.product());
+  //for (auto it = hgcalTowers.begin(0), ed = hgcalTowers.end(0); it != ed; ++it) {
+  //  std::cout<<it->etEm()<<"\t"<<it->etHad()<<"\t"<<it->eta()<<"\t"<<it->phi()<<std::endl;
+  //}
+
+  if(evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle)){
+    for(const auto & hgcalTowers : *hgcalTowersHandle){
+      //std::cout<<hgcalTowers.etEm()<<"\t"<<hgcalTowers.etHad()<<"\t"<<hgcalTowers.eta()<<"\t"<<hgcalTowers.phi()<<std::endl;
+    }
+  }
+
+  if(evt.getByToken(caloJetSrc_, caloJets)){
+    for(const auto & caloJet : *caloJets){
+      TLorentzVector temp;
+      temp.SetPtEtaPhiE(caloJet.jetEt(), caloJet.jetEta(), caloJet.jetPhi(), caloJet.jetEt());
+      gctCaloJets->push_back(temp);
+      //std::cout<<caloJet.jetEt()<<"\t"<<caloJet.jetEta()<<"\t"<<caloJet.jetPhi()<<"\t"<<caloJet.towerEt()<<"\t"<<caloJet.towerEta()<<"\t"<<caloJet.towerPhi()<<std::endl;
+    }
+  }
+
+  if(evt.getByToken(recoJetSrc_, recoJets)){
+    for(const auto & recoJet : *recoJets){
+      TLorentzVector temp;
+      temp.SetPtEtaPhiE(recoJet.pt(), recoJet.eta(), recoJet.phi(), recoJet.et());
+      offlineJets->push_back(temp);
+    }
+  }
 
   //std::cout << "Doing event " << event << "...." << std::endl;
 
@@ -678,10 +720,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 //                << std::endl;
     }
 
-    efficiencyTree->Fill();
+    //efficiencyTree->Fill();
 
   } // end of loop over gen electrons
-  
+  efficiencyTree->Fill();
+ 
  }
 
 

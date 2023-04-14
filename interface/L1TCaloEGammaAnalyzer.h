@@ -44,6 +44,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidate.h"
 #include "DataFormats/ParticleFlowCandidate/interface/PFCandidateFwd.h"
+#include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 #include "DataFormats/TauReco/interface/BaseTau.h"
 #include "DataFormats/TauReco/interface/PFTauFwd.h"
@@ -67,6 +68,7 @@
 #include "L1Trigger/L1TCaloLayer1/src/UCTGeometry.hh"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
 
 ////#ifdef __MAKECINT__
 //#pragma extra_include "TLorentzVector.h";
@@ -137,6 +139,8 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   std::vector<TLorentzVector> *gctClusters  = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *gctTowers    = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -262,6 +266,11 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> rctTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> gctTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
+  edm::EDGetTokenT<l1t::HGCalTowerBxCollection> hgcalTowersSrc_;
+  edm::EDGetTokenT<l1tp2::Phase2L1CaloJetCollection> caloJetSrc_;
+  edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
+  //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
+  //l1t::HGCalTowerBxCollection hgcalTowers;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genSrc_;
   std::string folderName_;
   double recoPt_;
