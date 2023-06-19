@@ -69,6 +69,7 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
+#include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 ////#ifdef __MAKECINT__
 //#pragma extra_include "TLorentzVector.h";
@@ -109,7 +110,10 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   std::vector<TLorentzVector> *recoTaus  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *allRegions  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *allEcalTPGs  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *allHcalTPGs  = new std::vector<TLorentzVector>; 
+  std::vector<TLorentzVector> *allHcalTPGs  = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *allHgcalTowers  = new std::vector<TLorentzVector>;
+  std::vector<int> *hgcal_ieta = new std::vector<int>;
+  std::vector<int> *hgcal_iphi = new std::vector<int>;
   std::vector<TLorentzVector> *signalPFCands  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *l1Jets  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *recoJets  = new std::vector<TLorentzVector>; 
@@ -471,6 +475,28 @@ int get5x5TPGs(const int maxTPGPt_eta,
     for(int i = 0; i <73; i++){
       tpgPhiMap[i] = convertGenPhi(i);
     }
+  }
+
+  //taking hints from https://github.com/jonamotta/cmssw/blob/from-CMSSW_12_5_2_patch1/L1Trigger/L1CaloTrigger/plugins/L1NNCaloTauEmulator.cc
+
+  int makeEndcapHwIEta(float eta) {
+    float IETAHGCAL_LSB = 0.0845;
+    int ieta = floor(eta/IETAHGCAL_LSB);
+    if (ieta < 0) {
+      ieta += 1; // FIXME : +1 NEEDED?
+    }
+    return ieta;
+  }
+
+  int makeEndcapHwIPhi(float phi) {
+    if (phi < 0) {
+      phi += 2 * M_PI;
+    }
+    //shift up by half an LSB
+    int INTPHI_PI = 36;
+    float IETAPHI_LSB = M_PI / INTPHI_PI;
+    phi += IETAPHI_LSB/2 - 1; // FIXME : +-1 NEEDED? YES, -1 is needed to have indices within 0-71
+    return floor(phi/IETAPHI_LSB);
   }
 
   static bool comparePt(const TLorentzVector& lhs,

@@ -156,7 +156,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   // float half_tower_offset = 0.04365;
   float half_tower_offset = 0.0;
 
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH.root", "READ");
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH_18jun.root", "READ");
 
   // Declare the center of the plot
   float etaCenter = 0.27;
@@ -169,7 +169,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   std::vector<TLorentzVector> *vEcalTpgs       = 0;
   std::vector<TLorentzVector> *vHcalTpgs       = 0;
   std::vector<TLorentzVector> *vTowers         = 0;
-  std::vector<TLorentzVector> *vPFclusters     = 0;
+  std::vector<TLorentzVector> *vHgcalTowers     = 0;
   std::vector<TLorentzVector> *vOfflineJets    = 0;
   std::vector<TLorentzVector> *vGctCaloJets    = 0;
 
@@ -190,7 +190,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   TBranch *bEcalTpgs         = 0;
   TBranch *bHcalTpgs         = 0;
   TBranch *bTowers   = 0;
-  TBranch *bPFclusters  = 0;
+  TBranch *bHgcalTowers  = 0;
   TBranch *bOfflineJets = 0;
   TBranch *bGctCaloJets = 0;
 
@@ -199,34 +199,34 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   t->SetBranchAddress("ecalTPGs",&vEcalTpgs,&bEcalTpgs);
   t->SetBranchAddress("hcalTPGs",&vHcalTpgs,&bHcalTpgs);
   t->SetBranchAddress("gctTowers",&vTowers,&bTowers);
-  t->SetBranchAddress("caloPFClusters",&vPFclusters,&bPFclusters);
+  t->SetBranchAddress("hgcalTowers",&vHgcalTowers,&bHgcalTowers);
   t->SetBranchAddress("offlineJets",&vOfflineJets,&bOfflineJets);
   t->SetBranchAddress("gctCaloJets",&vGctCaloJets,&bGctCaloJets);
 
   // Create one histograms
   TH1F   *h                = new TH1F("h","This is the eta distribution",100,-4,4);
   TH2F   *h2EcalTpgs       = new TH2F("h2EcalTpgs","Event Display",(34*5), //(90*2), //64*2
-				      -1.4841, 1.4841,
+				      -3., 3.,
 				      (72*5), // (144*2),
 				      -3.142,3.142);
   TH2F   *h2HcalTpgs       = new TH2F("h2HcalTpgs","Event Display",34,
-				      -1.4841, 1.4841,
+				      -3., 3.,
 				      72,
 				      -3.142,3.142);
-  TH2F   *h2PFclusters  = new TH2F("h2PFclusters", "Event Display", 34,
-                                   -1.4841, 1.4841,
+  TH2F   *h2HgcalTowers  = new TH2F("h2HgcalTowers", "Event Display", 34,
+                                   -3., 3.,
                                    72,
                                    -3.142,3.142);
   TH2F   *h2L1Towers    = new TH2F("h2L1Towers", "Event Display", 34,
-				   -1.4841, 1.4841,
+				   -3., 3.,
 				   72,
 				   -3.142,3.142);
   TH2F   *h2OfflineJets    = new TH2F("h2OfflineJets", "Event Display", 34,
-                                   -1.4841, 1.4841,
+                                   -3., 3.,
                                    72,
                                    -3.142,3.142);
   TH2F   *h2GctCaloJets    = new TH2F("h2GctCaloJets", "Event Display", 34,
-                                   -1.4841, 1.4841,
+                                   -3., 3.,
                                    72,
                                    -3.142,3.142);
 
@@ -240,7 +240,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   bEcalTpgs->GetEntry(tentry);
   bHcalTpgs->GetEntry(tentry);
   bTowers->GetEntry(tentry);
-  bPFclusters->GetEntry(tentry);
+  bHgcalTowers->GetEntry(tentry);
   bOfflineJets->GetEntry(tentry);
   bGctCaloJets->GetEntry(tentry);
 
@@ -253,7 +253,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   // Get HCAL TPGs
   double hcalMinPt = 0.5;
   if(hcalMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show HCAL TPGs with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show HCAL TPGs with energy under "
               << hcalMinPt << " GeV" << std::endl;
   }
 
@@ -297,7 +297,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   // Get ECAL TPGs
   double ecalMinPt = 0.5;
   if(ecalMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show ECAL TPGs with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show ECAL TPGs with energy under "
               << ecalMinPt << " GeV" << std::endl;
   }
 
@@ -329,7 +329,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   // Get the GCTintTowers
   double towerMinPt = 0.5;
   if(towerMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show GCT towers with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show GCT towers with energy under "
               << towerMinPt << " GeV" << std::endl;
   }
 
@@ -358,36 +358,40 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   h2L1Towers2->SetLineWidth(1);
   h2L1Towers2->Draw("SAME BOXL");
 
-  // Get the PF clusters
-  double pfclusterMinPt = 2.0;
+  // Get the HGCAL towers
+  double pfclusterMinPt = 1.0;
   if(pfclusterMinPt > 0.){
-    std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show PF clusters with energy under "
+    std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show HGCAL towers with energy under "
               << pfclusterMinPt << " GeV" << std::endl;
   }
 
-  for (UInt_t j = 0; j < vPFclusters->size(); ++j) {
-    if(vPFclusters->at(j).Pt() > pfclusterMinPt){
-      float ceta = vPFclusters->at(j).Eta();
-      float cphi = vPFclusters->at(j).Phi();
-      float cpt  = vPFclusters->at(j).Pt();
-      h2PFclusters->Fill(ceta, cphi, cpt);
+  for (UInt_t j = 0; j < vHgcalTowers->size(); ++j) {
+    if(vHgcalTowers->at(j).Pt() > pfclusterMinPt){
+      float ceta = vHgcalTowers->at(j).Eta();
+      float cphi = vHgcalTowers->at(j).Phi();
+      float cpt  = vHgcalTowers->at(j).Pt();
+      h2HgcalTowers->Fill(ceta, cphi, cpt);
 
       if(cpt > 10.){
-        std::cout<<"vPFclusters->at(j).Pt() "<< cpt
+        std::cout<<"vHgcalTowers->at(j).Pt() "<< cpt
                  <<" eta "<< ceta
                  <<" phi "<< cphi <<std::endl;
       }
     }
   }
 
-  h2PFclusters->SetLineColor(kViolet-6);
-  h2PFclusters->SetLineWidth(2);
-  //h2PFclusters->Draw("SAME BOXL");
+  h2HgcalTowers->SetFillStyle(1001);
+  h2HgcalTowers->SetFillColor(kBlue-9);
+  h2HgcalTowers->SetLineColor(kBlue-9);
+  h2HgcalTowers->Draw("SAME BOX");
+  h2HgcalTowers->SetLineColor(kBlue-9);
+  h2HgcalTowers->SetLineWidth(1);
+  h2HgcalTowers->Draw("SAME BOXL");
 
   // Get the Offline Jets
   double recoJetMinPt = 15.;
-  double recoJetMaxEta = 1.44;
-  std::cout << "[INFO:] plotEventDisplayPhaseIIPFclusters.C: do not show offline jets with energy under "
+  double recoJetMaxEta = 3.0;
+  std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show offline jets with energy under "
             << recoJetMinPt << " GeV and eta greater than " << recoJetMaxEta <<std::endl;
   for (UInt_t j = 0; j < vOfflineJets->size(); ++j) {
     float ceta = vOfflineJets->at(j).Eta();
@@ -447,17 +451,18 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
 
   l->AddEntry(h2EcalTpgs,    "ECAL Crystals",   "F");
   l->AddEntry(h2HcalTpgs,    "HCAL Towers",     "F");
-  l->AddEntry(h2L1Towers,    "Full Towers",     "F");
+  l->AddEntry(h2L1Towers,    "GCT Towers",      "F");
+  l->AddEntry(h2HgcalTowers, "HGCAL Towers",    "F");
   l->AddEntry(h2GctCaloJets, "L1 Calo Jets",    "F");
   l->AddEntry(h2OfflineJets, "Offline Jets",    "F");
   l->Draw();
  
   char* saveFile = new char[100];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator.png",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator_CaloJets.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator.pdf",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator_CaloJets.pdf",event);
   c1->SaveAs(saveFile);
 
 }

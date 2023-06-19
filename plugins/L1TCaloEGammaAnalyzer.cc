@@ -28,6 +28,8 @@
 #include "DataFormats/HcalDetId/interface/HcalSubdetector.h"
 #include "DataFormats/HcalDetId/interface/HcalDetId.h"
 #include "DataFormats/L1THGCal/interface/HGCalTower.h"
+#include "DataFormats/HcalDigi/interface/HcalDigiCollections.h"
+
 
 // ECAL TPs
 #include "DataFormats/EcalDigi/interface/EcalDigiCollections.h"
@@ -56,9 +58,9 @@
 
 
 using namespace edm;
-using std::cout;
-using std::endl;
-using std::vector;
+//using std::cout;
+//using std::endl;
+//using std::vector;
 
 L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   decoderToken_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
@@ -87,6 +89,9 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("rctTowers",   "vector<TLorentzVector>", &rctTowers, 32000, 0);
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
+    efficiencyTree->Branch("hgcalTowers", "vector<TLorentzVector>", &allHgcalTowers, 32000, 0);
+    //efficiencyTree->Branch("hgcal_ieta", "vector<int>", &hgcal_ieta, 32000, 0);
+    //efficiencyTree->Branch("hgcal_iphi", "vector<int>", &hgcal_iphi, 32000, 0);
 
     efficiencyTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
     efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
@@ -142,7 +147,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   lumi = evt.id().luminosityBlock();
   event = evt.id().event();
 
-  edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
+  //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
   edm::Handle<l1tp2::Phase2L1CaloJetCollection> caloJets;
   edm::Handle<vector<pat::Jet>> recoJets;
 
@@ -175,7 +180,10 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   offlineJets->clear();
   gctCaloJets->clear();
   allEcalTPGs->clear(); 
-  allHcalTPGs->clear(); 
+  allHcalTPGs->clear();
+  allHgcalTowers->clear();
+  //hgcal_ieta->clear();
+  //hgcal_iphi->clear();
 
   // Detector geometry
   caloGeometry_ = &es.getData(caloGeometryToken_);
@@ -185,17 +193,34 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   HcalTrigTowerGeometry theTrigTowerGeometry(hcTopology_);
   decoder_ = &es.getData(decoderToken_);
 
-  //evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle);
-  //l1t::HGCalTowerBxCollection hgcalTowers;
-  //hgcalTowers = (*hgcalTowersHandle.product());
-  //for (auto it = hgcalTowers.begin(0), ed = hgcalTowers.end(0); it != ed; ++it) {
-  //  std::cout<<it->etEm()<<"\t"<<it->etHad()<<"\t"<<it->eta()<<"\t"<<it->phi()<<std::endl;
-  //}
-
-  if(evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle)){
-    for(const auto & hgcalTowers : *hgcalTowersHandle){
-      //std::cout<<hgcalTowers.etEm()<<"\t"<<hgcalTowers.etHad()<<"\t"<<hgcalTowers.eta()<<"\t"<<hgcalTowers.phi()<<std::endl;
+  // Barrel GCT towers info
+  if(evt.getByToken(gctTowersSrc_, gctCaloL1Towers)){
+    for(const auto & gctTower : *gctCaloL1Towers){
+      TLorentzVector temp;
+      temp.SetPtEtaPhiE(gctTower.ecalTowerEt(), gctTower.towerEta(), gctTower.towerPhi(), gctTower.ecalTowerEt());
+      gctTowers->push_back(temp);
     }
+  }
+
+  // HGCal info
+  edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
+  if (!evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle))
+    std::cout<< "Failed to get towers from hgcalTowerCollection!"<<std::endl;
+  evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle);
+  l1t::HGCalTowerBxCollection hgcalTowers;
+  hgcalTowers = (*hgcalTowersHandle.product());
+  for (auto it = hgcalTowers.begin(0); it != hgcalTowers.end(0); it++) {
+    float et = it->etEm()+it->etHad();
+    float eta = it->eta();
+    float phi = it->phi();
+    //int ieta = makeEndcapHwIEta(eta);
+    //hgcal_ieta->push_back(ieta);
+    //int iphi = makeEndcapHwIPhi(phi);
+    //hgcal_iphi->push_back(iphi);
+    //std::cout<<ieta<<"\t"<<iphi<<"\t"<<et<<std::endl;
+    TLorentzVector temp ;
+    temp.SetPtEtaPhiE(et,eta,phi,et);
+    allHgcalTowers->push_back(temp);
   }
 
   if(evt.getByToken(caloJetSrc_, caloJets)){
