@@ -69,21 +69,7 @@ process.TFileService = cms.Service("TFileService",
     fileName = cms.string('analyzer_singlepion.root')
 )
 
-process.Out = cms.OutputModule( "PoolOutputModule",
-    fileName = cms.untracked.string( "phase2L1EGammaAnalyzer_singlepion.root" ),
-    outputCommands = cms.untracked.vstring(
-        "keep *_l1tPhase2L1CaloEGammaEmulator_*_*",
-        "keep *_l1tPhase2CaloPFClusterEmulator_*_*",
-#        "keep *_TriggerResults_*_*",
-#        "keep *_simHcalTriggerPrimitiveDigis_*_*",
-#        "keep *_EcalEBTrigPrimProducer_*_*"
-    )
-)
-
-
-process.end = cms.EndPath( process.Out )
-
-process.schedule = cms.Schedule(process.pL1EG, process.end)
+process.schedule = cms.Schedule(process.pL1EG)
 
 # Multi-threading
 process.options.numberOfThreads=cms.untracked.uint32(8)

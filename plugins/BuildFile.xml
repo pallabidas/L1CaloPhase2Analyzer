@@ -25,6 +25,7 @@
 <use   name="DataFormats/MuonReco"/>
 <use   name="DataFormats/Luminosity"/>
 <use   name="DataFormats/PatCandidates"/>
+<use   name="DataFormats/L1TCalorimeterPhase2"/>
 <use   name="DataFormats/L1GlobalTrigger"/>
 <use   name="FWCore/MessageService"/>
 <use   name="PhysicsTools/PatUtils"/>
