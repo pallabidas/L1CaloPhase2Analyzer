@@ -121,25 +121,31 @@ void DrawRegionLines(){
  */
 void DrawTowerLines(){
   std::vector<TLine*> TowerLines;
-  float etaValues[59] = { -3, -2.826, -2.652, -2.478, -2.304, -2.107, -2.0207, -1.93, -1.83, -1.74, -1.653, -1.566, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.0207, 2.107, 2.304, 2.478, 2.652, 2.826, 3};
+  //float etaValues[59] = { -3, -2.826, -2.652, -2.478, -2.304, -2.107, -2.0207, -1.93, -1.83, -1.74, -1.653, -1.566, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.0207, 2.107, 2.304, 2.478, 2.652, 2.826, 3};
+
+  //float etaValues[71] = { -3., -2.9155, -2.831, -2.7465, -2.662, -2.5775, -2.493, -2.4085, -2.324, -2.2395, -2.155, -2.0705, -1.986, -1.9015, -1.817, -1.7325, -1.648, -1.5635, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.5635, 1.648, 1.7325, 1.817, 1.9015, 1.986, 2.0705, 2.155, 2.2395, 2.324, 2.4085, 2.493, 2.5775, 2.662, 2.7465, 2.831, 2.9155, 3.};
+
+  float etaValues[95] = {-5.2665, -5.1155, -4.92125, -4.71475, -4.53875, -4.36375, -4.1895, -4.014, -3.83875, -3.664, -3.489, -3.314, -3., -2.9155, -2.831, -2.7465, -2.662, -2.5775, -2.493, -2.4085, -2.324, -2.2395, -2.155, -2.0705, -1.986, -1.9015, -1.817, -1.7325, -1.648, -1.5635, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.5635, 1.648, 1.7325, 1.817, 1.9015, 1.986, 2.0705, 2.155, 2.2395, 2.324, 2.4085, 2.493, 2.5775, 2.662, 2.7465, 2.831, 2.9155, 3., 3.314, 3.489, 3.664, 3.83875, 4.014, 4.1895, 4.36375, 4.53875, 4.71475, 4.92125, 5.1155, 5.2665};
 
   float phiValues[73] =
     {-3.142, -3.054, -2.967, -2.880, -2.793, -2.705, -2.618, -2.531, -2.443, -2.356, -2.269, -2.182, -2.094, -2.007, -1.920, -1.833, -1.745, -1.658, -1.571, -1.484, -1.396, -1.309, -1.222, -1.134, -1.047, -0.960, -0.873, -0.785, -0.698, -0.611, -0.524, -0.436, -0.349, -0.262, -0.175, -0.087,
      0.000, 0.087, 0.175, 0.262, 0.349, 0.436, 0.524, 0.611, 0.698, 0.785, 0.873, 0.960, 1.047, 1.134, 1.222, 1.309, 1.396, 1.484, 1.571, 1.658, 1.745, 1.833, 1.920, 2.007, 2.094, 2.182, 2.269, 2.356, 2.443, 2.531, 2.618, 2.705, 2.793, 2.880, 2.967, 3.054, 3.142};
   
   //eta lines
-  for(int i = 0; i < 59; i++){
-    TLine * line = new TLine(etaValues[i], -3.2, etaValues[i], 3.2); 
+  for(int i = 1; i < 94; i++){
+    TLine * line = new TLine(etaValues[i], -3.142, etaValues[i], 3.142); 
     line->SetLineColor(kGray);
-    line->SetLineStyle(3);
+    line->SetLineStyle(1);
+    line->SetLineWidth(1);
     TowerLines.push_back(line);
   }
 
   //phi lines
-  for(int i = 0; i < 73; i++){
-    TLine * line = new TLine(-3, phiValues[i], 3, phiValues[i]); 
+  for(int i = 1; i < 72; i++){
+    TLine * line = new TLine(-5.2665, phiValues[i], 5.2665, phiValues[i]); 
     line->SetLineColor(kGray);
-    line->SetLineStyle(3);
+    line->SetLineStyle(1);
+    line->SetLineWidth(1);
     TowerLines.push_back(line);
   }
 
@@ -153,14 +159,7 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   
   gStyle->SetOptStat(0);
   
-  // float half_tower_offset = 0.04365;
-  float half_tower_offset = 0.0;
-
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH_18jun.root", "READ");
-
-  // Declare the center of the plot
-  float etaCenter = 0.27;
-  float phiCenter = -1.7889;
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH.root", "READ");
 
   if (!f) { return; }
 
@@ -169,30 +168,35 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   std::vector<TLorentzVector> *vEcalTpgs       = 0;
   std::vector<TLorentzVector> *vHcalTpgs       = 0;
   std::vector<TLorentzVector> *vTowers         = 0;
-  std::vector<TLorentzVector> *vHgcalTowers     = 0;
+  std::vector<TLorentzVector> *vHgcalTowers    = 0;
+  std::vector<TLorentzVector> *vHfTowers       = 0;
   std::vector<TLorentzVector> *vOfflineJets    = 0;
   std::vector<TLorentzVector> *vGctCaloJets    = 0;
-
+  std::vector<TLorentzVector> *vGenJets        = 0;
 
   int event =0;
 
   // Create a new canvas.
-  TCanvas *c1 = new TCanvas("c1","eta vs phi",200,10,700,700);
-  //TCanvas *c1 = new TCanvas("c1","eta vs phi",200,10,700,200);
+  TCanvas *c1 = new TCanvas("c1","eta vs phi",200,10,1250,800);
   c1->SetFillColor(0);
   c1->GetFrame()->SetFillColor(0);
   c1->GetFrame()->SetBorderSize(6);
   c1->GetFrame()->SetBorderMode(-1);
+  TPad *p1 = new TPad("pad1", "pad1", 0., 0., 0.9, 1.);
+  p1->Draw();
+  p1->cd();
 
   const Int_t kUPDATE = 1000;
 
   TBranch *bEvent            = 0;      
   TBranch *bEcalTpgs         = 0;
   TBranch *bHcalTpgs         = 0;
-  TBranch *bTowers   = 0;
-  TBranch *bHgcalTowers  = 0;
-  TBranch *bOfflineJets = 0;
-  TBranch *bGctCaloJets = 0;
+  TBranch *bTowers           = 0;
+  TBranch *bHgcalTowers      = 0;
+  TBranch *bHfTowers         = 0;
+  TBranch *bOfflineJets      = 0;
+  TBranch *bGctCaloJets      = 0;
+  TBranch *bGenJets          = 0;
 
   t->SetBranchAddress("event",&event,&bEvent);
 
@@ -200,36 +204,31 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   t->SetBranchAddress("hcalTPGs",&vHcalTpgs,&bHcalTpgs);
   t->SetBranchAddress("gctTowers",&vTowers,&bTowers);
   t->SetBranchAddress("hgcalTowers",&vHgcalTowers,&bHgcalTowers);
+  t->SetBranchAddress("hfTowers",&vHfTowers,&bHfTowers);
   t->SetBranchAddress("offlineJets",&vOfflineJets,&bOfflineJets);
   t->SetBranchAddress("gctCaloJets",&vGctCaloJets,&bGctCaloJets);
+  t->SetBranchAddress("genJets",&vGenJets,&bGenJets);
+
+  //float etaValues[59] = { -3, -2.826, -2.652, -2.478, -2.304, -2.107, -2.0207, -1.93, -1.83, -1.74, -1.653, -1.566, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.566, 1.653, 1.74, 1.83, 1.93, 2.0207, 2.107, 2.304, 2.478, 2.652, 2.826, 3};
+
+  //float etaValues[71] = { -3., -2.9155, -2.831, -2.7465, -2.662, -2.5775, -2.493, -2.4085, -2.324, -2.2395, -2.155, -2.0705, -1.986, -1.9015, -1.817, -1.7325, -1.648, -1.5635, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.5635, 1.648, 1.7325, 1.817, 1.9015, 1.986, 2.0705, 2.155, 2.2395, 2.324, 2.4085, 2.493, 2.5775, 2.662, 2.7465, 2.831, 2.9155, 3.};
+
+  float etaValues[95] = {-5.2665, -5.1155, -4.92125, -4.71475, -4.53875, -4.36375, -4.1895, -4.014, -3.83875, -3.664, -3.489, -3.314, -3., -2.9155, -2.831, -2.7465, -2.662, -2.5775, -2.493, -2.4085, -2.324, -2.2395, -2.155, -2.0705, -1.986, -1.9015, -1.817, -1.7325, -1.648, -1.5635, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.5635, 1.648, 1.7325, 1.817, 1.9015, 1.986, 2.0705, 2.155, 2.2395, 2.324, 2.4085, 2.493, 2.5775, 2.662, 2.7465, 2.831, 2.9155, 3., 3.314, 3.489, 3.664, 3.83875, 4.014, 4.1895, 4.36375, 4.53875, 4.71475, 4.92125, 5.1155, 5.2665};
+
+  float phiValues[73] =
+    {-3.142, -3.054, -2.967, -2.880, -2.793, -2.705, -2.618, -2.531, -2.443, -2.356, -2.269, -2.182, -2.094, -2.007, -1.920, -1.833, -1.745, -1.658, -1.571, -1.484, -1.396, -1.309, -1.222, -1.134, -1.047, -0.960, -0.873, -0.785, -0.698, -0.611, -0.524, -0.436, -0.349, -0.262, -0.175, -0.087,
+     0.000, 0.087, 0.175, 0.262, 0.349, 0.436, 0.524, 0.611, 0.698, 0.785, 0.873, 0.960, 1.047, 1.134, 1.222, 1.309, 1.396, 1.484, 1.571, 1.658, 1.745, 1.833, 1.920, 2.007, 2.094, 2.182, 2.269, 2.356, 2.443, 2.531, 2.618, 2.705, 2.793, 2.880, 2.967, 3.054, 3.142};
 
   // Create one histograms
   TH1F   *h                = new TH1F("h","This is the eta distribution",100,-4,4);
-  TH2F   *h2EcalTpgs       = new TH2F("h2EcalTpgs","Event Display",(34*5), //(90*2), //64*2
-				      -3., 3.,
-				      (72*5), // (144*2),
-				      -3.142,3.142);
-  TH2F   *h2HcalTpgs       = new TH2F("h2HcalTpgs","Event Display",34,
-				      -3., 3.,
-				      72,
-				      -3.142,3.142);
-  TH2F   *h2HgcalTowers  = new TH2F("h2HgcalTowers", "Event Display", 34,
-                                   -3., 3.,
-                                   72,
-                                   -3.142,3.142);
-  TH2F   *h2L1Towers    = new TH2F("h2L1Towers", "Event Display", 34,
-				   -3., 3.,
-				   72,
-				   -3.142,3.142);
-  TH2F   *h2OfflineJets    = new TH2F("h2OfflineJets", "Event Display", 34,
-                                   -3., 3.,
-                                   72,
-                                   -3.142,3.142);
-  TH2F   *h2GctCaloJets    = new TH2F("h2GctCaloJets", "Event Display", 34,
-                                   -3., 3.,
-                                   72,
-                                   -3.142,3.142);
-
+  TH2F   *h2EcalTpgs       = new TH2F("h2EcalTpgs", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2HcalTpgs       = new TH2F("h2HcalTpgs", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2HgcalTowers    = new TH2F("h2HgcalTowers", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2HfTowers       = new TH2F("h2HfTowers", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2L1Towers       = new TH2F("h2L1Towers", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2OfflineJets    = new TH2F("h2OfflineJets", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2GctCaloJets    = new TH2F("h2GctCaloJets", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2GenJets        = new TH2F("h2GenJets", "Event Display", 94, etaValues, 72, phiValues);
   
   h->SetFillColor(48);
 
@@ -241,8 +240,10 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   bHcalTpgs->GetEntry(tentry);
   bTowers->GetEntry(tentry);
   bHgcalTowers->GetEntry(tentry);
+  bHfTowers->GetEntry(tentry);
   bOfflineJets->GetEntry(tentry);
   bGctCaloJets->GetEntry(tentry);
+  bGenJets->GetEntry(tentry);
 
   // Get the event number
   char name[30];
@@ -290,9 +291,10 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   h2HcalTpgs2->SetLineWidth(1);
   h2HcalTpgs2->Draw("SAME BOXL");
 
-  DrawCardLines();
-  DrawRegionLines();
+  //DrawCardLines();
+  //DrawRegionLines();
   DrawTowerLines();
+  gPad->RedrawAxis();
 
   // Get ECAL TPGs
   double ecalMinPt = 0.5;
@@ -359,14 +361,14 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   h2L1Towers2->Draw("SAME BOXL");
 
   // Get the HGCAL towers
-  double pfclusterMinPt = 1.0;
-  if(pfclusterMinPt > 0.){
+  double hgcalMinPt = 1.0;
+  if(hgcalMinPt > 0.){
     std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show HGCAL towers with energy under "
-              << pfclusterMinPt << " GeV" << std::endl;
+              << hgcalMinPt << " GeV" << std::endl;
   }
 
   for (UInt_t j = 0; j < vHgcalTowers->size(); ++j) {
-    if(vHgcalTowers->at(j).Pt() > pfclusterMinPt){
+    if(vHgcalTowers->at(j).Pt() > hgcalMinPt){
       float ceta = vHgcalTowers->at(j).Eta();
       float cphi = vHgcalTowers->at(j).Phi();
       float cpt  = vHgcalTowers->at(j).Pt();
@@ -388,6 +390,36 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   h2HgcalTowers->SetLineWidth(1);
   h2HgcalTowers->Draw("SAME BOXL");
 
+  // Get the HF towers
+  double hfMinPt = 1.0;
+  if(hfMinPt > 0.){
+    std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show HF towers with energy under "
+              << hfMinPt << " GeV" << std::endl;
+  }
+
+  for (UInt_t j = 0; j < vHfTowers->size(); ++j) {
+    if(vHfTowers->at(j).Pt() > hfMinPt){
+      float ceta = vHfTowers->at(j).Eta();
+      float cphi = vHfTowers->at(j).Phi();
+      float cpt  = vHfTowers->at(j).Pt();
+      h2HfTowers->Fill(ceta, cphi, cpt);
+
+      if(cpt > 10.){
+        std::cout<<"vHfTowers->at(j).Pt() "<< cpt
+                 <<" eta "<< ceta
+                 <<" phi "<< cphi <<std::endl;
+      }
+    }
+  }
+
+  h2HfTowers->SetFillStyle(1001);
+  h2HfTowers->SetFillColor(kBlue-6);
+  h2HfTowers->SetLineColor(kBlue-6);
+  h2HfTowers->Draw("SAME BOX");
+  h2HfTowers->SetLineColor(kBlue-6);
+  h2HfTowers->SetLineWidth(1);
+  h2HfTowers->Draw("SAME BOXL");
+
   // Get the Offline Jets
   double recoJetMinPt = 15.;
   double recoJetMaxEta = 3.0;
@@ -399,6 +431,40 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
     float cpt  = vOfflineJets->at(j).Pt();
     if(cpt > recoJetMinPt && fabs(ceta) < recoJetMaxEta) {
       h2OfflineJets->Fill(ceta, cphi, cpt);
+      TEllipse *circ = new TEllipse(ceta,cphi,.4,.4);
+      circ->SetFillStyle(0);
+      circ->SetLineColor(kViolet+2);
+      //circ->Draw("SAME");
+
+      std::ostringstream strs;
+      strs << cpt;
+      std::string text = strs.str();
+      TPaveText *tempText = new TPaveText(ceta, cphi, ceta-0.25, cphi+0.25);
+      tempText->AddText(text.c_str());
+      tempText->SetFillColor(0);
+      tempText->SetLineColor(0);
+      tempText->SetShadowColor(0);
+      tempText->SetTextColor(kViolet+2);
+      //tempText->Draw("SAME");
+    }
+  }
+
+  h2OfflineJets->SetLineColor(kViolet+2);
+  h2OfflineJets->SetLineWidth(2);
+  //h2OfflineJets->Draw("SAME BOXL");
+
+  double genJetMinPt = 10.;
+  std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show gen jets with energy under "
+            << genJetMinPt << " GeV " <<std::endl;
+  for (UInt_t j = 0; j < vGenJets->size(); ++j) {
+    float ceta = vGenJets->at(j).Eta();
+    float cphi = vGenJets->at(j).Phi();
+    float cpt  = vGenJets->at(j).Pt();
+    if(cpt > genJetMinPt) {
+      std::cout<<"vGenJets->at(j).Pt() "<< cpt
+               <<" eta "<< ceta 
+               <<" phi "<< cphi <<std::endl;
+      h2GenJets->Fill(ceta, cphi, cpt);
       TEllipse *circ = new TEllipse(ceta,cphi,.4,.4);
       circ->SetFillStyle(0);
       circ->SetLineColor(kViolet+2);
@@ -416,10 +482,8 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
       tempText->Draw("SAME");
     }
   }
-
-  h2OfflineJets->SetLineColor(kViolet+2);
-  h2OfflineJets->SetLineWidth(2);
-  //h2OfflineJets->Draw("SAME BOXL");
+  h2GenJets->SetLineColor(kViolet+2);
+  h2GenJets->SetLineWidth(2); 
 
   // Get the Calo Jets
   for (UInt_t j = 0; j < vGctCaloJets->size(); ++j) {
@@ -427,6 +491,10 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
     float cphi = vGctCaloJets->at(j).Phi();
     float cpt  = vGctCaloJets->at(j).Pt();
     h2GctCaloJets->Fill(ceta, cphi, cpt);
+    TEllipse *circ = new TEllipse(ceta,cphi,.4,.4);
+    circ->SetFillStyle(0);
+    circ->SetLineColor(kRed);
+    //circ->Draw("SAME");
 
     std::ostringstream strs;
     strs << cpt;
@@ -444,25 +512,31 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   h2GctCaloJets->SetLineWidth(2);
   h2GctCaloJets->Draw("SAME BOXL");
 
+  c1->Update();
+  c1->cd();
+  //gPad->Update();
+  //gPad->RedrawAxis();
   float xR=0.70;
-  TLegend *l = new TLegend(xR,0.80,xR+0.30,1.0);
-  //TLegend *l = new TLegend(0.9,0.70,1.0,1.0);
-  l->SetTextSize(0.035);
+  //TLegend *l = new TLegend(xR,0.80,xR+0.30,1.0);
+  TLegend *l = new TLegend(0.82,0.60,0.99,0.9);
+  l->SetTextSize(0.03);
 
   l->AddEntry(h2EcalTpgs,    "ECAL Crystals",   "F");
   l->AddEntry(h2HcalTpgs,    "HCAL Towers",     "F");
   l->AddEntry(h2L1Towers,    "GCT Towers",      "F");
   l->AddEntry(h2HgcalTowers, "HGCAL Towers",    "F");
+  l->AddEntry(h2HfTowers,    "HF Towers",       "F");
   l->AddEntry(h2GctCaloJets, "L1 Calo Jets",    "F");
-  l->AddEntry(h2OfflineJets, "Offline Jets",    "F");
+  //l->AddEntry(h2OfflineJets, "Offline Jets",    "F");
+  l->AddEntry(h2GenJets,     "Gen Jets",        "F");
   l->Draw();
  
-  char* saveFile = new char[100];
+  char* saveFile = new char[200];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator_CaloJets.png",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator_CaloJets.pdf",event);
+  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/VBFH/Event-%u-phase2emulator.pdf",event);
   c1->SaveAs(saveFile);
 
 }

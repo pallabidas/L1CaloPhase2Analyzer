@@ -68,16 +68,18 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
   hbTopologyToken_(esConsumes<HcalTopology, HcalRecNumberingRecord>(edm::ESInputTag("", ""))),
   ecalSrc_(consumes<EcalEBTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("ecalDigis"))),
   hcalSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
-  rctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
-  gctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection >(cfg.getParameter<edm::InputTag>("gctClusters"))),
-  rctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("rctClusters"))),
-  gctTowersSrc_(consumes<l1tp2::CaloTowerCollection >(cfg.getParameter<edm::InputTag>("gctClusters"))),
-  caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection >(cfg.getParameter<edm::InputTag>("PFclusters"))),
+  rctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection>(cfg.getParameter<edm::InputTag>("rctClusters"))),
+  gctClustersSrc_(consumes<l1tp2::CaloCrystalClusterCollection>(cfg.getParameter<edm::InputTag>("gctClusters"))),
+  rctTowersSrc_(consumes<l1tp2::CaloTowerCollection>(cfg.getParameter<edm::InputTag>("rctClusters"))),
+  gctTowersSrc_(consumes<l1tp2::CaloTowerCollection>(cfg.getParameter<edm::InputTag>("gctClusters"))),
+  caloPFClustersSrc_(consumes<l1tp2::CaloPFClusterCollection>(cfg.getParameter<edm::InputTag>("PFclusters"))),
   hgcalTowersSrc_(consumes<l1t::HGCalTowerBxCollection>(cfg.getParameter<edm::InputTag>("L1HgcalTowersInputTag"))),
-  caloJetSrc_(consumes<l1tp2::Phase2L1CaloJetCollection >(cfg.getParameter<edm::InputTag>("caloJets"))),
-  recoJetSrc_(consumes<vector<pat::Jet> >(cfg.getParameter<edm::InputTag>("recoJets"))),
-  //genSrc_ (( cfg.getParameter<edm::InputTag>( "genParticles")))
-  genSrc_ (consumes<std::vector<reco::GenParticle> >(cfg.getParameter<edm::InputTag>( "genParticles")))
+  hfTowersSrc_(consumes<HcalTrigPrimDigiCollection>(cfg.getParameter<edm::InputTag>("hcalDigis"))),
+  decoderTag_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
+  caloJetSrc_(consumes<l1tp2::Phase2L1CaloJetCollection>(cfg.getParameter<edm::InputTag>("caloJets"))),
+  recoJetSrc_(consumes<vector<pat::Jet>>(cfg.getParameter<edm::InputTag>("recoJets"))),
+  genJetSrc_(consumes<vector<reco::GenJet>>(cfg.getParameter<edm::InputTag>("genJets"))),
+  genSrc_ (consumes<std::vector<reco::GenParticle> >(cfg.getParameter<edm::InputTag>("genParticles")))
 {
     //genToken_ =     consumes<std::vector<reco::GenParticle> >(genSrc_);
 
@@ -90,12 +92,14 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
     efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
     efficiencyTree->Branch("hgcalTowers", "vector<TLorentzVector>", &allHgcalTowers, 32000, 0);
+    efficiencyTree->Branch("hfTowers", "vector<TLorentzVector>", &allHfTowers, 32000, 0);
     //efficiencyTree->Branch("hgcal_ieta", "vector<int>", &hgcal_ieta, 32000, 0);
     //efficiencyTree->Branch("hgcal_iphi", "vector<int>", &hgcal_iphi, 32000, 0);
 
     efficiencyTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
     efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
     efficiencyTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
+    efficiencyTree->Branch("genJets", "vector<TLorentzVector>", &genJets, 32000, 0);
     efficiencyTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
     
     efficiencyTree->Branch("run",    &run,     "run/I");
@@ -150,6 +154,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
   edm::Handle<l1tp2::Phase2L1CaloJetCollection> caloJets;
   edm::Handle<vector<pat::Jet>> recoJets;
+  edm::Handle<vector<reco::GenJet>> genJetColl;
 
   edm::Handle<l1tp2::CaloCrystalClusterCollection> rctCaloCrystalClusters;
   edm::Handle<l1tp2::CaloTowerCollection> rctCaloL1Towers;
@@ -178,6 +183,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   gctTowers->clear();
   caloPFClusters->clear();
   offlineJets->clear();
+  genJets->clear();
   gctCaloJets->clear();
   allEcalTPGs->clear(); 
   allHcalTPGs->clear();
@@ -205,7 +211,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   // HGCal info
   edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
   if (!evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle))
-    std::cout<< "Failed to get towers from hgcalTowerCollection!"<<std::endl;
+    std::cout<<"Failed to get towers from hgcalTowerCollection!"<<std::endl;
   evt.getByToken(hgcalTowersSrc_, hgcalTowersHandle);
   l1t::HGCalTowerBxCollection hgcalTowers;
   hgcalTowers = (*hgcalTowersHandle.product());
@@ -223,6 +229,23 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     allHgcalTowers->push_back(temp);
   }
 
+  // HF info
+  const auto& decoder = es.getData(decoderTag_);
+  edm::Handle<HcalTrigPrimDigiCollection> hfHandle;
+  if (!evt.getByToken(hfTowersSrc_, hfHandle))
+    std::cout<<"Failed to get HcalTrigPrimDigi for HF!"<<std::endl;
+  evt.getByToken(hfTowersSrc_, hfHandle);
+  for (const auto& hit : *hfHandle.product()) {
+    if (abs(hit.id().ieta()) < l1t::CaloTools::kHFBegin) continue;
+    if (abs(hit.id().ieta()) > l1t::CaloTools::kHFEnd) continue;
+    float et = decoder.hcaletValue(hit.id(), hit.t0());
+    float eta = l1t::CaloTools::towerEta(hit.id().ieta());
+    float phi = l1t::CaloTools::towerPhi(hit.id().ieta(), hit.id().iphi());
+    TLorentzVector temp ;
+    temp.SetPtEtaPhiE(et,eta,phi,et);
+    allHfTowers->push_back(temp);
+  }
+
   if(evt.getByToken(caloJetSrc_, caloJets)){
     for(const auto & caloJet : *caloJets){
       TLorentzVector temp;
@@ -237,6 +260,14 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       temp.SetPtEtaPhiE(recoJet.pt(), recoJet.eta(), recoJet.phi(), recoJet.et());
       offlineJets->push_back(temp);
+    }
+  }
+
+  if(evt.getByToken(genJetSrc_, genJetColl)){
+    for(const auto & genJet : *genJetColl){
+      TLorentzVector temp;
+      temp.SetPtEtaPhiE(genJet.pt(), genJet.eta(), genJet.phi(), genJet.et());
+      genJets->push_back(temp);
     }
   }
 

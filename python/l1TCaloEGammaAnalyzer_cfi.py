@@ -13,6 +13,7 @@ l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzer",
                                   PFclusters              = cms.InputTag("l1tPhase2CaloPFClusterEmulator", "GCTPFCluster"),
                                   L1HgcalTowersInputTag   = cms.InputTag("l1tHGCalTowerProducer","HGCalTowerProcessor",""),
                                   caloJets                = cms.InputTag("l1tPhase2CaloJetEmulator", "GCTJet"),
-                                  recoJets                = cms.InputTag("slimmedJets","","RECO")
+                                  recoJets                = cms.InputTag("slimmedJets","","RECO"),
+                                  genJets                 = cms.InputTag("slimmedGenJets","","RECO")
 #                                  clusters  = cms.InputTag('L1EGammaClusterEmuProducer')
 )

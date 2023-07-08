@@ -112,6 +112,7 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   std::vector<TLorentzVector> *allEcalTPGs  = new std::vector<TLorentzVector>; 
   std::vector<TLorentzVector> *allHcalTPGs  = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *allHgcalTowers  = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *allHfTowers  = new std::vector<TLorentzVector>;
   std::vector<int> *hgcal_ieta = new std::vector<int>;
   std::vector<int> *hgcal_iphi = new std::vector<int>;
   std::vector<TLorentzVector> *signalPFCands  = new std::vector<TLorentzVector>; 
@@ -145,6 +146,7 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *genJets = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -257,7 +259,6 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<reco::PFTauDiscriminator> discriminatorIso_;
   edm::EDGetTokenT<vector<reco::PFTau> > tauSrc_;
   edm::EDGetTokenT<vector<pat::Tau> > slimmedTauSrc_;
-  edm::EDGetTokenT<vector<pat::Jet> > jetSrc_;
   edm::EDGetTokenT<L1GctJetCandCollection> gctIsoTauJetsSource_;
   edm::EDGetTokenT<L1GctJetCandCollection> gctTauJetsSource_;
   edm::EDGetTokenT<vector <l1extra::L1JetParticle> > l1ExtraIsoTauSource_;
@@ -271,8 +272,11 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::CaloTowerCollection> gctTowersSrc_;
   edm::EDGetTokenT<l1tp2::CaloPFClusterCollection> caloPFClustersSrc_;
   edm::EDGetTokenT<l1t::HGCalTowerBxCollection> hgcalTowersSrc_;
+  edm::EDGetTokenT<HcalTrigPrimDigiCollection> hfTowersSrc_;
+  edm::ESGetToken<CaloTPGTranscoder, CaloTPGRecord> decoderTag_;
   edm::EDGetTokenT<l1tp2::Phase2L1CaloJetCollection> caloJetSrc_;
   edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
+  edm::EDGetTokenT<vector<reco::GenJet> > genJetSrc_;
   //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
   //l1t::HGCalTowerBxCollection hgcalTowers;
   edm::EDGetTokenT<std::vector<reco::GenParticle>> genSrc_;
