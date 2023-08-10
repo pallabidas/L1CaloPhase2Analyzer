@@ -159,10 +159,13 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   TH1F* recoTau_pt;
   TH1F* recoTau_eta;
   TH1F* recoTau_phi;
+  TTree* displayTree;
   TTree* efficiencyTree;
+  TTree* jetEfficiencyTree;
 
   int run, lumi, event;
   double genPt, genEta, genPhi;
+  double genJetPt, genJetEta, genJetPhi;
   double rct_cPt, rct_cEta, rct_cPhi;
   double rct_deltaR;
   double rct_et2x5, rct_et5x5;
@@ -175,6 +178,7 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   int gct_is_iso, gct_is_looseTkiso;
 
   double pf_cPt, pf_cEta, pf_cPhi, pf_deltaR;
+  double gctJet_Pt, gctJet_Eta, gctJet_Phi, gctJet_deltaR;
 
   double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
   double recoPt, recoEta, recoPhi;

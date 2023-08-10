@@ -85,7 +85,7 @@ TGraphAsymmErrors* calculateEfficiency(TString variable,
   /* Numerator and denominator histograms. */
   TH1F* Num;
   TH1F* Denom;
-  int bins = 15;
+  int bins = 20;
   // Float_t xbins[10] = {0, 5, 10, 20, 25, 30, 50, 70, 100, 200};
   // Float_t xbins[11] = {20, 25, 30, 35, 40, 45, 50, 60, 70, 90, 110};
   Float_t xbins[11] = {20, 25, 30, 35, 40, 45, 50, 60, 70, 90, 110};

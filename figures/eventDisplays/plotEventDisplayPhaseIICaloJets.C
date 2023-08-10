@@ -159,11 +159,11 @@ void plotEventDisplayPhaseIICaloJets(int iEvent){
   
   gStyle->SetOptStat(0);
   
-  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH.root", "READ");
+  TFile *f = TFile::Open("/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH_10aug.root", "READ");
 
   if (!f) { return; }
 
-  TTree *t = (TTree*) f->Get("l1NtupleProducer/efficiencyTree");
+  TTree *t = (TTree*) f->Get("l1NtupleProducer/displayTree");
 
   std::vector<TLorentzVector> *vEcalTpgs       = 0;
   std::vector<TLorentzVector> *vHcalTpgs       = 0;

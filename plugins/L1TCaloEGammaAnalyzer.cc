@@ -84,23 +84,30 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     //genToken_ =     consumes<std::vector<reco::GenParticle> >(genSrc_);
 
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
-    efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
+    displayTree = tfs_->make<TTree>("displayTree", "Event Display Tree");
+
+    displayTree->Branch("run",    &run,     "run/I");
+    displayTree->Branch("lumi",   &lumi,    "lumi/I");
+    displayTree->Branch("event",  &event,   "event/I");
+    displayTree->Branch("nvtx",   &nvtx,         "nvtx/I");
     
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
-    efficiencyTree->Branch("rctClusters", "vector<TLorentzVector>", &rctClusters, 32000, 0); 
-    efficiencyTree->Branch("rctTowers",   "vector<TLorentzVector>", &rctTowers, 32000, 0);
-    efficiencyTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
-    efficiencyTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
-    efficiencyTree->Branch("hgcalTowers", "vector<TLorentzVector>", &allHgcalTowers, 32000, 0);
-    efficiencyTree->Branch("hfTowers", "vector<TLorentzVector>", &allHfTowers, 32000, 0);
-    //efficiencyTree->Branch("hgcal_ieta", "vector<int>", &hgcal_ieta, 32000, 0);
-    //efficiencyTree->Branch("hgcal_iphi", "vector<int>", &hgcal_iphi, 32000, 0);
+    displayTree->Branch("rctClusters", "vector<TLorentzVector>", &rctClusters, 32000, 0); 
+    displayTree->Branch("rctTowers",   "vector<TLorentzVector>", &rctTowers, 32000, 0);
+    displayTree->Branch("hcalTPGs", "vector<TLorentzVector>", &allHcalTPGs, 32000, 0); 
+    displayTree->Branch("ecalTPGs", "vector<TLorentzVector>", &allEcalTPGs, 32000, 0); 
+    displayTree->Branch("hgcalTowers", "vector<TLorentzVector>", &allHgcalTowers, 32000, 0);
+    displayTree->Branch("hfTowers", "vector<TLorentzVector>", &allHfTowers, 32000, 0);
+    //displayTree->Branch("hgcal_ieta", "vector<int>", &hgcal_ieta, 32000, 0);
+    //displayTree->Branch("hgcal_iphi", "vector<int>", &hgcal_iphi, 32000, 0);
 
-    efficiencyTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
-    efficiencyTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
-    efficiencyTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
-    efficiencyTree->Branch("genJets", "vector<TLorentzVector>", &genJets, 32000, 0);
-    efficiencyTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
+    displayTree->Branch("gctTowers",   "vector<TLorentzVector>", &gctTowers, 32000, 0);
+    displayTree->Branch("caloPFClusters", "vector<TLorentzVector>", &caloPFClusters, 32000, 0);
+    displayTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
+    displayTree->Branch("genJets", "vector<TLorentzVector>", &genJets, 32000, 0);
+    displayTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
+
+    efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
     
     efficiencyTree->Branch("run",    &run,     "run/I");
     efficiencyTree->Branch("lumi",   &lumi,    "lumi/I");
@@ -139,6 +146,24 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     efficiencyTree->Branch("pf_cPhi", &pf_cPhi, "pf_cPhi/D");
     efficiencyTree->Branch("pf_deltaR", &pf_deltaR, "pf_deltaR/D");
 
+    jetEfficiencyTree = tfs_->make<TTree>("jetEfficiencyTree", "Efficiency Tree");
+
+    jetEfficiencyTree->Branch("run",    &run,     "run/I");
+    jetEfficiencyTree->Branch("lumi",   &lumi,    "lumi/I");
+    jetEfficiencyTree->Branch("event",  &event,   "event/I");
+    jetEfficiencyTree->Branch("nvtx",   &nvtx,    "nvtx/I");
+
+    // Gen jets
+    jetEfficiencyTree->Branch("genJetPt",  &genJetPt,   "genJetPt/D");
+    jetEfficiencyTree->Branch("genJetEta", &genJetEta,  "genJetEta/D");
+    jetEfficiencyTree->Branch("genJetPhi", &genJetPhi,  "genJetPhi/D");
+
+    // The GCT jet that was matched to the gen jet
+    jetEfficiencyTree->Branch("gctJet_Pt",  &gctJet_Pt,  "gctJet_Pt/D");
+    jetEfficiencyTree->Branch("gctJet_Eta", &gctJet_Eta, "gctJet_Eta/D");
+    jetEfficiencyTree->Branch("gctJet_Phi", &gctJet_Phi, "gctJet_Phi/D");
+    jetEfficiencyTree->Branch("gctJet_deltaR", &gctJet_deltaR, "gctJet_deltaR/D");
+
   }
 
 void L1TCaloEGammaAnalyzer::beginJob( const EventSetup & es) {
@@ -171,6 +196,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   std::vector<Cluster> rctClustersMatched;
   std::vector<Cluster> gctClustersMatched;
   std::vector<TLorentzVector> pfClustersMatched;
+  std::vector<TLorentzVector> gctJetMatched;
 
   std::map<std::string, float> rctExperimentalParams;
   std::map<std::string, float> gctExperimentalParams;
@@ -776,10 +802,51 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 //                << std::endl;
     }
 
-    //efficiencyTree->Fill();
+    efficiencyTree->Fill();
 
   } // end of loop over gen electrons
-  efficiencyTree->Fill();
+
+
+
+
+  //************************************************************************************/ 
+  // Loop through the gen jets and match to the GCT jets
+  //************************************************************************************/ 
+  //for (auto genJet : genJets) {
+  for (size_t j = 0; j < genJets->size(); ++j) {
+
+    genJetPt = genJets->at(j).Pt();
+    genJetEta = genJets->at(j).Eta();
+    genJetPhi = genJets->at(j).Phi();
+
+    gctJetMatched.clear();
+
+    gctJet_Pt    = 0;    gctJet_Eta   = -999;    gctJet_Phi   = -999;
+    gctJet_deltaR = 999;
+
+    for (size_t i = 0; i < gctCaloJets->size(); ++i) {
+      float this_jet_deltaR = reco::deltaR(gctCaloJets->at(i).Eta(), gctCaloJets->at(i).Phi(),
+                                           genJets->at(j).Eta(), genJets->at(j).Phi());
+      if (this_jet_deltaR < 0.4) {
+        TLorentzVector temp = gctCaloJets->at(i);
+
+        gctJetMatched.push_back(temp);
+      }
+    }
+
+    std::sort(gctJetMatched.begin(), gctJetMatched.end(), L1TCaloEGammaAnalyzer::comparePt);
+
+    if (gctJetMatched.size() > 0) {
+      gctJet_Pt = gctJetMatched.at(0).Pt();
+      gctJet_Eta = gctJetMatched.at(0).Eta();
+      gctJet_Phi = gctJetMatched.at(0).Phi();
+      gctJet_deltaR = reco::deltaR(gctJet_Eta, gctJet_Phi, genJets->at(j).Eta(), genJets->at(j).Phi());
+    }
+    jetEfficiencyTree->Fill();
+
+  } // end of loop over gen jets
+
+  displayTree->Fill();
  
  }
 

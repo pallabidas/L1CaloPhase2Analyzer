@@ -47,7 +47,7 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 
   setTDRStyle();
   TCanvas* Tcan = new TCanvas("Tcan","", 100, 20, 1000, 800);
-  TLegend* leg = new TLegend(0.75,0.15,0.95,0.45);
+  TLegend* leg = new TLegend(0.8,0.65,0.95,0.8);
   applySmallerLegStyle(leg);
 
   //Tcan->SetGrid();
@@ -137,10 +137,10 @@ void plotNResolutions(std::vector<TH1F*> graphs,
 //  else { // genEta: put legend above the efficiency curve
     float commentaryXpos = 0.62;
     latex->DrawLatex(0.2, 0.840, "#scale[0.8]{Work in progress}");
-    latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
+    //latex->DrawLatex(commentaryXpos, 0.900, "#scale[0.8]{EG Barrel}");
     //latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{RelVal ElectronGun Pt 2 to 100}");
-    latex->DrawLatex(commentaryXpos, 0.840, "#scale[0.8]{SinglePion Pt 0 to 200}");
-    latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{Gen p_{T} > 5, |#eta^{Gen}| < 1.4841}");
+    latex->DrawLatex(0.75, 0.840, "#scale[0.8]{VBH Higgs#rightarrow#tau#tau}");
+    //latex->DrawLatex(commentaryXpos, 0.780, "#scale[0.8]{Gen p_{T} > 5, |#eta^{Gen}| < 1.4841}");
 //  } 
   Tcan->Update();
 
