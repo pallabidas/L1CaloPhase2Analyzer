@@ -116,7 +116,7 @@ void plotNEfficiencies(std::vector<TGraphAsymmErrors*> graphs,
     emuLabel = "#scale[1.0]{#bf{CMS}} #scale[0.8]{#it{Phase 2 RCT emulator}}";  
   }
   latex->DrawLatex(0.16, 0.960, emuLabel); 
-  latex->DrawLatex(0.79, 0.960, "#scale[0.8]{14 TeV (0 PU)}");
+  latex->DrawLatex(0.76, 0.960, "#scale[0.8]{14 TeV (200 PU)}");
 
 //  if (!(outputName.Contains("genEta")) && !(outputName.Contains("genPhi"))) {  // genPt: put legend below the efficiecy curve
 //    float commentaryXpos = 0.54;
