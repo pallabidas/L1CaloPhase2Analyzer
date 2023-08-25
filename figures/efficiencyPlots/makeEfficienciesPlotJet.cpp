@@ -19,8 +19,8 @@ void makeEfficienciesPlotJet(void)
 
   /* Load the TTree. */
   TString treePath = "l1NtupleProducer/jetEfficiencyTree";
-  TString rootFileDirectory = "/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_12_5_2_patch1/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH_10aug.root";
-  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/12_5_2_patch1/jet/";
+  TString rootFileDirectory = "/afs/cern.ch/work/p/pdas/emulator_phase2/calojet/CMSSW_13_2_0/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_VBFH.root";
+  TString outputDirectory = "/afs/cern.ch/work/p/pdas/www/emulator_phase2/13_2_0/";
 
   float xMin, xMax;
   TString genJetCut, l1Cut;
@@ -40,19 +40,19 @@ void makeEfficienciesPlotJet(void)
   vReso.clear(); vResoLabels.clear(); vResoColors.clear();
 
   TH1F* reso1 = calculateResolution("(gctJet_Pt - genJetPt)/genJetPt", treePath, rootFileDirectory,
-               "(abs(genJetEta) < 1.4841) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
   vReso.push_back(reso1);
   vResoLabels.push_back("barrel");
   vResoColors.push_back(kRed);
 
   TH1F* reso2 = calculateResolution("(gctJet_Pt - genJetPt)/genJetPt", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
+               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
   vReso.push_back(reso2);
   vResoLabels.push_back("endcap");
   vResoColors.push_back(kAzure+1);
 
   TH1F* reso3 = calculateResolution("(gctJet_Pt - genJetPt)/genJetPt", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 5, useVariableBinning);
   vReso.push_back(reso3);
   vResoLabels.push_back("forward");
   vResoColors.push_back(kGreen+1);
@@ -69,19 +69,19 @@ void makeEfficienciesPlotJet(void)
   vReso.clear(); vResoLabels.clear(); vResoColors.clear();
 
   TH1F* reso4 = calculateResolution("(gctJet_Eta - genJetEta)/genJetEta", treePath, rootFileDirectory,
-               "(abs(genJetEta) < 1.4841) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso4);
   vResoLabels.push_back("barrel");
   vResoColors.push_back(kRed);
 
   TH1F* reso5 = calculateResolution("(gctJet_Eta - genJetEta)/genJetEta", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso5);
   vResoLabels.push_back("endcap");
   vResoColors.push_back(kAzure+1);
 
   TH1F* reso6 = calculateResolution("(gctJet_Eta - genJetEta)/genJetEta", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso6);
   vResoLabels.push_back("forward");
   vResoColors.push_back(kGreen+1);
@@ -98,19 +98,19 @@ void makeEfficienciesPlotJet(void)
   vReso.clear(); vResoLabels.clear(); vResoColors.clear();
 
   TH1F* reso7 = calculateResolution("(gctJet_Phi - genJetPhi)/genJetPhi", treePath, rootFileDirectory,
-               "(abs(genJetEta) < 1.4841) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso7);
   vResoLabels.push_back("barrel");
   vResoColors.push_back(kRed);
 
   TH1F* reso8 = calculateResolution("(gctJet_Phi - genJetPhi)/genJetPhi", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso8);
   vResoLabels.push_back("endcap");
   vResoColors.push_back(kAzure+1);
 
   TH1F* reso9 = calculateResolution("(gctJet_Phi - genJetPhi)/genJetPhi", treePath, rootFileDirectory,
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 10 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30 && gctJet_deltaR < 0.4", -1, 1, useVariableBinning);
   vReso.push_back(reso9);
   vResoLabels.push_back("forward");
   vResoColors.push_back(kGreen+1);
@@ -146,10 +146,10 @@ void makeEfficienciesPlotJet(void)
   vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight1 = calculateEfficiency("genJetPt", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 50",
-               "(abs(genJetEta) < 1.4841) && genJetPt > 50", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 30",
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight1);
-  vLabels.push_back("p_{T} > 50");
+  vLabels.push_back("p_{T} > 30");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all1 = calculateEfficiency("genJetPt", treePath, rootFileDirectory,
@@ -162,7 +162,7 @@ void makeEfficienciesPlotJet(void)
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen p_{T} [GeV]",
         "Phase 2 Calo",                                                                
-        "efficiency_genJetPt_barrel",        
+        "efficiency_genJetPt_barrel",
         outputDirectory);    
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
@@ -217,10 +217,10 @@ void makeEfficienciesPlotJet(void)
   vColors.push_back(kBlue);
   
   TGraphAsymmErrors* tight2 = calculateEfficiency("genJetEta", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 50",
-               "(abs(genJetEta) < 1.4841) && genJetPt > 50", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 30",
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight2);
-  vLabels.push_back("p_{T} > 50");
+  vLabels.push_back("p_{T} > 30");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all4 = calculateEfficiency("genJetEta", treePath, rootFileDirectory,
@@ -233,7 +233,7 @@ void makeEfficienciesPlotJet(void)
   plotNEfficiencies(vGraphs, vLabels, vColors,
         "Gen #eta",
         "Phase 2 Calo",                                                                
-        "efficiency_genJetEta_barrel",        
+        "efficiency_genJetEta_barrel",
         outputDirectory);    
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
@@ -241,22 +241,22 @@ void makeEfficienciesPlotJet(void)
   xMax = 5.;
 
   TGraphAsymmErrors* all5 = calculateEfficiency("genJetEta", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 100",
-               "(abs(genJetEta) < 1.4841) && genJetPt > 100", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) < 1.4841) && genJetPt > 30",
+               "(abs(genJetEta) < 1.4841) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(all5);
   vLabels.push_back("barrel");
   vColors.push_back(kRed);
 
   TGraphAsymmErrors* all6 = calculateEfficiency("genJetEta", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 100",
-               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 100", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30",
+               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(all6);
   vLabels.push_back("endcap");
   vColors.push_back(kAzure+1);
 
   TGraphAsymmErrors* all7 = calculateEfficiency("genJetEta", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 100",
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 100", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30",
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(all7);
   vLabels.push_back("forward");
   vColors.push_back(kGreen+1);
@@ -296,10 +296,10 @@ void makeEfficienciesPlotJet(void)
   vColors.push_back(kBlue);
 
   TGraphAsymmErrors* tight3 = calculateEfficiency("genJetPhi", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 50",
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 50", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30",
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(tight3);
-  vLabels.push_back("p_{T} > 50");
+  vLabels.push_back("p_{T} > 30");
   vColors.push_back(kBlack);
 
   TGraphAsymmErrors* all8 = calculateEfficiency("genJetPhi", treePath, rootFileDirectory,
@@ -316,20 +316,20 @@ void makeEfficienciesPlotJet(void)
         outputDirectory);
 
   vGraphs.clear();  vLabels.clear();  vColors.clear();
-  vGraphs.push_back(all8);
+  vGraphs.push_back(tight3);
   vLabels.push_back("barrel");
   vColors.push_back(kRed);
 
   TGraphAsymmErrors* all9 = calculateEfficiency("genJetPhi", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 100",
-               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 100", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30",
+               "(abs(genJetEta) > 1.4841) && (abs(genJetEta) < 3.0) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(all9);
   vLabels.push_back("endcap");
   vColors.push_back(kAzure+1);
 
   TGraphAsymmErrors* all10 = calculateEfficiency("genJetPhi", treePath, rootFileDirectory,
-               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 100",
-               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 100", xMin, xMax, useVariableBinning);
+               "gctJet_deltaR < 0.4 && (abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30",
+               "(abs(genJetEta) > 3.0) && (abs(genJetEta) < 5.0) && genJetPt > 30", xMin, xMax, useVariableBinning);
   vGraphs.push_back(all10);
   vLabels.push_back("forward");
   vColors.push_back(kGreen+1);
