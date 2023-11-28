@@ -14,6 +14,7 @@
 #include "TROOT.h"
 #include "TTree.h"
 #include "TFile.h"
+#include "TH2F.h"
 
 // user include files
 #include "FWCore/Framework/interface/Frameworkfwd.h"
@@ -159,6 +160,16 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   TH1F* recoTau_pt;
   TH1F* recoTau_eta;
   TH1F* recoTau_phi;
+
+  TH1F* calo_jet_pt;
+  TH1F* calo_jet_eta;
+  TH1F* calo_jet_phi;
+  TH1F* reco_jet_pt;
+  TH1F* reco_jet_eta;
+  TH1F* reco_jet_phi;
+  TH1F* n_calo_jet;
+  TH2F* h2L1Towers;
+  TH2F* h2HgcalTowers;
   TTree* displayTree;
   TTree* efficiencyTree;
   TTree* jetEfficiencyTree;

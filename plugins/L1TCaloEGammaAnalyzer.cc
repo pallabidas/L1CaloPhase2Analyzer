@@ -56,6 +56,11 @@
 #include "CommonTools/BaseParticlePropagator/interface/BaseParticlePropagator.h"
 #include "CommonTools/BaseParticlePropagator/interface/RawParticle.h"
 
+float etaValues[95] = {-5.2665, -5.1155, -4.92125, -4.71475, -4.53875, -4.36375, -4.1895, -4.014, -3.83875, -3.664, -3.489, -3.314, -3.045, -2.958, -2.871, -2.784, -2.697, -2.61, -2.523, -2.436, -2.349, -2.262, -2.175, -2.088, -2.001, -1.914, -1.827, -1.74, -1.653, -1.566, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.566, 1.653, 1.74, 1.827, 1.914, 2.001, 2.088, 2.175, 2.262, 2.349, 2.436, 2.523, 2.61, 2.697, 2.784, 2.871, 2.958, 3.045, 3.314, 3.489, 3.664, 3.83875, 4.014, 4.1895, 4.36375, 4.53875, 4.71475, 4.92125, 5.1155, 5.2665};
+
+float phiValues[73] =
+    {-3.142, -3.054, -2.967, -2.880, -2.793, -2.705, -2.618, -2.531, -2.443, -2.356, -2.269, -2.182, -2.094, -2.007, -1.920, -1.833, -1.745, -1.658, -1.571, -1.484, -1.396, -1.309, -1.222, -1.134, -1.047, -0.960, -0.873, -0.785, -0.698, -0.611, -0.524, -0.436, -0.349, -0.262, -0.175, -0.087,
+     0.000, 0.087, 0.175, 0.262, 0.349, 0.436, 0.524, 0.611, 0.698, 0.785, 0.873, 0.960, 1.047, 1.134, 1.222, 1.309, 1.396, 1.484, 1.571, 1.658, 1.745, 1.833, 1.920, 2.007, 2.094, 2.182, 2.269, 2.356, 2.443, 2.531, 2.618, 2.705, 2.793, 2.880, 2.967, 3.054, 3.142};
 
 using namespace edm;
 //using std::cout;
@@ -84,12 +89,21 @@ L1TCaloEGammaAnalyzer::L1TCaloEGammaAnalyzer( const ParameterSet & cfg ) :
     //genToken_ =     consumes<std::vector<reco::GenParticle> >(genSrc_);
 
     folderName_          = cfg.getUntrackedParameter<std::string>("folderName");
+    h2L1Towers = tfs_->make<TH2F>("h2L1Towers", "Event Display", 94, etaValues, 72, phiValues);
+    h2HgcalTowers = tfs_->make<TH2F>("h2HgcalTowers", "Event Display", 94, etaValues, 72, phiValues);
+    calo_jet_pt = tfs_->make<TH1F>("calo_jet_pt", "calo_jet_pt", 40, 0., 400.);
+    calo_jet_eta = tfs_->make<TH1F>("calo_jet_eta", "calo_jet_eta", 40, -5., 5.);
+    calo_jet_phi = tfs_->make<TH1F>("calo_jet_phi", "calo_jet_phi", 40, -M_PI, M_PI);
+    reco_jet_pt = tfs_->make<TH1F>("reco_jet_pt", "reco_jet_pt", 40, 0., 400.);
+    reco_jet_eta = tfs_->make<TH1F>("reco_jet_eta", "reco_jet_eta", 40, -5., 5.);
+    reco_jet_phi = tfs_->make<TH1F>("reco_jet_phi", "reco_jet_phi", 40, -M_PI, M_PI);
+
     displayTree = tfs_->make<TTree>("displayTree", "Event Display Tree");
 
     displayTree->Branch("run",    &run,     "run/I");
     displayTree->Branch("lumi",   &lumi,    "lumi/I");
     displayTree->Branch("event",  &event,   "event/I");
-    displayTree->Branch("nvtx",   &nvtx,         "nvtx/I");
+    displayTree->Branch("nvtx",   &nvtx,    "nvtx/I");
     
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
     displayTree->Branch("rctClusters", "vector<TLorentzVector>", &rctClusters, 32000, 0); 
@@ -231,6 +245,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       temp.SetPtEtaPhiE(gctTower.ecalTowerEt(), gctTower.towerEta(), gctTower.towerPhi(), gctTower.ecalTowerEt());
       gctTowers->push_back(temp);
+      h2L1Towers->Fill(gctTower.towerEta(), gctTower.towerPhi(), gctTower.ecalTowerEt());
     }
   }
 
@@ -253,6 +268,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     TLorentzVector temp ;
     temp.SetPtEtaPhiE(et,eta,phi,et);
     allHgcalTowers->push_back(temp);
+    h2HgcalTowers->Fill(eta, phi, et);
   }
 
   // HF info
@@ -277,7 +293,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       temp.SetPtEtaPhiE(caloJet.jetEt(), caloJet.jetEta(), caloJet.jetPhi(), caloJet.jetEt());
       gctCaloJets->push_back(temp);
-      //std::cout<<caloJet.jetEt()<<"\t"<<caloJet.jetEta()<<"\t"<<caloJet.jetPhi()<<"\t"<<caloJet.towerEt()<<"\t"<<caloJet.towerEta()<<"\t"<<caloJet.towerPhi()<<std::endl;
+      calo_jet_pt->Fill(caloJet.jetEt());
+      if(caloJet.jetEt() > 50.){
+        calo_jet_eta->Fill(caloJet.jetEta());
+        calo_jet_phi->Fill(caloJet.jetPhi());
+      }
     }
   }
 
@@ -286,6 +306,11 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       TLorentzVector temp;
       temp.SetPtEtaPhiE(recoJet.pt(), recoJet.eta(), recoJet.phi(), recoJet.et());
       offlineJets->push_back(temp);
+      reco_jet_pt->Fill(recoJet.pt());
+      if(recoJet.pt() > 50.){
+        reco_jet_eta->Fill(recoJet.eta());
+        reco_jet_phi->Fill(recoJet.phi());
+      }
     }
   }
 
@@ -497,7 +522,6 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   	continue;
       GlobalVector tmpVector = GlobalVector(cell->getPosition().x(), cell->getPosition().y(), cell->getPosition().z());
       hcal_tp_position = tmpVector;
-      
       // std::cout << "Found HCAL cell/TP with coordinates " << cell->getPosition().x() << ","
       //  		<< cell->getPosition().y() << ","
       //  		<< cell->getPosition().z() << " and ET (GeV) " << et
@@ -846,7 +870,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 
   } // end of loop over gen jets
 
-  displayTree->Fill();
+  //displayTree->Fill();
  
  }
 
