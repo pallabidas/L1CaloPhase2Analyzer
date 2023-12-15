@@ -16,22 +16,22 @@ process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 process.source = cms.Source("PoolSource",
 ###113X SinglePion sample 200 PU
 #                             fileNames = cms.untracked.vstring('/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/SinglePion_PT0to200/GEN-SIM-DIGI-RAW-MINIAOD/PU200_111X_mcRun4_realistic_T15_v1-v1/120000/02A95838-DEEC-A241-A759-1AECFC6F752F.root'),
 ###125X SinglePion sample 0 PU
-#                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/noPU_125X_mcRun4_realistic_v2-v1/2550000/14774bf7-4a5b-46a1-b14b-670468f74e77.root'),
+                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/noPU_125X_mcRun4_realistic_v2-v1/2550000/14774bf7-4a5b-46a1-b14b-670468f74e77.root'),
 ###125X SinglePion sample 200 PU
-                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/004d15e3-a12f-4ba9-a2f3-4b7277ffa418.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/031844f8-29c9-4911-8cda-0a0a129f01d0.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/046bf923-505d-4f28-a226-ef05797b2e83.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0523e9cb-e025-4393-81a0-7f722f2fc90e.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/083811e9-2c91-409b-8b1f-4ee2c7ea5934.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0a37df8b-d300-4119-9677-7bd8d098cd4a.root',
-                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0be55d68-f56a-4578-a4ad-32b25a7f4ecd.root'
-                            ),
+#                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/004d15e3-a12f-4ba9-a2f3-4b7277ffa418.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/031844f8-29c9-4911-8cda-0a0a129f01d0.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/046bf923-505d-4f28-a226-ef05797b2e83.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0523e9cb-e025-4393-81a0-7f722f2fc90e.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/083811e9-2c91-409b-8b1f-4ee2c7ea5934.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0a37df8b-d300-4119-9677-7bd8d098cd4a.root',
+#                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0be55d68-f56a-4578-a4ad-32b25a7f4ecd.root'
+#                            ),
 ###125X VBFH sample 200 PU
 #                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/00c6c0d5-8072-4710-82bb-1f2ce570ddf4.root',
 #                            '/store/mc/Phase2Fall22DRMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/00e3e318-f1e1-45ae-91c0-82106d2f9d8b.root',
