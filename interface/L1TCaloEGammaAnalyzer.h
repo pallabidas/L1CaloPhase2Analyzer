@@ -172,10 +172,12 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   TH2F* h2HgcalTowers;
   TTree* displayTree;
   TTree* efficiencyTree;
+  TTree* pfEfficiencyTree;
   TTree* jetEfficiencyTree;
 
   int run, lumi, event;
   double genPt, genEta, genPhi;
+  double genPionPt, genPionEta, genPionPhi;
   double genJetPt, genJetEta, genJetPhi;
   double rct_cPt, rct_cEta, rct_cPhi;
   double rct_deltaR;
@@ -258,8 +260,6 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::ESGetToken<HcalTopology, HcalRecNumberingRecord> hbTopologyToken_;
   const HcalTopology* hcTopology_;
 
-
-  edm::EDGetTokenT<std::vector<reco::GenParticle> > genToken_;
   edm::EDGetTokenT<vector<pat::PackedCandidate> > packedPfCandsToken_;  
   edm::EDGetTokenT<vector<reco::PFCandidate> > pfCandsToken_;  
   edm::EDGetTokenT<L1CaloRegionCollection> L1RegionCollection;

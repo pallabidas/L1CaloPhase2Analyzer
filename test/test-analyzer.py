@@ -2,7 +2,7 @@ import FWCore.ParameterSet.Config as cms
 
 from Configuration.StandardSequences.Eras import eras
 
-process = cms.Process("L1AlgoTest",eras.Phase2C9)
+process = cms.Process("L1AlgoTest",eras.Phase2C17I13M9)
 
 process.load('Configuration.StandardSequences.Services_cff')
 process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
@@ -16,13 +16,13 @@ process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
 ###113X SinglePion sample 200 PU
 #                             fileNames = cms.untracked.vstring('/store/mc/Phase2HLTTDRSummer20ReRECOMiniAOD/SinglePion_PT0to200/GEN-SIM-DIGI-RAW-MINIAOD/PU200_111X_mcRun4_realistic_T15_v1-v1/120000/02A95838-DEEC-A241-A759-1AECFC6F752F.root'),
 ###125X SinglePion sample 0 PU
-                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/noPU_125X_mcRun4_realistic_v2-v1/2550000/14774bf7-4a5b-46a1-b14b-670468f74e77.root'),
+#                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/noPU_125X_mcRun4_realistic_v2-v1/2550000/14774bf7-4a5b-46a1-b14b-670468f74e77.root'),
 ###125X SinglePion sample 200 PU
 #                            fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/004d15e3-a12f-4ba9-a2f3-4b7277ffa418.root',
 #                            '/store/mc/Phase2Fall22DRMiniAOD/SinglePion_Pt-0To200-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/031844f8-29c9-4911-8cda-0a0a129f01d0.root',
@@ -51,12 +51,24 @@ process.source = cms.Source("PoolSource",
 ###Victor
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00245bdc-37fc-4361-9eec-2f1be8495931.root','/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01637ff3-d279-4850-820d-04062d0bb591.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01c5da90-ac38-4d8e-856d-590564e49d98.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/02862c28-2fbd-4211-a9fd-d0b0183a4d40.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/03435f05-aca9-4320-b562-3c7cddab675d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/042b6629-64da-4883-9891-6ed221618999.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/04a3d93a-6fe3-4c9c-b6b4-1df7cbbc09f9.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/057daaa7-6669-41ee-b92e-b03a8421583d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/05b4eb2f-a130-4c0a-bf9b-7b38dddd6897.root',),
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root'),
+###131X DoubleELectron 200 PU
+#                            fileNames = cms.untracked.vstring('/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/c56be524-bd6e-4c3c-a858-c8934fe8e295.root',
+#                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/1907ad07-90bc-4299-b45e-7e4df8f3b3aa.root',
+#                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/f0e011fa-6ed0-4835-a24c-0ef707a6f56f.root',
+#                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/3a721e81-1e62-4835-a189-892cdba0a6c1.root',
+#                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/ba7759ce-b9cc-4102-9302-47f51d1a623a.root',),
+###Testing event 66894
+#                            fileNames = cms.untracked.vstring('root://cms-xrd-global.cern.ch///store/mc/Phase2Fall22DRMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/30000/0024ebea-73de-496a-9d75-6f0a7c3b2ba4.root'),
+#                            fileNames = cms.untracked.vstring('file:/eos/user/p/pdas/calojet/0024ebea-73de-496a-9d75-6f0a7c3b2ba4.root'),
+                            fileNames = cms.untracked.vstring('/store/mc/Phase2Spring23DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/a2817f6f-93c7-4cff-a391-660b9e24d558.root'),
                             inputCommands = cms.untracked.vstring(
                                 "keep *",
                                 "drop l1tTkPrimaryVertexs_*_*_*",
                             )
                         )
-#process.source.eventsToProcess = cms.untracked.VEventRange("1:290108")
+
+#process.source.eventsToProcess = cms.untracked.VEventRange("1:92490")
+#process.source.eventsToProcess = cms.untracked.VEventRange("1:44470","1:44374")
 
 # Global Tag :
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
