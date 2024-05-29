@@ -148,6 +148,7 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
   std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *genJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *genParts = new std::vector<TLorentzVector>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;

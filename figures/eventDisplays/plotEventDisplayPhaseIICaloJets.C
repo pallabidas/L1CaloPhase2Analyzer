@@ -152,6 +152,7 @@ void plotEventDisplayPhaseIICaloJets(){
   TTreeReaderValue<vector<TLorentzVector>> vOfflineJets(myReader, "offlineJets");
   TTreeReaderValue<vector<TLorentzVector>> vGctCaloJets(myReader, "gctCaloJets");
   TTreeReaderValue<vector<TLorentzVector>> vGenJets(myReader, "genJets");
+  TTreeReaderValue<vector<TLorentzVector>> vGenParts(myReader, "genParts");
   TTreeReaderValue<int> vEvent(myReader, "event");
 
   float etaValues[95] = {-5.2665, -5.1155, -4.92125, -4.71475, -4.53875, -4.36375, -4.1895, -4.014, -3.83875, -3.664, -3.489, -3.314, -3.045, -2.958, -2.871, -2.784, -2.697, -2.61, -2.523, -2.436, -2.349, -2.262, -2.175, -2.088, -2.001, -1.914, -1.827, -1.74, -1.653, -1.566, -1.479, -1.392, -1.305, -1.218, -1.131, -1.044, -0.957, -0.87, -0.783, -0.696, -0.609, -0.522, -0.435, -0.348, -0.261, -0.174, -0.087, 0, 0.087, 0.174, 0.261, 0.348, 0.435, 0.522, 0.609, 0.696, 0.783, 0.87, 0.957, 1.044, 1.131, 1.218, 1.305, 1.392, 1.479, 1.566, 1.653, 1.74, 1.827, 1.914, 2.001, 2.088, 2.175, 2.262, 2.349, 2.436, 2.523, 2.61, 2.697, 2.784, 2.871, 2.958, 3.045, 3.314, 3.489, 3.664, 3.83875, 4.014, 4.1895, 4.36375, 4.53875, 4.71475, 4.92125, 5.1155, 5.2665};
@@ -185,6 +186,7 @@ void plotEventDisplayPhaseIICaloJets(){
   TH2F   *h2OfflineJets    = new TH2F("h2OfflineJets", "Event Display", 94, etaValues, 72, phiValues);
   TH2F   *h2GctCaloJets    = new TH2F("h2GctCaloJets", "Event Display", 94, etaValues, 72, phiValues);
   TH2F   *h2GenJets        = new TH2F("h2GenJets", "Event Display", 94, etaValues, 72, phiValues);
+  TH2F   *h2GenParts       = new TH2F("h2GenParts", "Event Display", 94, etaValues, 72, phiValues);
   
   h->SetFillColor(48);
   int event = *vEvent;
@@ -425,6 +427,34 @@ void plotEventDisplayPhaseIICaloJets(){
   h2GenJets->SetLineColor(kViolet+2);
   h2GenJets->SetLineWidth(2); 
 
+  for (UInt_t j = 0; j < vGenParts->size(); ++j) {
+    float ceta = vGenParts->at(j).Eta();
+    float cphi = vGenParts->at(j).Phi();
+    float cpt  = vGenParts->at(j).Pt();
+    h2GenParts->Fill(ceta, cphi, cpt);
+    TBox *box = new TBox(ceta-0.075,cphi-0.075,ceta+0.075,cphi+0.075);
+    box->SetFillStyle(1001);
+    box->SetFillColor(kAzure+3);
+    box->Draw("SAME");
+
+    std::ostringstream strs;
+    strs << cpt;
+    std::string text = strs.str();
+    TPaveText *tempText = new TPaveText(ceta, cphi, ceta-0.25, cphi+0.25);
+    tempText->AddText(text.c_str());
+    tempText->SetFillColor(0);
+    tempText->SetLineColor(0);
+    tempText->SetShadowColor(0);
+    tempText->SetTextColor(kAzure+3);
+    //tempText->Draw("SAME");
+  }
+  h2GenParts->SetFillStyle(1001);
+  h2GenParts->SetFillColor(kAzure+3);
+  h2GenParts->SetLineColor(kAzure+3);
+  //h2GenParts->Draw("SAME BOX");
+  h2GenParts->SetLineWidth(2);
+  //h2GenParts->Draw("SAME BOXL");
+
   // Get the Calo Jets
   for (UInt_t j = 0; j < vGctCaloJets->size(); ++j) {
     float ceta = vGctCaloJets->at(j).Eta();
@@ -494,17 +524,20 @@ void plotEventDisplayPhaseIICaloJets(){
   l->AddEntry(h2L1Towers,    "GCT Towers",      "F");
   l->AddEntry(h2HgcalTowers, "HGCal Towers",    "F");
   l->AddEntry(h2HfTowers,    "HF Towers",       "F");
+  l->AddEntry(h2GenParts,    "Gen Particles",   "F");
+  l->AddEntry(h2GenJets,     "Gen Jets",        "F");
   l->AddEntry(h2GctCaloJets, "GCT Jets",    "F");
   //l->AddEntry(h2OfflineJets, "Offline Jets",    "F");
-  l->AddEntry(h2GenJets,     "Gen Jets",        "F");
+  //l->AddEntry(h2GenJets,     "Gen Jets",        "F");
+  //l->AddEntry(h2GenParts,    "Gen Particles",   "F"); 
   l->Draw();
  
   char* saveFile = new char[200];
    
-  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/hf_test/Event-%u-phase2emulator.png",event);
+  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/Event-%u-phase2emulator.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/hf_test/Event-%u-phase2emulator.pdf",event);
+  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/Event-%u-phase2emulator.pdf",event);
   c1->SaveAs(saveFile);
   }
 
