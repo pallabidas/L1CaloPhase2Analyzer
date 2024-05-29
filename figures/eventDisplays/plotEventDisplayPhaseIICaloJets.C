@@ -461,10 +461,38 @@ void plotEventDisplayPhaseIICaloJets(){
   TLegend *l = new TLegend(0.82,0.60,0.99,0.9);
   l->SetTextSize(0.03);
 
+//  TLatex *t2a = new TLatex(0.46,0.9," #bf{CMS} #it{Phase-2 Simulation Preliminary}                14 TeV, 200PU   ");
+//  t2a->SetNDC();
+//  t2a->SetTextFont(42);
+//  t2a->SetTextSize(0.045);
+//  t2a->SetTextAlign(20);
+//  t2a->Draw("same");
+
+  TLatex *t2a = new TLatex(0.125,0.905,"#bf{CMS}");
+  t2a->SetNDC();
+  t2a->SetTextFont(42);
+  t2a->SetTextSize(0.045);
+  t2a->SetTextAlign(20);
+  t2a->Draw("same");
+
+  TLatex *t2b = new TLatex(0.3,0.9,"#bf{Phase-2 Simulation Preliminary}");
+  t2b->SetNDC();
+  t2b->SetTextFont(42);
+  t2b->SetTextSize(0.032);
+  t2b->SetTextAlign(20);
+  t2b->Draw("same");
+
+  TLatex *t2c = new TLatex(0.73,0.9,"#bf{14 TeV, 200PU}");
+  t2c->SetNDC();
+  t2c->SetTextFont(42);
+  t2c->SetTextSize(0.04);
+  t2c->SetTextAlign(20);
+  t2c->Draw("same");
+
   l->AddEntry(h2EcalTpgs,    "ECAL Crystals",   "F");
   l->AddEntry(h2HcalTpgs,    "HCAL Towers",     "F");
   l->AddEntry(h2L1Towers,    "GCT Towers",      "F");
-  l->AddEntry(h2HgcalTowers, "HGCAL Towers",    "F");
+  l->AddEntry(h2HgcalTowers, "HGCal Towers",    "F");
   l->AddEntry(h2HfTowers,    "HF Towers",       "F");
   l->AddEntry(h2GctCaloJets, "GCT Jets",    "F");
   //l->AddEntry(h2OfflineJets, "Offline Jets",    "F");
@@ -473,10 +501,10 @@ void plotEventDisplayPhaseIICaloJets(){
  
   char* saveFile = new char[200];
    
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/14_1_0/Event-%u-phase2emulator.png",event);
+  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/hf_test/Event-%u-phase2emulator.png",event);
   c1->SaveAs(saveFile);
 
-  sprintf(saveFile,"/afs/cern.ch/work/p/pdas/www/emulator_phase2/14_1_0/Event-%u-phase2emulator.pdf",event);
+  sprintf(saveFile,"/eos/user/p/pdas/www/emulator_phase2/14_1_0/hf_test/Event-%u-phase2emulator.pdf",event);
   c1->SaveAs(saveFile);
   }
 
