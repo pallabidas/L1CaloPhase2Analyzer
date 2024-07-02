@@ -112,11 +112,11 @@ analyzer::analyzer(TTree *tree) : fChain(0)
 // if parameter tree is not specified (or zero), connect the file
 // used to generate this class and read the Tree.
    if (tree == 0) {
-      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_singlepion.root");
+      TFile *f = (TFile*)gROOT->GetListOfFiles()->FindObject("analyzer_doubleelectron.root");
       if (!f || !f->IsOpen()) {
-         f = new TFile("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_singlepion.root");
+         f = new TFile("analyzer_doubleelectron.root");
       }
-      TDirectory * dir = (TDirectory*)f->Get("/afs/cern.ch/work/p/pdas/emulator_phase2/CMSSW_12_3_0_pre4/src/L1Trigger/L1CaloPhase2Analyzer/test/analyzer_singlepion.root:/l1NtupleProducer");
+      TDirectory * dir = (TDirectory*)f->Get("analyzer_doubleelectron.root:/l1NtupleProducer");
       dir->GetObject("efficiencyTree",tree);
 
    }

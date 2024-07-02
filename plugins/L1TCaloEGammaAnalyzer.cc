@@ -403,8 +403,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
     //std::cout<<"gen particle id: "<<ptr->pdgId()<<std::endl;
     
     // Get gen electrons in barrel + overlap
-    //if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
-    if ( (abs(ptr->pdgId()) == 211) && ( abs(ptr->eta()) < 1.4841 )) {
+    if ( (abs(ptr->pdgId()) == 11) && ( abs(ptr->eta()) < 1.4841 )) {
+    //if ( (abs(ptr->pdgId()) == 211) && ( abs(ptr->eta()) < 1.4841 )) {
       genElectrons.push_back(*ptr);
       // Check isLastCopy() and isLastCopyBeforeFSR()
 //      std::cout << "isLastCopy: " << ptr->isLastCopy()  << ", "
@@ -422,8 +422,8 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
   for (auto genElectron : genElectrons) {
     RawParticle particle(genElectron.p4());
     particle.setVertex(genElectron.vertex().x(), genElectron.vertex().y(), genElectron.vertex().z(), 0.);
-    //if (fabs(genElectron.pdgId())==11) particle.setMass(.511);
-    if (fabs(genElectron.pdgId())==211) particle.setMass(139.57039);
+    if (fabs(genElectron.pdgId())==11) particle.setMass(.511);
+    //if (fabs(genElectron.pdgId())==211) particle.setMass(139.57039);
     else particle.setMass(0.);
     
     int pdgId = genElectron.pdgId();
@@ -663,7 +663,24 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
 
     if (pfClustersMatched.size() > 0) {
     //if (gctClustersMatched.size() > 0) { // reintroduce bug
+    // add a test calibration function based on the file fittedmean_forCalib.txt
+    // ****************************************
+    // Minimizer is Linear / Migrad
+    // Chi2                      =       647.07
+    // NDf                       =           17
+    // p0                        =      13.8847   +/-   2.42235     
+    // p1                        =      1.03548   +/-   0.0299405 
+    // ****************************************
+    // FCN=0.501679 FROM MIGRAD    STATUS=CONVERGED     101 CALLS         102 TOTAL
+    // EDM=2.27727e-09    STRATEGY= 1      ERROR MATRIX ACCURATE 
+    // EXT PARAMETER                                   STEP         FIRST   
+    // NO.   NAME      VALUE            ERROR          SIZE      DERIVATIVE 
+    //  1  p0           7.40383e+00   3.15645e+00   1.00195e-03  -2.57860e-06
+    //  2  p1           1.16096e+00   7.02469e-02   2.22992e-05   8.60529e-04
+    //  ****************************************
       pf_cPt  = pfClustersMatched.at(0).Pt();
+      //if(pfClustersMatched.at(0).Pt() > 60.) pf_cPt = 7.40383 + 1.16096*pfClustersMatched.at(0).Pt();
+      //else pf_cPt = 1.28436*pfClustersMatched.at(0).Pt();
       pf_cEta = pfClustersMatched.at(0).Eta();
       pf_cPhi = pfClustersMatched.at(0).Phi();
       pf_deltaR = reco::deltaR(pf_cEta, pf_cPhi,
