@@ -9,14 +9,14 @@ process.load('SimGeneral.HepPDTESSource.pythiapdt_cfi')
 process.load('FWCore.MessageService.MessageLogger_cfi')
 process.load('Configuration.EventContent.EventContent_cff')
 process.load('SimGeneral.MixingModule.mixNoPU_cfi')
-process.load('Configuration.Geometry.GeometryExtended2026D86Reco_cff')
-process.load('Configuration.Geometry.GeometryExtended2026D86_cff')
+process.load('Configuration.Geometry.GeometryExtendedRun4D110Reco_cff')
+process.load('Configuration.Geometry.GeometryExtendedRun4D110_cff')
 process.load('Configuration.StandardSequences.MagneticField_cff')
 process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
 
 process.source = cms.Source("PoolSource",
 ###113X SinglePion sample 200 PU
@@ -49,7 +49,9 @@ process.source = cms.Source("PoolSource",
 #                                "root://cms-xrd-global.cern.ch://store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/005aa288-45c5-4d82-b0d8-4d5849235810.root",),
 #                                '/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/005aa288-45c5-4d82-b0d8-4d5849235810.root',
 #                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/00a27704-5eb4-4b20-81de-8af0d9f09645.root',),
-                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/071b9cb9-5dd8-4b49-9c47-6e49def34c72.root',),
+#                            'root://cmsxrootd.fnal.gov//store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/071b9cb9-5dd8-4b49-9c47-6e49def34c72.root',),
+#                            'file:/hdfs/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/noPU_131X_mcRun4_realistic_v5-v1/2530000/2297b73b-7cab-4269-83a8-4d94b9e9900c.root',),
+                            'file:/hdfs/store/mc/Phase2Spring24DIGIRECOMiniAOD/MinBias_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200ALCA_140X_mcRun4_realistic_v4-v2/120006/953ab11f-4af7-4428-8c4d-b5bf97a6beec.root',),
 ###Victor
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00245bdc-37fc-4361-9eec-2f1be8495931.root','/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01637ff3-d279-4850-820d-04062d0bb591.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01c5da90-ac38-4d8e-856d-590564e49d98.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/02862c28-2fbd-4211-a9fd-d0b0183a4d40.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/03435f05-aca9-4320-b562-3c7cddab675d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/042b6629-64da-4883-9891-6ed221618999.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/04a3d93a-6fe3-4c9c-b6b4-1df7cbbc09f9.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/057daaa7-6669-41ee-b92e-b03a8421583d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/05b4eb2f-a130-4c0a-bf9b-7b38dddd6897.root',),
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root'),

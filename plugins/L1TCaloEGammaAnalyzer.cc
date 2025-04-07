@@ -11,6 +11,11 @@
 #include <iostream>
 #include <fstream>
 #include <memory>
+#include <vector>
+#include <TLorentzVector.h>
+#ifdef __MAKECINT__
+#pragma link C++ class vector<TLorentzVector>+;
+#endif
 
 // user include files
 #include "FWCore/Framework/interface/stream/EDProducer.h"
@@ -799,7 +804,7 @@ void L1TCaloEGammaAnalyzer::analyze( const Event& evt, const EventSetup& es )
       gctJet_Phi = gctJetMatched.at(0).Phi();
       gctJet_deltaR = reco::deltaR(gctJet_Eta, gctJet_Phi, genJets->at(j).Eta(), genJets->at(j).Phi());
     }
-    //jetEfficiencyTree->Fill();
+    jetEfficiencyTree->Fill();
 
   } // end of loop over gen jets
 
