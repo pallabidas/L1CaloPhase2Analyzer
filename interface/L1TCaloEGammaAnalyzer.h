@@ -70,10 +70,10 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
 #include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
-////#ifdef __MAKECINT__
+#ifdef __MAKECINT__
 //#pragma extra_include "TLorentzVector.h";
-//#pragma link C++ class std::vector<TLorentzVector>;
-//	 //#endif
+#pragma link C++ class std::vector<TLorentzVector>;
+#endif
 
 //
 // class declaration
