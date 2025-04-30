@@ -1,7 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 
 
-l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzer",
+l1NtupleProducer = cms.EDAnalyzer("L1TCaloAnalyzer",
                                   folderName              = cms.untracked.string("firstFolder"),
                                   genParticles     = cms.InputTag("genParticles", "", "HLT"),
                                   #packedPfCands           = cms.InputTag("packedPFCandidates"),
@@ -15,6 +15,7 @@ l1NtupleProducer = cms.EDAnalyzer("L1TCaloEGammaAnalyzer",
                                   PFclusters              = cms.InputTag("l1tPhase2CaloPFClusterEmulator", "GCTPFCluster"),
                                   L1HgcalTowersInputTag   = cms.InputTag("l1tHGCalTowerProducer","HGCalTowerProcessor",""),
                                   caloJets                = cms.InputTag("l1tPhase2CaloJetEmulator", "GCTJet"),
+                                  caloJetsDigis           = cms.InputTag("l1tPhase2CaloJetEmulator", "GCTDigitizedJet"),
                                   recoJets                = cms.InputTag("slimmedJets","","RECO"),
                                   genJets                 = cms.InputTag("slimmedGenJets","","RECO")
 #                                  clusters  = cms.InputTag('L1EGammaClusterEmuProducer')
