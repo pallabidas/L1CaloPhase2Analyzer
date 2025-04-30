@@ -1,5 +1,5 @@
-#ifndef L1TCaloEGammaAnalyzer_H
-#define L1TCaloEGammaAnalyzer_H
+#ifndef L1TCaloAnalyzer_H
+#define L1TCaloAnalyzer_H
 
 
 // system include files
@@ -68,10 +68,11 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloCrystalCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedL1CaloJet.h"
 #include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 #ifdef __MAKECINT__
-//#pragma extra_include "TLorentzVector.h";
+// #pragma extra_include "TLorentzVector.h";
 #pragma link C++ class std::vector<TLorentzVector>;
 #endif
 
@@ -80,44 +81,17 @@
 //
 using std::vector;
 
-class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
+class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 
  public:
   
   // Constructor
-  L1TCaloEGammaAnalyzer(const edm::ParameterSet& ps);
+  L1TCaloAnalyzer(const edm::ParameterSet& ps);
   
   // Destructor
-  virtual ~L1TCaloEGammaAnalyzer();
+  virtual ~L1TCaloAnalyzer();
 
   edm::Service<TFileService> tfs_;
-
-  std::vector<double> *hcalTpgs_Pt  = new std::vector<double>; 
-  std::vector<double> *hcalTpgs_Eta = new std::vector<double>; 
-  std::vector<double> *hcalTpgs_Phi = new std::vector<double>; 
-
-  std::vector<double> *ecalTpgs_Pt  = new std::vector<double>; 
-  std::vector<double> *ecalTpgs_Eta = new std::vector<double>; 
-  std::vector<double> *ecalTpgs_Phi = new std::vector<double>; 
-
-  std::vector<double> *sumTpgs_Pt  = new std::vector<double>; 
-  std::vector<double> *sumTpgs_Eta = new std::vector<double>; 
-  std::vector<double> *sumTpgs_Phi = new std::vector<double>; 
-
-  std::vector<TLorentzVector> *rlxTaus  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *isoTaus  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *recoTaus  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *allRegions  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *allEcalTPGs  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *allHcalTPGs  = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *allHgcalTowers  = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *allHfTowers  = new std::vector<TLorentzVector>;
-  std::vector<int> *hgcal_ieta = new std::vector<int>;
-  std::vector<int> *hgcal_iphi = new std::vector<int>;
-  std::vector<TLorentzVector> *signalPFCands  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *l1Jets  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *recoJets  = new std::vector<TLorentzVector>; 
-  std::vector<double> *recoJetsDr  = new std::vector<double>;
 
   // Struct representing a cluster
   struct Cluster {
@@ -132,22 +106,17 @@ class L1TCaloEGammaAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResour
     bool is_looseTkiso;
   };
 
-  // Re-packaged outputs of the emulator
-  std::vector<Cluster> *rctClusterInfo = new std::vector<L1TCaloEGammaAnalyzer::Cluster>;
-  std::vector<Cluster> *gctClusterInfo = new std::vector<L1TCaloEGammaAnalyzer::Cluster>; 
+  // std::size_t gctCaloJets_size = new std::size_t;
+  // int gctCaloJets_size;
+  std::vector<float> *gctCaloJets_et = new std::vector<float>;
+  std::vector<float> *gctCaloJets_eta = new std::vector<float>;
+  std::vector<float> *gctCaloJets_phi = new std::vector<float>;
 
-  // Outputs of the emulator
-  std::vector<TLorentzVector> *rctClusters  = new std::vector<TLorentzVector>; 
-  std::vector<TLorentzVector> *rctTowers    = new std::vector<TLorentzVector>;
-
-  std::vector<TLorentzVector> *gctClusters  = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *gctTowers    = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *caloPFClusters = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *genJets = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *genTaus = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *genQuarks = new std::vector<TLorentzVector>;
+  // std::size_t gctCaloJetsDigitized_size = new std::size_t;
+  // int gctCaloJetsDigitized_size;
+  std::vector<float> *gctCaloJetsDigitized_et = new std::vector<float>;
+  std::vector<float> *gctCaloJetsDigitized_eta = new std::vector<float>;
+  std::vector<float> *gctCaloJetsDigitized_phi = new std::vector<float>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
@@ -290,6 +259,7 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<HcalTrigPrimDigiCollection> hfTowersSrc_;
   edm::ESGetToken<CaloTPGTranscoder, CaloTPGRecord> decoderTag_;
   edm::EDGetTokenT<l1tp2::Phase2L1CaloJetCollection> caloJetSrc_;
+  edm::EDGetTokenT<l1tp2::DigitizedL1CaloJetCollection> caloJetDigitizedSrc_;
   edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
   edm::EDGetTokenT<vector<reco::GenJet> > genJetSrc_;
   //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
