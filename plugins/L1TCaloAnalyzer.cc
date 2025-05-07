@@ -125,9 +125,14 @@ L1TCaloAnalyzer::L1TCaloAnalyzer( const ParameterSet & cfg ) :
     // displayTree->Branch("gctCaloJetsDigitized_et",   &gctCaloJetsDigitized_et,   "gctCaloJetsDigitized_et[gctCaloJetsDigitized_size]/F");
     // displayTree->Branch("gctCaloJetsDigitized_eta",  &gctCaloJetsDigitized_eta,  "gctCaloJetsDigitized_eta[gctCaloJetsDigitized_size]/F");
     // displayTree->Branch("gctCaloJetsDigitized_phi",  &gctCaloJetsDigitized_phi,  "gctCaloJetsDigitized_phi[gctCaloJetsDigitized_size]/F");
-    displayTree->Branch("gctCaloJetsDigitized_et", "vector<float>", &gctCaloJetsDigitized_et, 32000, 0);
-    displayTree->Branch("gctCaloJetsDigitized_eta", "vector<float>", &gctCaloJetsDigitized_eta, 32000, 0);
-    displayTree->Branch("gctCaloJetsDigitized_phi", "vector<float>", &gctCaloJetsDigitized_phi, 32000, 0);
+    
+    // displayTree->Branch("gctCaloJetsDigitized_et", "vector<ap_uint<16>>", &gctCaloJetsDigitized_et, 32000, 0);
+    // displayTree->Branch("gctCaloJetsDigitized_eta", "vector<ap_int<14>>", &gctCaloJetsDigitized_eta, 32000, 0);
+    // displayTree->Branch("gctCaloJetsDigitized_phi", "vector<ap_int<13>>", &gctCaloJetsDigitized_phi, 32000, 0);
+
+    displayTree->Branch("gctCaloJetsDigitized_etFloat", "vector<float>", &gctCaloJetsDigitized_etFloat, 32000, 0);
+    displayTree->Branch("gctCaloJetsDigitized_etaFloat", "vector<float>", &gctCaloJetsDigitized_etaFloat, 32000, 0);
+    displayTree->Branch("gctCaloJetsDigitized_phiFloat", "vector<float>", &gctCaloJetsDigitized_phiFloat, 32000, 0);
 
     displayTree->Branch("gctCaloJets_et", "vector<float>", &gctCaloJets_et, 32000, 0);
     displayTree->Branch("gctCaloJets_eta", "vector<float>", &gctCaloJets_eta, 32000, 0);
@@ -162,9 +167,12 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es )
   gctCaloJets_et->clear();
   gctCaloJets_eta->clear();
   gctCaloJets_phi->clear();
-  gctCaloJetsDigitized_et->clear();
-  gctCaloJetsDigitized_eta->clear();
-  gctCaloJetsDigitized_phi->clear();
+  // gctCaloJetsDigitized_et->clear();
+  // gctCaloJetsDigitized_eta->clear();
+  // gctCaloJetsDigitized_phi->clear();
+  gctCaloJetsDigitized_etFloat->clear();
+  gctCaloJetsDigitized_etaFloat->clear();
+  gctCaloJetsDigitized_phiFloat->clear();
 
   if(evt.getByToken(caloJetSrc_, caloJets)){
     // gctCaloJets_size = caloJets->size();
@@ -186,9 +194,12 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es )
       // std::cout << "    Et: " << caloJetDigi.jetEt() << std::endl;
       // std::cout << "    Eta: " << caloJetDigi.jetEta() << std::endl;
       // std::cout << "    Phi: " << caloJetDigi.jetPhi() << std::endl;
-      gctCaloJetsDigitized_et->push_back(caloJetDigi.jetEt());
-      gctCaloJetsDigitized_eta->push_back(caloJetDigi.jetEta());
-      gctCaloJetsDigitized_phi->push_back(caloJetDigi.jetPhi());
+      // gctCaloJetsDigitized_et->push_back(caloJetDigi.pt());
+      // gctCaloJetsDigitized_eta->push_back(caloJetDigi.eta());
+      // gctCaloJetsDigitized_phi->push_back(caloJetDigi.phi());
+      gctCaloJetsDigitized_etFloat->push_back(caloJetDigi.ptFloat());
+      gctCaloJetsDigitized_etaFloat->push_back(caloJetDigi.etaFloat());
+      gctCaloJetsDigitized_phiFloat->push_back(caloJetDigi.phiFloat());
     }
   }
 

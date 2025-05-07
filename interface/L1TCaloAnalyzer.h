@@ -114,9 +114,12 @@ class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
 
   // std::size_t gctCaloJetsDigitized_size = new std::size_t;
   // int gctCaloJetsDigitized_size;
-  std::vector<float> *gctCaloJetsDigitized_et = new std::vector<float>;
-  std::vector<float> *gctCaloJetsDigitized_eta = new std::vector<float>;
-  std::vector<float> *gctCaloJetsDigitized_phi = new std::vector<float>;
+  //std::vector<ap_uint<16>> *gctCaloJetsDigitized_et = new std::vector<ap_uint<16>>;
+  //std::vector<ap_int<14>> *gctCaloJetsDigitized_eta = new std::vector<ap_int<14>>;
+  //std::vector<ap_int<13>> *gctCaloJetsDigitized_phi = new std::vector<ap_int<13>>;
+  std::vector<float> *gctCaloJetsDigitized_etFloat = new std::vector<float>;
+  std::vector<float> *gctCaloJetsDigitized_etaFloat = new std::vector<float>;
+  std::vector<float> *gctCaloJetsDigitized_phiFloat = new std::vector<float>;
 
   TH1F* isoTau_pt;
   TH1F* isoTau_eta;
