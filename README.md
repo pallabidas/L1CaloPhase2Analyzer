@@ -41,7 +41,7 @@
    cd ../
    git remote add digi-repo https://github.com/rpsimeon34/cmssw.git
    git fetch digi-repo
-   git checkout -b digi-branch --track digi-repo/from-CMSSW_15_0_0_pre3
+   git checkout -b digi-branch --track digi-repo/from-CMSSW_15_0_0_pre3-QuickDigi
    git checkout digi-branch
    git pull
    scram b -j 12
