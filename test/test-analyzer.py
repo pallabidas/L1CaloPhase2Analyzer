@@ -16,7 +16,7 @@ process.load('Configuration.StandardSequences.SimL1Emulator_cff')
 process.load('Configuration.StandardSequences.EndOfProcess_cff')
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_cff')
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(500) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
 
 process.source = cms.Source("PoolSource",
 ###113X SinglePion sample 200 PU
@@ -46,13 +46,13 @@ process.source = cms.Source("PoolSource",
 #                            fileNames = cms.untracked.vstring('/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/noPU_131X_mcRun4_realistic_v5-v1/2530000/006f6626-cf25-4030-9835-cd507d7fcbec.root'),
 ###131X VBFH sample 200 PU
                             fileNames = cms.untracked.vstring(
-#                                "root://cms-xrd-global.cern.ch://store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/005aa288-45c5-4d82-b0d8-4d5849235810.root",),
+                                "root://cms-xrd-global.cern.ch://store/mc/Phase2Spring24DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v2/2810000/001ebf5f-b83c-43fc-997f-c2e5ecf1f9dd.root",),
 #                                '/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/005aa288-45c5-4d82-b0d8-4d5849235810.root',
 #                            '/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/00a27704-5eb4-4b20-81de-8af0d9f09645.root',),
 #                            'root://cmsxrootd.fnal.gov//store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_131X_mcRun4_realistic_v5-v1/30000/071b9cb9-5dd8-4b49-9c47-6e49def34c72.root',),
 #                            'file:/hdfs/store/mc/Phase2Spring23DIGIRECOMiniAOD/VBFHToTauTau_M-125_TuneCP5_14TeV-powheg-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/noPU_131X_mcRun4_realistic_v5-v1/2530000/2297b73b-7cab-4269-83a8-4d94b9e9900c.root',),
 #                            'file:/hdfs/store/mc/Phase2Spring24DIGIRECOMiniAOD/MinBias_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200ALCA_140X_mcRun4_realistic_v4-v2/120006/953ab11f-4af7-4428-8c4d-b5bf97a6beec.root',),
-                            'root://cmsxrootd.fnal.gov//store/mc/Phase2Spring24DIGIRECOMiniAOD/MinBias_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200ALCA_140X_mcRun4_realistic_v4-v2/120006/953ab11f-4af7-4428-8c4d-b5bf97a6beec.root',),
+#                            'root://cmsxrootd.fnal.gov//store/mc/Phase2Spring24DIGIRECOMiniAOD/MinBias_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200ALCA_140X_mcRun4_realistic_v4-v2/120006/953ab11f-4af7-4428-8c4d-b5bf97a6beec.root',),
 ###Victor
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00245bdc-37fc-4361-9eec-2f1be8495931.root','/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01637ff3-d279-4850-820d-04062d0bb591.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/01c5da90-ac38-4d8e-856d-590564e49d98.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/02862c28-2fbd-4211-a9fd-d0b0183a4d40.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/03435f05-aca9-4320-b562-3c7cddab675d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/042b6629-64da-4883-9891-6ed221618999.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/04a3d93a-6fe3-4c9c-b6b4-1df7cbbc09f9.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/057daaa7-6669-41ee-b92e-b03a8421583d.root', '/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/05b4eb2f-a130-4c0a-bf9b-7b38dddd6897.root',),
                             #fileNames = cms.untracked.vstring('/store/mc/Phase2Fall22DRMiniAOD/QCD_Pt-15To3000_TuneCP5_Flat_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_125X_mcRun4_realistic_v2-v1/40000/00696033-2e56-4fca-9836-1bac2b3af414.root'),
@@ -94,10 +94,11 @@ process = custom_towers_energySplit(process)
 # Run the emulators and analyzer
 process.load('L1Trigger.L1CaloTrigger.l1tPhase2L1CaloEGammaEmulator_cfi')
 process.load('L1Trigger.L1CaloTrigger.l1tPhase2CaloPFClusterEmulator_cfi')
+process.load('L1Trigger.L1CaloTrigger.l1tPhase2CaloToCorrelatorTMI18_cfi')
 process.load('L1Trigger.L1CaloTrigger.l1tPhase2CaloJetEmulator_cfi')
 process.load('L1Trigger.L1CaloPhase2Analyzer.l1TCaloAnalyzer_cfi')
 
-process.pL1EG = cms.Path( process.l1tPhase2L1CaloEGammaEmulator*process.l1tPhase2CaloPFClusterEmulator*process.l1tPhase2CaloJetEmulator*process.l1NtupleProducer )
+process.pL1EG = cms.Path( process.l1tPhase2L1CaloEGammaEmulator*process.l1tPhase2CaloPFClusterEmulator*process.l1tPhase2CaloJetEmulator*process.l1tPhase2CaloToCorrelatorTMI18*process.l1NtupleProducer )
 
 # output file
 process.TFileService = cms.Service("TFileService",
@@ -118,5 +119,5 @@ process.TFileService = cms.Service("TFileService",
 process.schedule = cms.Schedule(process.L1simulation_step, process.pL1EG)
 
 # Multi-threading
-process.options.numberOfThreads=cms.untracked.uint32(8)
-process.options.numberOfStreams=cms.untracked.uint32(0)
+#process.options.numberOfThreads=cms.untracked.uint32(8)
+#process.options.numberOfStreams=cms.untracked.uint32(0)

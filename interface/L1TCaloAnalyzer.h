@@ -69,6 +69,9 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedL1CaloJet.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedClusterCorrelatorTMI18.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedPFClusterCorrelatorTMI18.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedCaloToCorrelatorTMI18.h"
 #include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 #ifdef __MAKECINT__
@@ -263,6 +266,9 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::ESGetToken<CaloTPGTranscoder, CaloTPGRecord> decoderTag_;
   edm::EDGetTokenT<l1tp2::Phase2L1CaloJetCollection> caloJetSrc_;
   edm::EDGetTokenT<l1tp2::DigitizedL1CaloJetCollection> caloJetDigitizedSrc_;
+  edm::EDGetTokenT<l1tp2::DigitizedClusterCorrelatorCollectionTMI18> egDigitizedToCorrelatorTMI18Src_ ;
+  edm::EDGetTokenT<l1tp2::DigitizedPFClusterCorrelatorCollectionTMI18> pfDigitizedToCorrelatorTMI18Src_ ;
+  edm::EDGetTokenT<l1tp2::DigitizedCaloToCorrelatorCollectionTMI18> dataDigitizedToCorrelatorTMI18Src_ ;
   edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
   edm::EDGetTokenT<vector<reco::GenJet> > genJetSrc_;
   //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;
