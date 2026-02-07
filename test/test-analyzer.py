@@ -22,6 +22,13 @@ process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
                                 "root://cms-xrd-global.cern.ch://store/mc/Phase2Spring24DIGIRECOMiniAOD/DoublePhoton_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v2/2560000/4b0a0e07-247b-458e-9540-2473353ac6d8.root",),
 #                                "root://cms-xrd-global.cern.ch://store/mc/Phase2Spring24DIGIRECOMiniAOD/DoubleElectron_FlatPt-1To100-gun/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v2/2810000/001ebf5f-b83c-43fc-997f-c2e5ecf1f9dd.root",),
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/fefd9caa-182c-418e-8419-afb40a9a7739.root
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/ff04ba49-7295-492c-b8de-84d61d9836d7.root
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/ff13f279-3532-4511-8a75-2de7bc476540.root
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/ff2b5a9b-f5b5-4c79-8511-40e1d6a1ce66.root
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/ff6b1222-b2c8-47a6-a265-03e5b885b130.root
+#/store/mc/Phase2Spring24DIGIRECOMiniAOD/DYToLL_M-50_TuneCP5_14TeV-pythia8/GEN-SIM-DIGI-RAW-MINIAOD/PU200_Trk1GeV_140X_mcRun4_realistic_v4-v1/2810000/ff8b25af-a043-4c03-ab78-d2d2be95ce5d.root
+
                             inputCommands = cms.untracked.vstring(
                                 "keep *",
                                 "drop l1tTkPrimaryVertexs_*_*_*",

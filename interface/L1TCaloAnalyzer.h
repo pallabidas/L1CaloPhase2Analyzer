@@ -101,78 +101,31 @@ class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
   struct Cluster {
 
     TLorentzVector p4;
-    double et2x5;
-    double et5x5;
+    double hoe;
+    double shape;
     double iso;
-    bool is_ss;
-    bool is_looseTkss;
-    bool is_iso;
-    bool is_looseTkiso;
+    bool wp;
   };
 
-  std::vector<float> *gctCaloJets_et = new std::vector<float>;
-  std::vector<float> *gctCaloJets_eta = new std::vector<float>;
-  std::vector<float> *gctCaloJets_phi = new std::vector<float>;
-
-  std::vector<float> *gctCaloJetsDigitized_etFloat = new std::vector<float>;
-  std::vector<float> *gctCaloJetsDigitized_etaFloat = new std::vector<float>;
-  std::vector<float> *gctCaloJetsDigitized_phiFloat = new std::vector<float>;
-
-  TH1F* isoTau_pt;
-  TH1F* isoTau_eta;
-  TH1F* isoTau_phi;
-
-  TH1F* tau_pt;
-  TH1F* tau_eta;
-  TH1F* tau_phi;
-
-  TH1F* recoTau_pt;
-  TH1F* recoTau_eta;
-  TH1F* recoTau_phi;
-
-  TH1F* calo_jet_pt;
-  TH1F* calo_jet_eta;
-  TH1F* calo_jet_phi;
-  TH1F* reco_jet_pt;
-  TH1F* reco_jet_eta;
-  TH1F* reco_jet_phi;
-  TH1F* n_calo_jet;
-  TH2F* h2L1Towers;
-  TH2F* h2HgcalTowers;
   TTree* displayTree;
   TTree* efficiencyTree;
   TTree* pfEfficiencyTree;
-  TTree* jetEfficiencyTree;
+
+  std::vector<TLorentzVector> *ecalTPGs  = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *hcalTPGs  = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *egClusters = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *pfClusters = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *gctDigiJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *genJets = new std::vector<TLorentzVector>;
+  std::vector<TLorentzVector> *genEles = new std::vector<TLorentzVector>;
 
   int run, lumi, event;
   double genPt, genEta, genPhi;
-  double genPionPt, genPionEta, genPionPhi;
   double genJetPt, genJetEta, genJetPhi;
-  double rct_cPt, rct_cEta, rct_cPhi;
-  double rct_deltaR;
-  double rct_et2x5, rct_et5x5;
-
-  double gct_cPt, gct_cEta, gct_cPhi;
-  double gct_deltaR;
-  double gct_et2x5, gct_et5x5;
-  double gct_iso;   // only meaningful for GCT
-  int gct_is_ss, gct_is_looseTkss;
-  int gct_is_iso, gct_is_looseTkiso;
-
+  double eg_cPt, eg_cEta, eg_cPhi, eg_deltaR;
   double pf_cPt, pf_cEta, pf_cPhi, pf_deltaR;
-  double gctJet_Pt, gctJet_Eta, gctJet_Phi, gctJet_deltaR;
-
-  double isoTauPt, rlxTauPt, isoTauEta, rlxTauEta, isoTauPhi, rlxTauPhi;
-  double recoPt, recoEta, recoPhi;
-  int l1RlxMatched, l1IsoMatched;
-  int decayMode;
-  double tauEtaEcalEnt,tauPhiEcalEnt,rawEcal, rawHcal, ecal, hcal, jetEt, jetEta, jetPhi, nvtx;
-  double max3ProngDeltaR, minProngPt, maxProngPt, midProngPt; int n3ProngCands;
-  double pfCandsEt, signalCandsEt, isoCandsEt;
-  double TPG2x2, TPGH2x2, TPGE2x2;
-  double TPG5x5, TPGH5x5, TPGE5x5;
-  double TPG6x6, TPGH6x6, TPGE6x6;
-  double TPG7x7, TPGH7x7, TPGE7x7;
 
   void getThreeProngInfo(const pat::Tau & tau, double &maxDeltaR, double &minProngPt, double &midProngPt, double &maxProngPt, int &nCands);
   void getRawEcalHcalEnergy(const pat::PackedCandidate pfCand, double &rawEcal, double &rawHcal, double &ecal, double &hcal);
