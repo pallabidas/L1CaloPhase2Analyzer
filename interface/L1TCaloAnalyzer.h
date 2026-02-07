@@ -69,9 +69,10 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedL1CaloJet.h"
-#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedClusterCorrelatorTMI18.h"
-#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedPFClusterCorrelatorTMI18.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedCaloToCorrelatorTMI18.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/GCTEmDigiCluster.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/GCTHadDigiCluster.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedClusterCorrelator.h"
 #include "DataFormats/L1THGCal/interface/HGCalTower.h"
 
 #ifdef __MAKECINT__
@@ -109,17 +110,10 @@ class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
     bool is_looseTkiso;
   };
 
-  // std::size_t gctCaloJets_size = new std::size_t;
-  // int gctCaloJets_size;
   std::vector<float> *gctCaloJets_et = new std::vector<float>;
   std::vector<float> *gctCaloJets_eta = new std::vector<float>;
   std::vector<float> *gctCaloJets_phi = new std::vector<float>;
 
-  // std::size_t gctCaloJetsDigitized_size = new std::size_t;
-  // int gctCaloJetsDigitized_size;
-  //std::vector<ap_uint<16>> *gctCaloJetsDigitized_et = new std::vector<ap_uint<16>>;
-  //std::vector<ap_int<14>> *gctCaloJetsDigitized_eta = new std::vector<ap_int<14>>;
-  //std::vector<ap_int<13>> *gctCaloJetsDigitized_phi = new std::vector<ap_int<13>>;
   std::vector<float> *gctCaloJetsDigitized_etFloat = new std::vector<float>;
   std::vector<float> *gctCaloJetsDigitized_etaFloat = new std::vector<float>;
   std::vector<float> *gctCaloJetsDigitized_phiFloat = new std::vector<float>;
@@ -266,8 +260,10 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::ESGetToken<CaloTPGTranscoder, CaloTPGRecord> decoderTag_;
   edm::EDGetTokenT<l1tp2::Phase2L1CaloJetCollection> caloJetSrc_;
   edm::EDGetTokenT<l1tp2::DigitizedL1CaloJetCollection> caloJetDigitizedSrc_;
-  edm::EDGetTokenT<l1tp2::DigitizedClusterCorrelatorCollectionTMI18> egDigitizedToCorrelatorTMI18Src_ ;
-  edm::EDGetTokenT<l1tp2::DigitizedPFClusterCorrelatorCollectionTMI18> pfDigitizedToCorrelatorTMI18Src_ ;
+//  edm::EDGetTokenT<l1tp2::DigitizedClusterCorrelatorCollectionTMI18> egDigitizedToCorrelatorTMI18Src_ ;
+//  edm::EDGetTokenT<l1tp2::DigitizedPFClusterCorrelatorCollectionTMI18> pfDigitizedToCorrelatorTMI18Src_ ;
+  edm::EDGetTokenT<l1tp2::GCTEmDigiClusterCollection> egDigitizedToCorrelatorTMI18Src_ ;
+  edm::EDGetTokenT<l1tp2::GCTHadDigiClusterCollection> pfDigitizedToCorrelatorTMI18Src_ ;
   edm::EDGetTokenT<l1tp2::DigitizedCaloToCorrelatorCollectionTMI18> dataDigitizedToCorrelatorTMI18Src_ ;
   edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
   edm::EDGetTokenT<vector<reco::GenJet> > genJetSrc_;
