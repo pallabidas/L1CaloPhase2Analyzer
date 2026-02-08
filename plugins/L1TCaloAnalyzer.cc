@@ -347,12 +347,12 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
 	if((i>1 && i<33) || (i>81 && i<114)){
 	  if (auto* em = std::get_if<l1tp2::GCTEmDigiCluster>(&varCluster)) {
 	    l1tp2::GCTEmDigiCluster cluster = *em;
-	    if(cluster.pt()>20) {
-	      std::cout << " Card "<<iLink<< " word " << i << " EG pt " << cluster.pt() << " eta " << cluster.eta() << " phi " << cluster.phi() << std::endl ;
+	    if(cluster.pt()>0) {
+	      //std::cout << " Card "<<iLink<< " word " << i << " EG pt " << cluster.pt() << " eta " << cluster.eta() << " phi " << cluster.phi() << std::endl ;
 	      if (cluster.clusterRef().isNonnull()) {
-                std::cout << "\t ... Access underlying float cluster pT " << cluster.clusterRef()->pt()
-                      << " eta, phi " << cluster.clusterRef()->eta() << ", " << cluster.clusterRef()->phi()
-                      << std::endl;
+                //std::cout << "\t ... Access underlying float cluster pT " << cluster.clusterRef()->pt()
+                //      << " eta, phi " << cluster.clusterRef()->eta() << ", " << cluster.clusterRef()->phi()
+                //      << std::endl;
 		TLorentzVector temp;
 		temp.SetPtEtaPhiE(cluster.clusterRef()->pt(), cluster.clusterRef()->eta(), cluster.clusterRef()->phi(), cluster.clusterRef()->pt());
 		egClusters->push_back(temp);
@@ -363,13 +363,13 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
 	else {
 	  if (auto* pf = std::get_if<l1tp2::GCTHadDigiCluster>(&varCluster)) {
 	    l1tp2::GCTHadDigiCluster cluster = *pf;
-	    if(cluster.pt()>20) {
-	      std::cout << " Card "<<iLink<<" word " << i << " PF pt " << cluster.pt() << " eta " << cluster.eta() << " phi " << cluster.phi() << std::endl ;
+	    if(cluster.pt()>0) {
+	      //std::cout << " Card "<<iLink<<" word " << i << " PF pt " << cluster.pt() << " eta " << cluster.eta() << " phi " << cluster.phi() << std::endl ;
 	      if (cluster.clusterRef().isNonnull()) {
-                std::cout << "\t ... Access underlying float cluster pT " << cluster.clusterRef()->clusterEt()
-                      << " eta, phi " << cluster.clusterRef()->clusterEta() << ", " << cluster.clusterRef()->clusterPhi()
-		      << " ecal ET " << cluster.clusterRef()->ecalEt()
-                      << std::endl;
+                //std::cout << "\t ... Access underlying float cluster pT " << cluster.clusterRef()->clusterEt()
+                //      << " eta, phi " << cluster.clusterRef()->clusterEta() << ", " << cluster.clusterRef()->clusterPhi()
+		//      << " ecal ET " << cluster.clusterRef()->ecalEt()
+                //      << std::endl;
 		TLorentzVector temp;
 		temp.SetPtEtaPhiE(cluster.clusterRef()->clusterEt(), cluster.clusterRef()->clusterEta(), cluster.clusterRef()->clusterPhi(), cluster.clusterRef()->clusterEt());
 		pfClusters->push_back(temp);

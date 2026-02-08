@@ -280,7 +280,7 @@ void plotEventDisplayPhaseIICaloJets(){
 
   // Get the PF clusters
   ci = TColor::GetColor("#3f90da");
-  double pfMinPt = 1.0;
+  double pfMinPt = 5.0;
   if(pfMinPt > 0.){
     std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show PF clusters with energy under "
               << pfMinPt << " GeV" << std::endl;
@@ -313,7 +313,7 @@ void plotEventDisplayPhaseIICaloJets(){
 
   // Get the EG clusters
   ci = TColor::GetColor("#e76300");
-  double egMinPt = 0.5;
+  double egMinPt = 5.;
   if(egMinPt > 0.){
     std::cout << "[INFO:] plotEventDisplayPhaseIICaloJets.C: do not show EG clusters with energy under "
               << egMinPt << " GeV" << std::endl;
@@ -505,7 +505,7 @@ void plotEventDisplayPhaseIICaloJets(){
 //  l->AddEntry(h2GenElectrons,  "GEN electrons",   "F");
   l->AddEntry(h2GctCaloJets,   "GCT jets",        "F");
 //  l->AddEntry(h2OfflineJets,   "Offline jets",    "F");
-//  l->AddEntry(h2GenJets,       "Gen jets",        "F");
+  l->AddEntry(h2GenJets,       "Gen jets",        "F");
   l->Draw();
  
   char* saveFile = new char[200];
