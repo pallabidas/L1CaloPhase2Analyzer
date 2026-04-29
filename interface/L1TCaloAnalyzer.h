@@ -69,7 +69,7 @@
 #include "DataFormats/L1TCalorimeterPhase2/interface/CaloPFCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/Phase2L1CaloJet.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedL1CaloJet.h"
-#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedCaloToCorrelatorTMI18.h"
+#include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedCaloToCorrelatorTM18.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/GCTEmDigiCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/GCTHadDigiCluster.h"
 #include "DataFormats/L1TCalorimeterPhase2/interface/DigitizedClusterCorrelator.h"
@@ -111,13 +111,14 @@ class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
   TTree* efficiencyTree;
   TTree* pfEfficiencyTree;
 
-  std::vector<TLorentzVector> *ecalTPGs  = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *hcalTPGs  = new std::vector<TLorentzVector>;
+  //std::vector<TLorentzVector> *ecalTPGs  = new std::vector<TLorentzVector>;
+  //std::vector<TLorentzVector> *hcalTPGs  = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *egClusters = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *pfClusters = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *gctDigiJets = new std::vector<TLorentzVector>;
-  std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
+  std::vector<float> pfCluster_ecal;
+  //std::vector<TLorentzVector> *gctCaloJets = new std::vector<TLorentzVector>;
+  //std::vector<TLorentzVector> *gctDigiJets = new std::vector<TLorentzVector>;
+  //std::vector<TLorentzVector> *offlineJets = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *genJets = new std::vector<TLorentzVector>;
   std::vector<TLorentzVector> *genEles = new std::vector<TLorentzVector>;
 
@@ -125,7 +126,7 @@ class L1TCaloAnalyzer : public edm::one::EDAnalyzer<edm::one::SharedResources> {
   double genPt, genEta, genPhi;
   double genJetPt, genJetEta, genJetPhi;
   double eg_cPt, eg_cEta, eg_cPhi, eg_deltaR;
-  double pf_cPt, pf_cEta, pf_cPhi, pf_deltaR;
+  double pf_cPt, pf_cEta, pf_cPhi, pf_cEcal, pf_deltaR;
 
   void getThreeProngInfo(const pat::Tau & tau, double &maxDeltaR, double &minProngPt, double &midProngPt, double &maxProngPt, int &nCands);
   void getRawEcalHcalEnergy(const pat::PackedCandidate pfCand, double &rawEcal, double &rawHcal, double &ecal, double &hcal);
@@ -215,9 +216,9 @@ int get5x5TPGs(const int maxTPGPt_eta,
   edm::EDGetTokenT<l1tp2::DigitizedL1CaloJetCollection> caloJetDigitizedSrc_;
 //  edm::EDGetTokenT<l1tp2::DigitizedClusterCorrelatorCollectionTMI18> egDigitizedToCorrelatorTMI18Src_ ;
 //  edm::EDGetTokenT<l1tp2::DigitizedPFClusterCorrelatorCollectionTMI18> pfDigitizedToCorrelatorTMI18Src_ ;
-  edm::EDGetTokenT<l1tp2::GCTEmDigiClusterCollection> egDigitizedToCorrelatorTMI18Src_ ;
-  edm::EDGetTokenT<l1tp2::GCTHadDigiClusterCollection> pfDigitizedToCorrelatorTMI18Src_ ;
-  edm::EDGetTokenT<l1tp2::DigitizedCaloToCorrelatorCollectionTMI18> dataDigitizedToCorrelatorTMI18Src_ ;
+  edm::EDGetTokenT<l1tp2::GCTEmDigiClusterCollection> egDigitizedToCorrelatorTM18Src_ ;
+  edm::EDGetTokenT<l1tp2::GCTHadDigiClusterCollection> pfDigitizedToCorrelatorTM18Src_ ;
+  edm::EDGetTokenT<l1tp2::DigitizedCaloToCorrelatorCollectionTM18> dataDigitizedToCorrelatorTM18Src_ ;
   edm::EDGetTokenT<vector<pat::Jet> > recoJetSrc_;
   edm::EDGetTokenT<vector<reco::GenJet> > genJetSrc_;
   //edm::Handle<l1t::HGCalTowerBxCollection> hgcalTowersHandle;

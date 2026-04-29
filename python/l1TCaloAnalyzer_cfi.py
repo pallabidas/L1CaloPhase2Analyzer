@@ -16,7 +16,7 @@ l1NtupleProducer = cms.EDAnalyzer("L1TCaloAnalyzer",
                                   caloJetsDigis           = cms.InputTag("l1tPhase2CaloJetEmulator", "GCTDigitizedJet"),
                                   egtocorr18 = cms.InputTag("l1tPhase2GCTBarrelToCorrelatorLayer1Emulator", "GCTEmDigiClusters"),
                                   pftocorr18 = cms.InputTag("l1tPhase2GCTBarrelToCorrelatorLayer1Emulator", "GCTHadDigiClusters"),
-                                  datatocorr18 = cms.InputTag("l1tPhase2CaloToCorrelatorTMI18","DigitizedCaloToCorrelatorTMI18"),
+                                  datatocorr18 = cms.InputTag("l1tPhase2CaloToCorrelatorTM18","DigitizedCaloToCorrelatorTM18"),
                                   recoJets                = cms.InputTag("slimmedJets","","RECO"),
                                   genJets                 = cms.InputTag("slimmedGenJets","","RECO")
 )

@@ -85,9 +85,9 @@ L1TCaloAnalyzer::L1TCaloAnalyzer( const ParameterSet & cfg ) :
   decoderTag_(esConsumes<CaloTPGTranscoder, CaloTPGRecord>(edm::ESInputTag("", ""))),
   caloJetSrc_(consumes<l1tp2::Phase2L1CaloJetCollection>(cfg.getParameter<edm::InputTag>("caloJets"))),
   caloJetDigitizedSrc_(consumes<l1tp2::DigitizedL1CaloJetCollection>(cfg.getParameter<edm::InputTag>("caloJetsDigis"))),
-  egDigitizedToCorrelatorTMI18Src_(consumes<l1tp2::GCTEmDigiClusterCollection>(cfg.getParameter<edm::InputTag>("egtocorr18"))),
-  pfDigitizedToCorrelatorTMI18Src_(consumes<l1tp2::GCTHadDigiClusterCollection>(cfg.getParameter<edm::InputTag>("pftocorr18"))),
-  dataDigitizedToCorrelatorTMI18Src_(consumes<l1tp2::DigitizedCaloToCorrelatorCollectionTMI18>(cfg.getParameter<edm::InputTag>("datatocorr18"))),
+  egDigitizedToCorrelatorTM18Src_(consumes<l1tp2::GCTEmDigiClusterCollection>(cfg.getParameter<edm::InputTag>("egtocorr18"))),
+  pfDigitizedToCorrelatorTM18Src_(consumes<l1tp2::GCTHadDigiClusterCollection>(cfg.getParameter<edm::InputTag>("pftocorr18"))),
+  dataDigitizedToCorrelatorTM18Src_(consumes<l1tp2::DigitizedCaloToCorrelatorCollectionTM18>(cfg.getParameter<edm::InputTag>("datatocorr18"))),
   recoJetSrc_(consumes<vector<pat::Jet>>(cfg.getParameter<edm::InputTag>("recoJets"))),
   genJetSrc_(consumes<vector<reco::GenJet>>(cfg.getParameter<edm::InputTag>("genJets"))),
   genSrc_(consumes<std::vector<reco::GenParticle> >(cfg.getParameter<edm::InputTag>("genParticles")))
@@ -100,15 +100,15 @@ L1TCaloAnalyzer::L1TCaloAnalyzer( const ParameterSet & cfg ) :
     displayTree->Branch("lumi",   &lumi,    "lumi/I");
     displayTree->Branch("event",  &event,   "event/I");
     ////putting bufsize at 32000 and changing split level to 0 so that the branch isn't split into multiple branches
-    displayTree->Branch("hcalTPGs", "vector<TLorentzVector>", &hcalTPGs, 32000, 0); 
-    displayTree->Branch("ecalTPGs", "vector<TLorentzVector>", &ecalTPGs, 32000, 0); 
-    displayTree->Branch("egClusters",   "vector<TLorentzVector>", &egClusters, 32000, 0);
-    displayTree->Branch("pfClusters", "vector<TLorentzVector>", &pfClusters, 32000, 0);
-    displayTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
-    displayTree->Branch("genJets", "vector<TLorentzVector>", &genJets, 32000, 0);
-    displayTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
-    displayTree->Branch("gctDigiJets", "vector<TLorentzVector>", &gctDigiJets, 32000, 0);
-    displayTree->Branch("genEles",  "vector<TLorentzVector>", &genEles, 32000, 0);
+    //displayTree->Branch("hcalTPGs", "vector<TLorentzVector>", &hcalTPGs, 32000, 0); 
+    //displayTree->Branch("ecalTPGs", "vector<TLorentzVector>", &ecalTPGs, 32000, 0); 
+    //displayTree->Branch("egClusters",   "vector<TLorentzVector>", &egClusters, 32000, 0);
+    //displayTree->Branch("pfClusters", "vector<TLorentzVector>", &pfClusters, 32000, 0);
+    //displayTree->Branch("offlineJets", "vector<TLorentzVector>", &offlineJets, 32000, 0);
+    //displayTree->Branch("genJets", "vector<TLorentzVector>", &genJets, 32000, 0);
+    //displayTree->Branch("gctCaloJets", "vector<TLorentzVector>", &gctCaloJets, 32000, 0);
+    //displayTree->Branch("gctDigiJets", "vector<TLorentzVector>", &gctDigiJets, 32000, 0);
+    //displayTree->Branch("genEles",  "vector<TLorentzVector>", &genEles, 32000, 0);
 
     efficiencyTree = tfs_->make<TTree>("efficiencyTree", "Efficiency Tree");
 
@@ -138,6 +138,7 @@ L1TCaloAnalyzer::L1TCaloAnalyzer( const ParameterSet & cfg ) :
     pfEfficiencyTree->Branch("pf_cPt",  &pf_cPt,  "pf_cPt/D");
     pfEfficiencyTree->Branch("pf_cEta", &pf_cEta, "pf_cEta/D");
     pfEfficiencyTree->Branch("pf_cPhi", &pf_cPhi, "pf_cPhi/D");
+    pfEfficiencyTree->Branch("pf_cEcal", &pf_cEcal, "pf_cEcal/D");
     pfEfficiencyTree->Branch("pf_deltaR", &pf_deltaR, "pf_deltaR/D");
     //pfEfficiencyTree->Branch("pf_ecal", &pf_ecal, "pf_ecal/D");
 
@@ -154,7 +155,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
 
   edm::Handle<l1tp2::Phase2L1CaloJetCollection> caloJets;
   edm::Handle<l1tp2::DigitizedL1CaloJetCollection> caloJetsDigis;
-  edm::Handle<l1tp2::DigitizedCaloToCorrelatorCollectionTMI18> datatocorr18 ;
+  edm::Handle<l1tp2::DigitizedCaloToCorrelatorCollectionTM18> datatocorr18 ;
   edm::Handle<l1tp2::GCTEmDigiClusterCollection> egtocorr18;
   edm::Handle<l1tp2::GCTHadDigiClusterCollection> pftocorr18;
 
@@ -167,14 +168,15 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
   std::map<std::string, float> rctExperimentalParams;
   std::map<std::string, float> gctExperimentalParams;
 
-  hcalTPGs->clear();
-  ecalTPGs->clear();
+  //hcalTPGs->clear();
+  //ecalTPGs->clear();
   egClusters->clear();
   pfClusters->clear();
-  offlineJets->clear();
+  pfCluster_ecal.clear();
+  //offlineJets->clear();
   genJets->clear();
-  gctCaloJets->clear();
-  gctDigiJets->clear();
+  //gctCaloJets->clear();
+  //gctDigiJets->clear();
   genEles->clear();
 
   // Detector geometry
@@ -205,7 +207,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
 	  float phi = position.phi();
 	  TLorentzVector temp ;
 	  temp.SetPtEtaPhiE(et,eta,phi,et); 
-	  ecalTPGs->push_back(temp);
+	  //ecalTPGs->push_back(temp);
 	}
     }
   
@@ -252,7 +254,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     float phi = hcal_tp_position.phi();
     TLorentzVector temp ;
     temp.SetPtEtaPhiE(et,eta,phi,et);
-    hcalTPGs->push_back(temp);
+    //hcalTPGs->push_back(temp);
   }
 
   // Get genParticles
@@ -304,7 +306,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     for(const auto & caloJet : *caloJets){
       TLorentzVector temp;
       temp.SetPtEtaPhiE(caloJet.jetEt(), caloJet.jetEta(), caloJet.jetPhi(), caloJet.jetEt());
-      gctCaloJets->push_back(temp);
+      //gctCaloJets->push_back(temp);
     }
   }
 
@@ -312,7 +314,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     for(const auto & recoJet : *recoJets){
       TLorentzVector temp;
       temp.SetPtEtaPhiE(recoJet.pt(), recoJet.eta(), recoJet.phi(), recoJet.et());
-      offlineJets->push_back(temp);
+      //offlineJets->push_back(temp);
     }
   }
 
@@ -328,14 +330,14 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     for(const auto & caloJetDigi : *caloJetsDigis){
       TLorentzVector temp;
       temp.SetPtEtaPhiE(caloJetDigi.ptFloat(), caloJetDigi.etaFloat(), caloJetDigi.phiFloat(), caloJetDigi.ptFloat());
-      gctDigiJets->push_back(temp);
+      //gctDigiJets->push_back(temp);
     }
   }
 
-  std::cout << " Information for correlator : " << std::endl ;
+  //std::cout << " Information for correlator : " << std::endl ;
 
-  if(evt.getByToken(dataDigitizedToCorrelatorTMI18Src_, datatocorr18)) {
-    std::cout << " Data Size OK: 3=" << datatocorr18->size() <<  std::endl;
+  if(evt.getByToken(dataDigitizedToCorrelatorTM18Src_, datatocorr18)) {
+    //std::cout << " Data Size OK: 3=" << datatocorr18->size() <<  std::endl;
 
     int iLink = 0;
     for (const auto & pf : *datatocorr18) {
@@ -344,7 +346,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     
       for(int i=0; i<162; i++){
 	const auto& varCluster = linkptr[i];
-	if((i>1 && i<33) || (i>81 && i<114)){
+	if((i>0 && i<33) || (i>81 && i<114)){
 	  if (auto* em = std::get_if<l1tp2::GCTEmDigiCluster>(&varCluster)) {
 	    l1tp2::GCTEmDigiCluster cluster = *em;
 	    if(cluster.pt()>0) {
@@ -373,6 +375,7 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
 		TLorentzVector temp;
 		temp.SetPtEtaPhiE(cluster.clusterRef()->clusterEt(), cluster.clusterRef()->clusterEta(), cluster.clusterRef()->clusterPhi(), cluster.clusterRef()->clusterEt());
 		pfClusters->push_back(temp);
+		pfCluster_ecal.push_back(cluster.clusterRef()->ecalEt());
 	      }
             }
 	  }
@@ -383,11 +386,11 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
   }
   //------------
    
-  displayTree->Fill();
+  //displayTree->Fill();
 
   //------------
-  std::sort(egClusters->begin(), egClusters->end(), comparePt);
-  std::sort(pfClusters->begin(), pfClusters->end(), comparePt);
+  //std::sort(egClusters->begin(), egClusters->end(), comparePt);
+  //std::sort(pfClusters->begin(), pfClusters->end(), comparePt);
 
   for (auto gen : propagatedGenElectrons) {
     genPt = gen.Pt();
@@ -398,10 +401,10 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     for (size_t i = 0; i < egClusters->size(); ++i) {
       float tempDR = reco::deltaR(egClusters->at(i).Eta(), egClusters->at(i).Phi(), genEta, genPhi);
       if (tempDR < eg_deltaR) {
-	eg_deltaR = tempDR;
-	eg_cPt = egClusters->at(i).Pt();
-	eg_cEta = egClusters->at(i).Eta();
-	eg_cPhi = egClusters->at(i).Phi();
+        eg_deltaR = tempDR;
+        eg_cPt = egClusters->at(i).Pt();
+        eg_cEta = egClusters->at(i).Eta();
+        eg_cPhi = egClusters->at(i).Phi();
       }
     }
     efficiencyTree->Fill();
@@ -411,13 +414,14 @@ void L1TCaloAnalyzer::analyze( const Event& evt, const EventSetup& es ) {
     genJetPt = genJets->at(j).Pt();
     genJetEta = genJets->at(j).Eta();
     genJetPhi = genJets->at(j).Phi();
-    pf_deltaR = 0.2; pf_cPt = -99.; pf_cEta = -99.; pf_cPhi = -99.;    
+    pf_deltaR = 0.2; pf_cPt = -99.; pf_cEta = -99.; pf_cEcal = -99.; pf_cPhi = -99.;
     for (size_t i = 0; i < pfClusters->size(); ++i) {
       float tempDR = reco::deltaR(pfClusters->at(i).Eta(), pfClusters->at(i).Phi(), genJetEta, genJetPhi);
       if (tempDR < pf_deltaR) {
         pf_deltaR = tempDR;
         pf_cPt = pfClusters->at(i).Pt();
         pf_cEta = pfClusters->at(i).Eta();
+        pf_cEcal = pfCluster_ecal.at(i);
         pf_cPhi = pfClusters->at(i).Phi();
       }
     }
